@@ -1,6 +1,7 @@
 #include <Arduino.h>
 
 const int MCP9700_PIN = 34;
+const char* NODE_ID = "node_01";
 
 void setup()
 {
@@ -31,16 +32,14 @@ void loop()
 
     float temperature_C = (averageVoltage_mV - 500.0) / 10.0;
 
-    Serial.print("ADC: ");
-    Serial.print(averageADC, 1);
-
-    Serial.print(" | Voltage: ");
-    Serial.print(averageVoltage_mV, 1);
-    Serial.print(" mV");
-
-    Serial.print(" | Temperature: ");
+    Serial.print("{");
+    Serial.print("\"node_id\":\"");
+    Serial.print(NODE_ID);
+    Serial.print("\",");
+    Serial.print("\"sensor\":\"MCP9700\",");
+    Serial.print("\"temperature_c\":");
     Serial.print(temperature_C, 2);
-    Serial.println(" °C");
+    Serial.println("}");
 
     delay(1000);
 }
