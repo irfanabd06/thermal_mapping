@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Thermal Mapping &amp; Environmental Control in a Greenhouse | CDE4301</title>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.16.0/cdn/themes/light.css" />
+  <script type="module"
+    src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.16.0/cdn/shoelace-autoloader.js"></script>
+
+  <link rel="stylesheet" href="./index.css">
+
+  <link rel="stylesheet" href="./components/team-member/team-member.css">
+  <script type="module" src="./components/team-member/team-member.js"></script>
+
+  <link rel="stylesheet" href="./components/table-of-content/table-of-content.css">
+
+  <script type="module" src="./components/image/image-component.js"></script>
+  <script type="module" src="./components/video/video.js"></script>
+
+  <link rel="stylesheet" href="./components/references/references.css">
+
+  <link rel="stylesheet" href="./components/scroll-to-top/scroll-to-top.css">
+  <script src="./components/scroll-to-top/scroll-to-top.js"></script>
+
+  <script src="./components/table-component/table-component.js"></script>
+
+  <link href="https://unpkg.com/gridjs/dist/theme/mermaid.min.css" rel="stylesheet" />
+</head>
+
+<body>
+  <div class="content">
+    <h1>Thermal Mapping &amp; Environmental Control in a Greenhouse</h1>
+    <p class="subtitle">CDE4301 Innovation &amp; Design Capstone · Interim Report · AY2026/27</p>
+
+    <div class="team-member-wrapper">
+      <team-member avatar="assets/avatar.svg" name="Muhammad Irfan Bin Abdullah"
+        department="Engineering Science Programme" year="AY2026/27"></team-member>
+    </div>
+
+    <sl-divider></sl-divider>
+
+    <div class="table-of-content">
+      <h2>Table of Contents</h2>
+      <sl-tree>
+        <sl-tree-item expanded>
+          <a href="#introduction">1. Introduction and Context</a>
+          <sl-tree-item><a href="#food-security">1.1. Food Security and Local Farming</a></sl-tree-item>
+          <sl-tree-item><a href="#tropical-greenhouses">1.2. Tropical Greenhouses</a></sl-tree-item>
+          <sl-tree-item><a href="#existing-work">1.3. Existing Work and Gap</a></sl-tree-item>
+        </sl-tree-item>
+        <sl-tree-item expanded>
+          <a href="#site-investigation">2. Site Investigation and Problem Analysis</a>
+          <sl-tree-item><a href="#gh1">2.1. Greenhouse 1 (GH1)</a></sl-tree-item>
+          <sl-tree-item><a href="#existing-cooling">2.2. Existing Cooling and Operator Pain Points</a></sl-tree-item>
+          <sl-tree-item><a href="#thermal-survey">2.3. Spatial Thermal Survey</a></sl-tree-item>
+        </sl-tree-item>
+        <sl-tree-item expanded>
+          <a href="#problem-objectives">3. Problem Statement, Objectives and Scope</a>
+          <sl-tree-item><a href="#problem-statement">3.1. Problem Statement</a></sl-tree-item>
+          <sl-tree-item><a href="#problem-solution">3.2. Target Problems and Solutions</a></sl-tree-item>
+          <sl-tree-item><a href="#objectives">3.3. Objectives</a></sl-tree-item>
+          <sl-tree-item><a href="#scope">3.4. Scope and Constraints</a></sl-tree-item>
+        </sl-tree-item>
+        <sl-tree-item><a href="#design-specifications">4. Design Specifications</a></sl-tree-item>
+        <sl-tree-item expanded>
+          <a href="#concept-development">5. Concept Development and Selection</a>
+          <sl-tree-item><a href="#functional-decomposition">5.1. Functional Decomposition</a></sl-tree-item>
+          <sl-tree-item><a href="#concept-selection">5.2. Concept Selection</a></sl-tree-item>
+          <sl-tree-item><a href="#two-model-twin">5.3. Two-Model Digital Twin</a></sl-tree-item>
+        </sl-tree-item>
+        <sl-tree-item expanded>
+          <a href="#detailed-design">6. System Architecture and Detailed Design</a>
+          <sl-tree-item><a href="#architecture">6.1. System Architecture</a></sl-tree-item>
+          <sl-tree-item><a href="#sensor-node">6.2. Sensor Node</a></sl-tree-item>
+          <sl-tree-item><a href="#communication">6.3. Communication and Edge Gateway</a></sl-tree-item>
+        </sl-tree-item>
+        <sl-tree-item expanded>
+          <a href="#prototypes-testing">7. Prototypes and Testing</a>
+          <sl-tree-item><a href="#test-acquisition">7.1. Sensor Acquisition</a></sl-tree-item>
+          <sl-tree-item><a href="#test-enclosure">7.2. Sensor Enclosure</a></sl-tree-item>
+          <sl-tree-item><a href="#test-telemetry">7.3. RS-485 and MQTT Telemetry</a></sl-tree-item>
+        </sl-tree-item>
+        <sl-tree-item><a href="#analysis">8. Analysis of Results</a></sl-tree-item>
+        <sl-tree-item expanded>
+          <a href="#problems-plan">9. Problems, Shortcomings and Plan</a>
+          <sl-tree-item><a href="#problems">9.1. Problems Encountered</a></sl-tree-item>
+          <sl-tree-item><a href="#shortcomings">9.2. Current Shortcomings</a></sl-tree-item>
+          <sl-tree-item><a href="#plan">9.3. Plan and Milestones</a></sl-tree-item>
+        </sl-tree-item>
+        <sl-tree-item><a href="#references">References</a></sl-tree-item>
+        <sl-tree-item><a href="#appendices">Appendices</a></sl-tree-item>
+      </sl-tree>
+    </div>
+    <sl-divider></sl-divider>
+
+    <!-- Everything inside #report-body counts towards the 3,000-word limit.
+         Run `python3 tools/wordcount.py` to check. Elements with class="todo" are not counted. -->
+    <div id="report-body">
+
+      <!-- ===================== 1. INTRODUCTION ===================== -->
+      <div id="introduction">
+        <h2>1. Introduction and Context</h2>
+      </div>
+
+      <div id="food-security">
+        <h3>1.1. Food Security and Local Farming</h3>
+        <sl-alert class="todo" variant="warning" open>
+          <strong>To write (~130 words):</strong> Singapore Food Story 2 (Nov 2025) replaced "30 by 30" with a
+          target of 20% of fibre (leafy and fruited vegetables) from local farms by 2035, against about 8% today.
+          Decline in licensed vegetable farms (115 → 101). Rising operating costs. Cite MSE / SFA.
+        </sl-alert>
+      </div>
+
+      <div id="tropical-greenhouses">
+        <h3>1.2. Tropical Greenhouses</h3>
+        <sl-alert class="todo" variant="warning" open>
+          <strong>To write (~130 words):</strong> Shift towards greenhouses as the cost/yield middle ground between
+          outdoor and indoor farming. Cooling is the main challenge in the tropics. Farmer quotes on cost.
+          Heterogeneous microclimate is undesirable for crops (Teitel et al., 2010).
+        </sl-alert>
+      </div>
+
+      <div id="existing-work">
+        <h3>1.3. Existing Work and Gap</h3>
+        <sl-alert class="todo" variant="warning" open>
+          <strong>To write (~140 words):</strong> What commercial greenhouse controllers, published greenhouse CFD
+          studies and greenhouse digital twins already do. The gap: low-cost, spatially informed placement
+          <em>and</em> timing of cooling for tropical greenhouses. One-sentence value proposition for the operator.
+        </sl-alert>
+      </div>
+
+      <sl-divider></sl-divider>
+
+      <!-- ===================== 2. SITE INVESTIGATION ===================== -->
+      <div id="site-investigation">
+        <h2>2. Site Investigation and Problem Analysis</h2>
+      </div>
+
+      <div id="gh1">
+        <h3>2.1. Greenhouse 1 (GH1)</h3>
+        <p>
+          The project is based on Greenhouse 1 (GH1), a gable-capped monitor greenhouse operated by the industry
+          partner. Its main dimensions and equipment were recorded during site visits (Table 1).
+        </p>
+        <table-component subtitle="Table 1: GH1 site parameters">
+          <div id="table-gh1"></div>
+        </table-component>
+        <sl-alert class="todo" variant="warning" open>
+          <strong>Add figure:</strong> GH1 photo and layout drawing with fan positions.
+        </sl-alert>
+      </div>
+
+      <div id="existing-cooling">
+        <h3>2.2. Existing Cooling and Operator Pain Points</h3>
+        <sl-alert class="todo" variant="warning" open>
+          <strong>To write (~120 words):</strong> Ventilation and ceiling fans run 24/7; floor fans unused; misting
+          all day; one monitoring point. Operator-reported peak of 45 °C vs preferred &lt; 29–30 °C and ~70% RH.
+          Pain points: cooling cost, crop-mass variation, monitoring not actionable.
+        </sl-alert>
+      </div>
+
+      <div id="thermal-survey">
+        <h3>2.3. Spatial Thermal Survey</h3>
+        <sl-alert class="todo" variant="warning" open>
+          <strong>To write (~200 words):</strong> Method (instrument, 57 points at 1 m, sequential or simultaneous,
+          time, weather, fan states). Result: 35.5–39.5 °C, 4.0 °C spread (T14 min, T53 max). Thermal camera:
+          roof 47.3 °C, plants 34.7 °C, roof near misting 32.2 °C (surface, not air, temperatures).
+          <strong>Add figures:</strong> heatmap with labelled axes and colour bar; thermal images.
+        </sl-alert>
+      </div>
+
+      <sl-divider></sl-divider>
+
+      <!-- ===================== 3. PROBLEM, OBJECTIVES, SCOPE ===================== -->
+      <div id="problem-objectives">
+        <h2>3. Problem Statement, Objectives and Scope</h2>
+      </div>
+
+      <div id="problem-statement">
+        <h3>3.1. Problem Statement</h3>
+        <p>
+          Tropical greenhouses such as GH1 cannot be held at crop-optimal temperatures at all times without costly
+          active cooling. Within those limits, their fans and vents are placed and operated without spatial analysis
+          or timing logic, and they run continuously. This project develops a thermal digital twin of GH1, built from
+          site data and updated by real-time sensors, to determine <strong>where</strong> cooling equipment should be
+          placed and <strong>when</strong> it should run. The aim is to minimise hotspots and temperature
+          non-uniformity, and then fan energy and cost. Physical fan actuation is used to validate the twin's
+          predictions.
+        </p>
+      </div>
+
+      <div id="problem-solution">
+        <h3>3.2. Target Problems and Solutions</h3>
+        <p>
+          Table 2 maps each target problem to one solution, one objective and the requirements used to test it.
+        </p>
+        <table-component subtitle="Table 2: Target problems, solutions and objectives">
+          <div id="table-problem-solution"></div>
+        </table-component>
+      </div>
+
+      <div id="objectives">
+        <h3>3.3. Objectives</h3>
+        <ol>
+          <li><strong>O1 Spatial monitoring:</strong> deploy a calibrated sensor network in a test section of GH1.</li>
+          <li><strong>O2 Validated model:</strong> build a CFD model of the test section and validate it against
+            measurements.</li>
+          <li><strong>O3 Placement (where):</strong> compare fan and vent configurations in simulation and recommend a
+            placement for GH1.</li>
+          <li><strong>O4 Timing (when):</strong> develop fan scheduling on the Raspberry Pi 5 and validate it with
+            physical fans against continuous operation.</li>
+        </ol>
+      </div>
+
+      <div id="scope">
+        <h3>3.4. Scope and Constraints</h3>
+        <p>
+          Actuation is limited to floor circulation fans procured by the project, so the farm's existing ventilation,
+          misting and shading are not modified. The simulation can still evaluate vents, roof openings and existing fan
+          positions. Bringing GH1 to crop-optimal temperature at all times is out of scope, as it is not achievable
+          without active cooling such as air-conditioning.
+        </p>
+        <sl-alert class="todo" variant="warning" open>
+          <strong>To add:</strong> constraints list (physical, environmental, connectivity, power, operational, cost)
+          and the test-section definition.
+        </sl-alert>
+      </div>
+
+      <sl-divider></sl-divider>
+
+      <!-- ===================== 4. DESIGN SPECIFICATIONS ===================== -->
+      <div id="design-specifications">
+        <h2>4. Design Specifications</h2>
+        <p>
+          Table 3 lists the technical requirements, each with a measurable target, its rationale and the test used to
+          verify it.
+        </p>
+        <table-component subtitle="Table 3: Technical requirements and targets">
+          <div id="table-requirements"></div>
+        </table-component>
+        <sl-alert class="todo" variant="warning" open>
+          <strong>Before submitting:</strong> confirm draft targets with your supervisor; add a per-node cost target.
+        </sl-alert>
+      </div>
+
+      <sl-divider></sl-divider>
+
+      <!-- ===================== 5. CONCEPT DEVELOPMENT ===================== -->
+      <div id="concept-development">
+        <h2>5. Concept Development and Selection</h2>
+      </div>
+
+      <div id="functional-decomposition">
+        <h3>5.1. Functional Decomposition</h3>
+        <sl-alert class="todo" variant="warning" open>
+          <strong>To write (~100 words) + figure:</strong> Acquire → Characterise → Evaluate → Regulate, and the
+          thermal-relations diagram.
+        </sl-alert>
+      </div>
+
+      <div id="concept-selection">
+        <h3>5.2. Concept Selection</h3>
+        <sl-alert class="todo" variant="warning" open>
+          <strong>To write (~250 words) + decision matrices:</strong> communications; actuation (floor fans vs
+          modifying ventilation); CFD tool; mapping method (IDW vs Gaussian process vs CFD-based).
+        </sl-alert>
+      </div>
+
+      <div id="two-model-twin">
+        <h3>5.3. Two-Model Digital Twin</h3>
+        <sl-alert class="todo" variant="warning" open>
+          <strong>To write (~100 words):</strong> CFD answers "where" offline; a data-driven zone model answers "when"
+          live on the Pi. Why CFD cannot run live; why a test section.
+        </sl-alert>
+      </div>
+
+      <sl-divider></sl-divider>
+
+      <!-- ===================== 6. DETAILED DESIGN ===================== -->
+      <div id="detailed-design">
+        <h2>6. System Architecture and Detailed Design</h2>
+      </div>
+
+      <div id="architecture">
+        <h3>6.1. System Architecture</h3>
+        <sl-alert class="todo" variant="warning" open>
+          <strong>Figure + ~100 words:</strong> S1 Sense → S2 Map &amp; Model → S3 Decide → S4 Actuate, with
+          feedback. Local-first design.
+        </sl-alert>
+      </div>
+
+      <div id="sensor-node">
+        <h3>6.2. Sensor Node</h3>
+        <sl-alert class="todo" variant="warning" open>
+          <strong>To write (~150 words):</strong> Type A (SHT45) and Type B (multisensor) nodes; ESP32-C6; enclosure
+          and radiation-shield design; sensor roles.
+        </sl-alert>
+      </div>
+
+      <div id="communication">
+        <h3>6.3. Communication and Edge Gateway</h3>
+        <sl-alert class="todo" variant="warning" open>
+          <strong>To write (~100 words):</strong> RS-485 (9600 baud, 8N1), JSON telemetry, Raspberry Pi 5 with
+          Docker, Mosquitto and Node-RED.
+        </sl-alert>
+      </div>
+
+      <sl-divider></sl-divider>
+
+      <!-- ===================== 7. PROTOTYPES AND TESTING ===================== -->
+      <div id="prototypes-testing">
+        <h2>7. Prototypes and Testing</h2>
+        <sl-alert class="todo" variant="warning" open>
+          For each test: <strong>purpose, method, equipment, result, pass/fail</strong> against an R-number.
+        </sl-alert>
+      </div>
+
+      <div id="test-acquisition">
+        <h3>7.1. Sensor Acquisition</h3>
+        <sl-alert class="todo" variant="warning" open>
+          <strong>To write (~150 words):</strong> SHT45 median of 10; MLX90640 mean of 10 frames, emissivity 0.95;
+          I²C troubleshooting.
+        </sl-alert>
+      </div>
+
+      <div id="test-enclosure">
+        <h3>7.2. Sensor Enclosure</h3>
+        <sl-alert class="todo" variant="warning" open>
+          <strong>To write (~150 words):</strong> open vs shielded comparison; result and what it means for R3.
+        </sl-alert>
+      </div>
+
+      <div id="test-telemetry">
+        <h3>7.3. RS-485 and MQTT Telemetry</h3>
+        <sl-alert class="todo" variant="warning" open>
+          <strong>To write (~150 words):</strong> packets sent vs received, latency, duration; result against R5.
+        </sl-alert>
+      </div>
+
+      <sl-divider></sl-divider>
+
+      <!-- ===================== 8. ANALYSIS ===================== -->
+      <div id="analysis">
+        <h2>8. Analysis of Results</h2>
+        <sl-alert class="todo" variant="warning" open>
+          <strong>To write (~250 words):</strong> survey uncertainty and pattern explained physically; noise
+          reduction from averaging; link statistics; what the results mean for the requirements.
+        </sl-alert>
+      </div>
+
+      <sl-divider></sl-divider>
+
+      <!-- ===================== 9. PROBLEMS AND PLAN ===================== -->
+      <div id="problems-plan">
+        <h2>9. Problems, Shortcomings and Plan</h2>
+      </div>
+
+      <div id="problems">
+        <h3>9.1. Problems Encountered</h3>
+        <sl-alert class="todo" variant="warning" open>
+          <strong>To write (~60 words):</strong> problems and how they were resolved.
+        </sl-alert>
+      </div>
+
+      <div id="shortcomings">
+        <h3>9.2. Current Shortcomings</h3>
+        <sl-alert class="todo" variant="warning" open>
+          <strong>To write (~60 words):</strong> single node so far; no persistent storage yet; survey not
+          timestamped; fan controllability; each with a fix.
+        </sl-alert>
+      </div>
+
+      <div id="plan">
+        <h3>9.3. Plan and Milestones</h3>
+        <sl-alert class="todo" variant="warning" open>
+          <strong>To write (~80 words) + Gantt chart:</strong> dated milestones, each with a deliverable and an
+          acceptance criterion.
+        </sl-alert>
+      </div>
+    </div>
+    <!-- end #report-body -->
+
+    <div id="references" class="references">
+      <sl-divider></sl-divider>
+      <h2>References</h2>
+      <ul>
+        <li>
+          Ministry of Sustainability and the Environment. (n.d.). <em>Food resilience: Singapore Food Story 2</em>.
+          https://mse.gov.sg/policies/food
+        </li>
+        <li>
+          Singapore Food Agency. (2026). <em>Singapore Food Statistics 2025</em>.
+          https://www.sfa.gov.sg/news-publications/newsroom/singapore-food-statistics-2025
+        </li>
+        <li>
+          Katzin, D., van Mourik, S., Kempkes, F., &amp; van Henten, E. J. (2020). GreenLight – An open source model
+          for greenhouses with supplemental lighting: Evaluation of heat requirements under LED and HPS lamps.
+          <em>Biosystems Engineering, 194</em>, 61–81. https://doi.org/10.1016/j.biosystemseng.2020.03.010
+        </li>
+        <li class="todo">Teitel et al. (2010) — add full reference from your slides.</li>
+      </ul>
+    </div>
+
+    <div id="appendices">
+      <sl-divider></sl-divider>
+      <h2>Appendices</h2>
+      <p class="todo">Not counted towards the word limit. Planned: A. Technology stack; B. Firmware parameters;
+        C. Thermal survey data; D. Test logs; E. Detailed Gantt chart; F. Bill of materials.</p>
+    </div>
+  </div>
+
+  <sl-button class="scroll-to-top" variant="primary" size="medium" circle onclick="scrollToTop()">
+    <sl-icon name="arrow-up" label="Scroll to top"></sl-icon>
+  </sl-button>
+
+  <script src="https://unpkg.com/gridjs/dist/gridjs.umd.js"></script>
+  <script src="./report-tables.js"></script>
+</body>
+
+</html>
