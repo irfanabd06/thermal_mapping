@@ -1,0 +1,36 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-size: 18px;
+  font-family: var(--sl-font-sans);
+}
+
+.content {
+  max-width: 800px;
+  margin: auto;
+  padding: 10%;
+}
+
+p {
+  text-align: justify;
+  font-size: 1.1rem;
+}
+
+.subtitle {
+  text-align: left;
+  color: var(--sl-color-neutral-600);
+  margin-top: -0.5rem;
+}
+
+/* Draft placeholders: delete each one once its section is written. */
+sl-alert.todo {
+  margin: 1rem 0;
+}
+
+/* Keep wide report tables readable */
+.gridjs-th,
+.gridjs-td {
+  font-size: 0.85rem;
+  padding: 8px 10px;
+}
