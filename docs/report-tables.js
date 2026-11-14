@@ -1,5 +1,5 @@
 // Data for the report's Grid.js tables.
-// Edit the arrays here; each table renders into the <div> with the matching id in index.html.
+// Edit the arrays here. Place a table in a section file with: [[table: <id> | <caption>]]
 
 const tables = {
   // Table 1: GH1 site parameters (Section 2.1)
@@ -77,9 +77,12 @@ const tables = {
   },
 };
 
-for (const [id, config] of Object.entries(tables)) {
-  const el = document.getElementById(id);
-  if (el) {
-    new gridjs.Grid({ ...config, sort: false }).render(el);
+// Called by report-loader.js once the sections are on the page.
+function renderReportTables() {
+  for (const [id, config] of Object.entries(tables)) {
+    const el = document.getElementById(id);
+    if (el && !el.hasChildNodes()) {
+      new gridjs.Grid({ ...config, sort: false }).render(el);
+    }
   }
 }
