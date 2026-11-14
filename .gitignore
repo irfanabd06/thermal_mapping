@@ -13,9 +13,23 @@ __pycache__/
 .vscode/
 
 # Operating system files
+.vscode/
 .DS_Store
 Thumbs.db
 
 # Logs
 *.log
 *.code-workspace
+
+# PlatformIO / ESP-IDF
+.pio/
+build/
+sdkconfig.old
+
+# Generated thermal measurements
+experiments/mlx90640_test/mlx90640_*.csv
+experiments/mlx90640_test/mlx90640_*.png
+experiments/mlx90640_test/thermal_frames.txt
+
+# Generated sensor measurements
+experiments/sht45_test/sht45_test.csv
