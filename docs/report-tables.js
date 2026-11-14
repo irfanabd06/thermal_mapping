@@ -72,17 +72,19 @@ const tables = {
 
   // Table 5: Constraints (Section 3.4)
   "table-constraints": {
-    columns: ["Type", "Constraint", "Description", "Design implication"],
+    columns: ["Constraint", "Description", "Design implication"],
     data: [
-      ["Problem", "Physical", "Fixed greenhouse structure and crop layout; no structural changes", "Nodes mounted on benches and frame; only fans varied, in simulation and tests"],
-      ["Problem", "Thermal variability", "Temperature shifts within minutes with clouds and misting, by amounts similar to the 4 °C spatial spread", "All points sampled together every minute; trials compared with a baseline under similar weather and repeated"],
-      ["Problem", "Environmental", "Up to 45 °C, high humidity, daily misting, direct sun", "Shielded, ventilated enclosures; humidity-resistant electronics"],
-      ["Problem", "Operational", "Minimal disruption to cultivation; existing equipment untouched", "Only the project's own floor fans are controlled; physical tests confined to the germination section"],
-      ["Problem", "Cost", "Farmers are cost-sensitive; cooling must not cost more than the crop is worth", "Low-cost sensors; temporary nodes reused across locations; soft sensors reduce permanent nodes"],
-      ["Solution", "Model uncertainty", "Changing, partly unknown boundary conditions (sun, wind through netting); steady-state CFD cannot follow minute-scale changes", "CFD judged on trends and rankings (R6), not absolute temperatures; run for representative weather cases"],
-      ["Solution", "Sensor bias in sun", "Low-cost sensors read high in direct sunlight (+4.3 °C unshielded)", "Radiation shield required and its bias verified (R2)"],
-      ["Solution", "Connectivity", "Farms in rural areas may have limited or no internet access", "All live processing on a local edge computer; prediction runs on sensor data alone when offline (R13)"],
-      ["Solution", "Time and season", "Field testing runs January to March 2027, which may not include the hottest conditions", "Weather conditions recorded with every trial; results compared like-for-like with the baseline"],
+      { group: "Problem" },
+      ["Physical", "Fixed greenhouse structure and crop layout. No structural changes", "Nodes mounted on benches and frame"],
+      ["Thermal variability", "Temperature shifts within seconds caused by variable factors", "Sampled measurements have to be cleaned"],
+      ["Environmental", "Up to 45 °C, high humidity, daily misting, direct sun", "Shielded, ventilated enclosures and humidity-resistant electronics"],
+      ["Cost", "Farmers are cost-sensitive; cooling must not cost more than the crop is worth", "Low-cost sensors; temporary nodes reused across locations; soft sensors reduce permanent nodes"],
+      { group: "Project" },
+      ["Operational", "Minimal disruption to cultivation. Existing equipment untouched", "Only the project's own floor fans are controlled; physical tests confined to the germination section"],
+      ["Model uncertainty", "Changing, partly unknown boundary conditions (sun, wind through netting); steady-state CFD cannot follow minute-scale changes", "Evaluations judged on trends and rankings (R6), not absolute temperatures; run for representative weather cases"],
+      ["Sensor bias in sun", "Low-cost sensors read high in direct sunlight", "Radiation shield required and its bias verified (R2)"],
+      ["Connectivity", "Farms in rural areas may have limited or no internet access", "All live processing on a local edge computer; prediction runs on sensor data alone when offline (R13)"],
+      ["Time and season", "Field testing runs January to March 2027, which may not include the hottest conditions", "Weather conditions recorded with every trial; results compared like-for-like with the baseline"],
     ],
   },
 
@@ -294,6 +296,11 @@ const tables = {
 // Called by report-loader.js once the sections are on the page.
 // A cell can be plain text, or { img: "assets/..." } to show a photo in the cell.
 // A table can also have a "note": HTML shown as a full-width box under the table.
+// Group rows: write { group: "Label" } in a table's data to start a labelled band of rows.
+function groupRow(label, ncols) {
+  return [gridjs.html(`<span class="table-group">${label}</span>`), ...Array(ncols - 1).fill("")];
+}
+
 function renderCell(cell, row) {
   if (cell && typeof cell === "object" && cell.img) {
     const alt = String(row[0]).replace(/"/g, "&quot;");
@@ -307,7 +314,9 @@ function renderReportTables() {
     const el = document.getElementById(id);
     if (el && !el.hasChildNodes()) {
       const { note, ...gridConfig } = config;
-      const data = config.data.map((row) => row.map((cell) => renderCell(cell, row)));
+      const data = config.data.map((row) =>
+        Array.isArray(row) ? row.map((cell) => renderCell(cell, row)) : groupRow(row.group, config.columns.length)
+      );
       const gridTarget = document.createElement("div");
       el.appendChild(gridTarget);
       new gridjs.Grid({ ...gridConfig, data, sort: false }).render(gridTarget);

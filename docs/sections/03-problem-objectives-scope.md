@@ -27,7 +27,7 @@ Table 4 maps each objective to its target problem and requirements.
 
 ### 3.4. Constraints
 
-Table 5 separates constraints that come with the problem from those that limit possible solutions. Rapid temperature changes are the main constraint: they limit how precisely conditions can be measured, and therefore how far the CFD can be trusted.
+Table 5 lists constraints from the problem and from the project. The main one is rapid temperature change, which limits how precisely conditions can be measured and modelled.
 
 [[table: table-constraints | Table 5: Design constraints and their implications]]
 

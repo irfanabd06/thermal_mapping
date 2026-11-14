@@ -60,3 +60,7 @@ sl-alert.todo {
   line-height: 1.5;
   text-align: left;
 }
+
+/* Group band rows inside report tables ({ group: "Label" } in report-tables.js) */
+tr:has(.table-group) td { background: #e5f4e4; }
+.table-group { font-weight: 600; }
