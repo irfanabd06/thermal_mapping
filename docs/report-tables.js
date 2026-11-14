@@ -96,7 +96,7 @@ const tables = {
       ["R6", "Model trend agreement", "CFD ranks crop zones and fan effects in the same order as measurements", "Design advice depends on ranking, not absolute values", "Measured vs simulated; fan step tests", "Not started"],
       ["R7", "Configuration study", "≥ 10 fan configurations compared with baseline", "Enough to show trends and a best option", "CFD runs", "Not started"],
       ["R8", "Dashboard update", "Map, hotspots and fan states refreshed ≤ 1 min, locally", "Operators need current information", "Timed test on the Pi", "Not started"],
-      ["R9", "Hotspot reduction", "Crop-zone exceedance (°C·min above 30 °C) ≥ 20% lower than baseline (proposed)", "Primary measure of thermal benefit", "Alternating-day trials, weather-normalised", "Not started"],
+      ["R9", "Hotspot reduction", "Crop-zone exceedance (°C·min above 29 °C) ≥ 20% lower than baseline (proposed)", "Primary measure of thermal benefit", "Alternating-day trials, weather-normalised", "Not started"],
       ["R10", "Energy trade-off", "Fan energy ≤ baseline for equal or better exceedance", "Cost side of the farmer's balance", "Fan energy metering", "Not started"],
       ["R11", "Safe control", "Fans revert to baseline on fault; minimum on/off time ≥ 10 min", "Crop safety and equipment wear", "Fault-injection test", "Not started"],
       ["R12", "Electrical safety", "Fans ≤ 24 V DC or certified switching; farm mains untouched", "Safe, reversible installation", "Design review", "Not started"],

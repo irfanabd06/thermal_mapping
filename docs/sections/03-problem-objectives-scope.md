@@ -7,7 +7,7 @@ title: 3. Problem Statement, Objectives and Scope
 
 The lack of spatially resolved environmental data and validated thermal models limits the ability to evaluate greenhouse cooling configurations and to apply cooling where crops need it. This project develops a thermal digital twin of GH1, built from site data and updated by a distributed sensor grid. It is used in two ways: to compare fan configurations in simulation before they are installed, and to monitor crop-zone conditions and automate floor-fan cooling, shown on a dashboard.
 
-Success is measured as improvement over GH1's current operation (the baseline), not as reaching an optimal temperature. Holding 24–30 °C at peak sun is not achievable without air-conditioning, whose running cost would outweigh the value of the crops.
+Success is measured as improvement over GH1's current operation (the baseline), not as reaching an optimal temperature. Holding 24–29 °C at peak sun is not achievable without air-conditioning, whose running cost would outweigh the value of the crops.
 
 ### 3.2. Value to Farmers
 

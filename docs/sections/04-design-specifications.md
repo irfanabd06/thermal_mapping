@@ -9,7 +9,7 @@ Hotspots are judged only where crops grow, using a crop-zone exceedance index fo
 
 <p class="equation">H<sub>i</sub> = A<sub>i</sub> · max(0, T<sub>i</sub> − T<sub>ref</sub>)</p>
 
-where A<sub>i</sub> is 1 for a zone with crops and 0 otherwise, T<sub>i</sub> is the zone temperature, and T<sub>ref</sub> is a reference temperature, initially 30 °C, the upper end of the crops' preferred range. Summed over time, H gives the crops' heat exposure in degree-minutes.
+where A<sub>i</sub> is 1 for a zone with crops and 0 otherwise, T<sub>i</sub> is the zone temperature, and T<sub>ref</sub> is a reference temperature, initially 29 °C (the control target used in the survey, Section 2.3), the upper end of the crops' preferred range. Summed over time, H gives the crops' heat exposure in degree-minutes.
 
 ### 4.2. Technical Requirements
 
