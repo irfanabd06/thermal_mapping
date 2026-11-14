@@ -132,7 +132,7 @@ The report text lives in Markdown files, one per section, in [`docs/sections/`](
 | Task | Location |
 |---|---|
 | Report text | `docs/sections/*.md` |
-| Section order | `REPORT_SECTIONS` in `docs/report-loader.js` |
+| Section order | `docs/sections/sections.json` |
 | Report tables | `docs/report-tables.js` |
 | Images and figures | `docs/assets/` |
 | Website styling | `docs/index.css` |

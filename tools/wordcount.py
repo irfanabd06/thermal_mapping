@@ -1,6 +1,6 @@
 """Count words in the report for the CDE4301 3,000-word limit.
 
-Reads the section files listed in REPORT_SECTIONS in docs/report-loader.js
+Reads the section files listed under "report" in docs/sections/sections.json
 (so references and appendices are excluded), and skips:
   - "> TODO" draft notes,
   - [[table: ...]] shortcodes (table contents live in report-tables.js),
@@ -9,6 +9,7 @@ Reads the section files listed in REPORT_SECTIONS in docs/report-loader.js
 Usage: python3 tools/wordcount.py
 """
 
+import json
 import re
 import sys
 from pathlib import Path
@@ -18,9 +19,7 @@ DOCS = Path(__file__).resolve().parent.parent / "docs"
 
 
 def report_sections():
-    loader = (DOCS / "report-loader.js").read_text(encoding="utf-8")
-    block = re.search(r"const REPORT_SECTIONS = \[(.*?)\];", loader, re.S).group(1)
-    return re.findall(r'"([^"]+\.md)"', block)
+    return json.loads((DOCS / "sections" / "sections.json").read_text(encoding="utf-8"))["report"]
 
 
 def count_words(markdown):

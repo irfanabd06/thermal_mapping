@@ -1,0 +1,18 @@
+{
+  "report": [
+    "00-introduction.md",
+    "01-problem-context.md",
+    "02-site-investigation.md",
+    "03-problem-objectives-scope.md",
+    "04-design-specifications.md",
+    "05-concept-development.md",
+    "06-detailed-design.md",
+    "07-prototypes-testing.md",
+    "08-analysis.md",
+    "09-problems-plan.md"
+  ],
+  "extras": [
+    "references.md",
+    "appendices.md"
+  ]
+}
