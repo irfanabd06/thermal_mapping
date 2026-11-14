@@ -23,7 +23,7 @@ Airflow and heat distribution depend on how cooling equipment is arranged and op
 
 ![Figure 11. Example: options for warm air trapped under the roof](assets/fig-trapped-hot-air.png)
 
-Testing many configurations physically would be slow and costly. CFD is therefore used to compare fan numbers, positions, orientations and speeds against the baseline, with the greenhouse structure held fixed (Table 10). Configurations are ranked by crop-zone exceedance and fan power. The result is the best-performing configuration among those evaluated, not a mathematical optimum. Two or three of the best configurations will then be tested physically to validate the predictions.
+Testing many configurations physically would be slow and costly. CFD is therefore used to compare fan numbers, positions, orientations and speeds against the baseline, with the greenhouse structure held fixed (Table 10). Configurations are ranked by crop-zone exceedance and fan power. The result is the best-performing configuration among those evaluated, not a mathematical optimum. The model is first checked against floor-fan tests in the germination section, which also supply training data for the digital twin, so both are tested together.
 
 [[table: table-sim-scope | Table 10: Scope of the CFD configuration study]]
 

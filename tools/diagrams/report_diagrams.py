@@ -105,9 +105,9 @@ def problem_framing():
         flat_box(ax, 9.35, 2.6, 2.6, 2.2, "Shared GH1 Model",
                  "Geometry, boundary\nconditions and\nsensor data", tsize=12.5)
         flat_box(ax, 12.55, 4.4, 3.85, 2.0, "Application 1: Design Evaluation",
-                 "Offline CFD compares fan number,\nposition, orientation and speed\n(structure fixed)", tsize=12, bsize=11)
+                 "CFD and floor-fan tests compare\nfan number, placement, direction\nand speed (structure fixed)", tsize=12, bsize=11)
         flat_box(ax, 12.55, 0.6, 3.85, 2.2, "Application 2: Digital Twin",
-                 "Live sensor grid, thermal map,\ncrop-zone hotspot control\nand dashboard", tsize=12, bsize=11)
+                 "Sensors and soft sensors model\ntemperature and humidity; predicts\nwhen floor fans are needed", tsize=12, bsize=11)
         # arrows
         elbow(ax, [(3.7, 3.7), (4.1, 3.7), (4.1, 5.5), (4.5, 5.5)])
         elbow(ax, [(4.1, 3.7), (4.1, 1.9), (4.5, 1.9)])
@@ -115,9 +115,11 @@ def problem_framing():
         elbow(ax, [(8.2, 1.9), (8.7, 1.9), (8.7, 3.45), (9.35, 3.45)])
         elbow(ax, [(11.95, 3.95), (12.25, 3.95), (12.25, 5.4), (12.55, 5.4)])
         elbow(ax, [(12.25, 3.95), (12.25, 1.7), (12.55, 1.7)])
-        elbow(ax, [(14.475, 4.4), (14.475, 2.8)], dashed=True)
-        ax.text(14.65, 3.6, "Recommended\nfan layout", fontsize=11, fontweight="bold",
-                color="black", va="center", zorder=4)
+        ax.add_patch(FancyArrowPatch((14.475, 4.4), (14.475, 2.8),
+                                     arrowstyle="<->,head_length=0.5,head_width=0.3",
+                                     mutation_scale=18, color="black", lw=2.2, linestyle="--", zorder=2))
+        ax.text(14.65, 3.6, "Tested\ntogether;\nrecommended\nfan layout", fontsize=10.5,
+                fontweight="bold", color="black", va="center", zorder=4)
         fig.savefig(OUT + "fig-problem-framing.png", dpi=150, bbox_inches="tight", facecolor="white")
         plt.close(fig)
 

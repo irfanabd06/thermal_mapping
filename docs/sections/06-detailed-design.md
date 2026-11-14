@@ -3,7 +3,7 @@ title: 6. System Architecture and Detailed Design
 ---
 ### 6.1. System Architecture
 
-The system has four subsystems (Figure 12). S1 measures conditions across the crop zones. S2 turns the measurements into a live thermal map and hotspot index (the digital twin) and, separately, runs offline CFD to evaluate fan layouts. S3 decides fan actions from the hotspot index, and S4 carries them out with floor fans, whose effect is then measured again by S1. A local dashboard shows the map, hotspots and fan status. All live processing runs on a Raspberry Pi 5, so the system keeps working without internet access.
+The system has four subsystems (Figure 12). S1 measures conditions across the crop zones. S2 turns the measurements into a live thermal map and predicts crop-zone hotspots 30 minutes ahead (the digital twin) and, separately, runs offline CFD to evaluate fan layouts. S3 decides fan actions from these predictions, and S4 carries them out with floor fans, whose effect is then measured again by S1. A local dashboard shows the map, hotspots and fan status. All live processing runs on a Raspberry Pi 5, so the system keeps working without internet access.
 
 ![Figure 12. System architecture](assets/fig-system-architecture.png)
 
@@ -25,12 +25,12 @@ Nodes send JSON packets containing a node ID, sequence number and readings over 
 
 ### 6.4. S2: Thermal Map, CFD Model and Digital Twin
 
-The live thermal map interpolates node readings across the crop zones using a Gaussian process, which also estimates the uncertainty between nodes. The 57-point survey will be used to choose node spacing: a layout is acceptable if it finds the same crop-zone hotspots as a dense survey (R5).
+During a training period, temporary nodes are placed between the permanent ones. Soft sensors are then trained to estimate each temporary node's readings from the permanent nodes, fan states and outdoor conditions, so the temporary nodes can be removed (R14). A Gaussian process fills the gaps between nodes and estimates uncertainty. Every 30 minutes, a prediction model combines these estimates with live NEA weather readings and the 2-hour nowcast to forecast crop-zone exceedance for the next 30 minutes (R15). Without internet, it runs on sensor data alone.
 
-The CFD model of GH1 is built in SOLIDWORKS Flow Simulation. To keep it tractable, the measured roof surface temperature replaces a full solar-radiation model, crops are modelled as a porous zone, and existing fans use their rated airflow. The model is calibrated on one day and checked against another for trend agreement (R6). A Grafana dashboard on the Pi shows the map, hotspot index and fan status.
+The CFD model of GH1 is built in SOLIDWORKS Flow Simulation. To keep it tractable, the measured roof surface temperature replaces a full solar-radiation model, crops are modelled as a porous zone, and existing fans use their rated airflow. The model is first checked against the floor-fan tests in the germination section, using Kestrel airspeed spot checks and the sensor grid (R6), then used for the full-GH1 study. A Grafana dashboard on the Pi shows the map, predictions and fan status.
 
 ### 6.5. S3 and S4: Control and Actuation
 
-The controller uses simple, transparent rules rather than predictive control. When a crop zone's exceedance H rises above a threshold, the fans that most influence that zone, identified from fan step tests and CFD, are switched on or sped up. When H falls back, they return to low speed or off. A minimum on/off time prevents rapid cycling, and if sensors or the controller fail, the fans revert to baseline operation (on).
+The controller uses simple, transparent rules. When a crop zone's predicted exceedance H rises above a threshold, the fans that most influence that zone, identified from the floor-fan tests and CFD, are switched on or sped up before the hotspot forms. When H is predicted to fall, they return to low speed or off. A minimum on/off time prevents rapid cycling, and if sensors or the controller fail, the fans revert to baseline operation (on).
 
-S4 uses floor circulation fans procured for the project, ideally low-voltage DC fans with PWM speed control, so the farm's mains wiring is not changed. Fan energy is metered to evaluate the cost side of the trade-off.
+S4 uses four floor circulation fans procured for the project, ideally low-voltage DC fans with PWM speed control, so the farm's mains wiring is not changed. Fan energy is metered to evaluate the cost side of the trade-off.

@@ -5,7 +5,7 @@ title: 3. Problem Statement, Objectives and Scope
 
 > **How might we enable data-informed design and environmental control of tropical greenhouses to improve thermal performance and cooling effectiveness?**
 
-The lack of spatially resolved environmental data and validated thermal models limits the ability to evaluate greenhouse cooling configurations and to apply cooling where crops need it. This project develops a thermal digital twin of GH1, built from site data and updated by a distributed sensor grid. It is used in two ways: to compare fan configurations in simulation before they are installed, and to monitor crop-zone conditions and automate floor-fan cooling, shown on a dashboard.
+The lack of spatially resolved environmental data and validated thermal models limits the ability to evaluate greenhouse cooling configurations and to apply cooling where crops need it. This project has two applications. First, an offline CFD model, checked by floor-fan tests, compares fan placements, directions and speeds before installation. Second, a digital twin built from a sensor grid and soft sensors monitors crop-zone temperature and humidity, predicts when floor fans are needed, and shows conditions on a dashboard.
 
 Success is measured as improvement over GH1's current operation (the baseline), not as reaching an optimal temperature. Holding 24–29 °C at peak sun is not achievable without air-conditioning, whose running cost would outweigh the value of the crops.
 
@@ -17,9 +17,9 @@ Farmers do not need the coolest greenhouse; they need a profitable one. The solu
 
 ### 3.3. Objectives
 
-1. **O1 Thermal characterisation:** develop a durable distributed sensor network that maps crop-zone thermal conditions in GH1 and provides data for model validation.
-2. **O2 Thermal modelling and design evaluation:** develop a CFD model of GH1 and use it to compare fan numbers, positions, orientations and speeds against the current layout.
-3. **O3 Digital twin and environmental control:** combine live measurements with the model to show conditions on a dashboard and automatically operate floor fans in response to crop-zone hotspots.
+1. **O1 Thermal characterisation:** develop a durable sensor network, extended by temporary nodes and soft sensors, that maps crop-zone temperature and humidity in GH1.
+2. **O2 Thermal modelling and design evaluation:** develop a CFD model of GH1 and use it, with floor-fan tests in a test section, to compare fan numbers, positions, directions and speeds against the current layout.
+3. **O3 Digital twin and environmental control:** combine live measurements and weather data to predict crop-zone hotspots, show conditions on a dashboard, and switch on floor fans before hotspots form.
 
 The objectives follow the sequence measure → model → evaluate → monitor → control. Table 4 links each objective to the problem it addresses and the requirements used to test it (Section 4).
 
@@ -27,11 +27,11 @@ The objectives follow the sequence measure → model → evaluate → monitor �
 
 ### 3.4. Scope of Work
 
-Table 5 separates what this project commits to deliver in CDE4301 from the long-term application and from stretch goals. The greenhouse structure is fixed; only fans are varied.
+Table 5 separates what this project commits to deliver in CDE4301 from the long-term application and from stretch goals. The greenhouse structure is fixed; only fans are varied. Physical tests use four floor fans in the germination section, a shared test section in which the CFD model and the digital twin are tested together.
 
 [[table: table-scope | Table 5: Scope of work]]
 
-**Out of scope:** changes to GH1's structure, vents, misting or shading; guaranteeing crop-optimal temperatures at peak sun; air-conditioning; proving yield or profit improvement; and high-accuracy weather or temperature forecasting.
+**Out of scope:** changes to GH1's structure, vents, misting or shading; guaranteeing crop-optimal temperatures at peak sun; air-conditioning; proving yield or profit improvement; and developing weather forecasts (NEA data is used as an input).
 
 ### 3.5. Constraints
 
