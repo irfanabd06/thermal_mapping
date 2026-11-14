@@ -17,7 +17,7 @@ Commercial farmers value a profitable greenhouse. A viable solution balances the
 
 ### 3.3. Objectives
 
-1. **O1 Thermal characterisation:** identify where and when crop-zone hotspots occur in GH1, with measurements reliable enough to compare locations.
+1. **O1 Thermal characterisation:** identify where and when crop-zone hotspots occur in a greenhouse, with measurements reliable enough to compare locations.
 2. **O2 Cooling layout evaluation:** determine how the number, placement, direction and speed of fans affect crop-zone temperatures, before changes are installed.
 3. **O3 Targeted cooling:** reduce crop-zone heat exposure compared with current operation by directing cooling where and when it is needed.
 

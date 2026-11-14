@@ -39,19 +39,19 @@ const tables = {
       [
         "P1. Insufficient spatial data: one monitoring point, yet a 4.0 °C spread across 57 points",
         "O1 Thermal characterisation",
-        "Sensor grid, extended by soft sensors",
+        "Sensor grid",
         "R1–R5, R14",
       ],
       [
         "P2. Fan layout chosen without thermal analysis; physical trials are slow and costly",
         "O2 Cooling layout evaluation",
-        "CFD study checked by floor-fan tests",
+        "Flow simulation study",
         "R6–R7",
       ],
       [
         "P3. Fans run 24/7 without spatial or timing logic; high running cost",
         "O3 Targeted cooling",
-        "Hotspot prediction that triggers floor fans",
+        "Hotspot prediction",
         "R8–R13, R15",
       ],
     ],
