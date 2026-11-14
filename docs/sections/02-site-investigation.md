@@ -36,11 +36,16 @@ To test whether a single monitoring point is representative, air temperature was
 
 ![Figure 5. Air temperature at 1 m height from the 57-point survey, with fan positions and airflow directions](assets/fig-thermal-survey-heatmap.png)
 
-**Measurement grid.** 57 points at 1 m height. Spacing on site was 3 to 3.5 m. The model places point T(3k + r) at s = 1.5 + 3.1k m (k = 0 to 18) and t = 3.0 + 3.25(r − 1) m (r = 1 to 3), so a point may be up to about 0.5 m from where it was taken.
+**Measurement grid.** 57 points at 1 m height. Spacing on site was 3 to 3.5 m.
 
-[[table: table-survey | Table 3: Preliminary survey (°C, time not recorded)]]
+[[table: table-survey | Table 3: Preliminary survey (°C)]]
 
-**Summary:** mean 38.03 °C, which is 9.0 °C over the 29 °C target. Hottest T53 at 39.5 °C, coolest T14 at 35.5 °C. Main section (T1 to T36) mean 37.45 °C, wing (T40 to T57) mean 39.03 °C.
+**Summary:**
+
+- Mean: 38.03 °C
+- Hottest: T53, 39.5 °C
+- Coolest: T14, 35.5 °C
+- Largest difference between points: **4.0 °C** (T53 vs T14); **3.5 °C** between neighbouring points T17 (35.7 °C) and T18 (39.2 °C), about 3 m apart
 
 ### 2.4. Existing Airflow Pattern
 
