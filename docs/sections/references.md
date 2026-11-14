@@ -1,8 +1,11 @@
 ---
 title: References
 ---
-- Ministry of Sustainability and the Environment. (n.d.). *Food resilience: Singapore Food Story 2*. https://mse.gov.sg/policies/food
-- Singapore Food Agency. (2026). *Singapore Food Statistics 2025*. https://www.sfa.gov.sg/news-publications/newsroom/singapore-food-statistics-2025
+- Brentarolli, E., Locatelli, S., Nicoletto, C., Sambo, P., Quaglia, D., & Muradore, R. (2024). A spatio-temporal methodology for greenhouse microclimatic mapping. *PLOS ONE, 19*(9), e0310454. https://doi.org/10.1371/journal.pone.0310454
+- Cesar, T. Q. Z., Leal, P. A. M., Branquinho, O. C., & Miranda, F. A. M. (2020). Wireless sensor network to identify the reduction of meteorological gradients in greenhouse in subtropical conditions. *Journal of Agricultural Engineering, 52*(1), 1105. https://doi.org/10.4081/jae.2020.1105
+- Guzmán, C. H., Carrera, J. L., Durán, H. A., Berumen, J., Ortiz, A. A., Guirette, O. A., Arroyo, A., Brizuela, J. A., Gómez, F., Blanco, A., Azcaray, H. R., & Hernández, M. (2019). Implementation of virtual sensors for monitoring temperature in greenhouses using CFD and control. *Sensors, 19*(1), 60. https://doi.org/10.3390/s19010060
+- He, J., Lin, T., Liang, W., Chavan, S., Sethuvenkatraman, S., Goldsworthy, M., Tissue, D., & Chen, Z.-H. (2024). Energy and fertigation consumption and economic viability of a light blocking film in greenhouse lettuce production. *Journal of Cleaner Production, 479*, 144013.
 - Katzin, D., van Mourik, S., Kempkes, F., & van Henten, E. J. (2020). GreenLight – An open source model for greenhouses with supplemental lighting: Evaluation of heat requirements under LED and HPS lamps. *Biosystems Engineering, 194*, 61–81. https://doi.org/10.1016/j.biosystemseng.2020.03.010
-
-> TODO: Add Teitel et al. (2010) — full reference from your slides.
+- Meteorological Service Singapore. (2026). *Past climate trends*. https://www.weather.gov.sg/climate-past-climate-trends/
+- Singapore Food Agency. (2026). *Singapore Food Statistics 2025*. https://www.sfa.gov.sg/news-publications/newsroom/singapore-food-statistics-2025
+- Teitel, M., Atias, M., & Barak, M. (2010). Gradients of temperature, humidity and CO₂ along a fan-ventilated greenhouse. *Biosystems Engineering, 106*(2), 166–174.

@@ -64,7 +64,7 @@ const tables = {
       ["R5", "Data delivery", "≥ 99% wired, ≥ 95% wireless over 7 days; latency ≤ 5 s", "Gaps break the map and the controller", "Sequence-number counts", "Short test passed"],
       ["R6", "Map accuracy", "≤ 0.5 °C MAE at held-out nodes", "Must resolve differences within the 4 °C spread; sets node spacing", "Leave-one-out cross-validation", "Not tested"],
       ["R7", "Environmental robustness", "20–50 °C, ≤ 100 %RH; enclosure ≥ IP54; 7 days unattended", "45 °C reported peak; 87.5 % night RH; daily misting", "Field deployment log", "Not tested"],
-      ["R8", "CFD temperature accuracy", "≤ 1.5 °C MAE on a day not used for calibration; hottest zone identified", "Published greenhouse models report 1.74–2.04 °C RMSE", "Predicted vs measured", "Not started"],
+      ["R8", "CFD temperature accuracy", "≤ 1.5 °C MAE on a day not used for calibration; hottest zone identified", "Published greenhouse models report 1.74–2.04 °C RMSE (Katzin et al., 2020)", "Predicted vs measured", "Not started"],
       ["R9", "Fan-influence ranking", "Matches step tests in ≥ 80% of zones", "Placement advice depends on ranking", "Fan step tests", "Not started"],
       ["R10", "Zone-model forecast", "≤ 0.5 °C error at 30 min ahead", "Needed to time fan activation", "Hold-out days", "Not started"],
       ["R11", "Placement study", "≥ 10 configurations ranked by σT, max zone temperature, fan power", "Enough to show a trend and a best option", "CFD runs + sensitivity check", "Not started"],
