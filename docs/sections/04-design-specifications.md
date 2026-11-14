@@ -3,7 +3,7 @@ title: 4. Design Specifications
 ---
 ### 4.1. Baseline-Referenced Validation
 
-Greenhouse measurements are disturbed by passing clouds, wind and misting, so the requirements do not ask for accurate absolute temperatures. Instead, each solution is compared against a reference baseline: GH1's current operation, with existing fans running continuously, measured under comparable weather. The requirements then ensure that measurement error is small enough for those comparisons to be meaningful.
+This project focuses on comparative evaluation rather than reaching optimal conditions. Results depend on the weather: on hot days, crop-zone temperatures cannot be brought down to the optimal range, and passing clouds, wind and misting disturb every measurement. Each solution is therefore compared against a reference baseline: GH1's current operation, with existing fans running continuously, measured under comparable weather. The requirements ensure that measurement error is small enough for those comparisons to be meaningful.
 
 Hotspots are judged only where crops grow, using a crop-zone exceedance index for each zone *i*:
 
