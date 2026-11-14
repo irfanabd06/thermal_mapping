@@ -50,6 +50,8 @@ GH1's fans and the outside wind push air in conflicting directions (Figure 6). E
 
 ### 2.5. Problem Analysis
 
-Greenhouse thermal environments are rarely uniform: temperature varies across the space and changes through the day (Teitel et al., 2010; Cesar et al., 2020). GH1 shows the same behaviour, with a 4.0 °C spread across the 57 survey points (Section 2.3). Its cooling, however, is run as if conditions were uniform. All fans operate at full speed around the clock, which suggests the system is at its limit, yet conditions are judged from a single monitoring point near the hotter end of the greenhouse. Fan positions were also chosen without evaluating airflow (Section 2.4). There is therefore room to improve by focusing cooling on the crop zones that need it, and with enough measurement points, a more efficient control system becomes possible (Figure 7). The root cause is a lack of spatially resolved thermal data, not a lack of cooling equipment.
+Greenhouse thermal environments are rarely uniform: temperature varies across the space and changes through the day (Cesar et al., 2020). GH1 is no exception. The survey found a 4.0 °C spread across 57 points, with the rear wing on average 1.6 °C warmer than the main section (Section 2.3).
+
+Yet GH1 is cooled as if conditions were uniform. All fans run at full speed around the clock, and conditions are judged from one monitoring point near the hotter end, so the system cannot tell where cooling is needed. Opposing fan directions may also waste airflow (Section 2.4). Running the fans harder is therefore not the answer. With enough measurement points, cooling could instead be focused on the crop zones that need it, potentially using less energy for the same effect (Figure 7).
 
 ![Figure 7. Root cause, affected stages and the two applications of the proposed solution](assets/fig-problem-framing.png)
