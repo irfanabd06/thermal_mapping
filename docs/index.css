@@ -34,3 +34,10 @@ sl-alert.todo {
   font-size: 0.85rem;
   padding: 8px 10px;
 }
+
+/* Display equations written as <p class="equation"> in section files */
+.equation {
+  text-align: center;
+  font-size: 1.15rem;
+  margin: 1.2rem 0;
+}

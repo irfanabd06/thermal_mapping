@@ -9,12 +9,34 @@ This project uses Greenhouse 1 (GH1) at ComCrop as its reference greenhouse for 
 
 ![Figure 2. Interior of Greenhouse 1 (GH1) at ComCrop, showing the hydroponic growing channels, retractable shade nets and circulation fans](assets/fig2-gh1-interior.jpg)
 
-> TODO: **Add figure:** GH1 layout drawing with fan positions.
+The growing zones and fan positions are shown in Figure 3.
 
-### 2.2. Existing Cooling and Operator Pain Points
+![Figure 3. GH1 layout showing the growing zones and fan positions](assets/fig-gh1-layout.png)
 
-> TODO: **To write (~120 words):** Ventilation and ceiling fans run 24/7; floor fans unused; misting all day; one monitoring point. Operator-reported peak of 45 °C vs preferred < 29–30 °C and ~70% RH. Pain points: cooling cost, crop-mass variation, monitoring not actionable.
+### 2.2. Existing Cooling and Operating Conditions
+
+GH1 is cooled by four ventilation fans and six ceiling circulation fans that run 24 hours a day, misting that operates throughout the day, and retractable shade nets (Figure 4). Floor circulation fans are installed but not in use. Conditions are monitored at a single point by a weather station linked to a monitoring dashboard.
+
+Operators report that GH1 can reach 45 °C, well above the 24–30 °C and 60–80% relative humidity (RH) preferred for its leafy crops. GH1 is reported to have been unsuitable for commercial production for this reason, and is now leased by NUS for research and student experimentation.
+
+![Figure 4. Thermal control equipment in GH1](assets/fig-gh1-cooling-equipment.jpg)
+
+> TODO: Confirm the leasing arrangement wording, and the source of the 24–30 °C / 60–80% RH range (operator or literature).
 
 ### 2.3. Spatial Thermal Survey
 
-> TODO: **To write (~200 words):** Method (instrument, 57 points at 1 m, sequential or simultaneous, time, weather, fan states). Result: 35.5–39.5 °C, 4.0 °C spread (T14 min, T53 max). Thermal camera: roof 47.3 °C, plants 34.7 °C, roof near misting 32.2 °C (surface, not air, temperatures). **Add figures:** heatmap with labelled axes and colour bar; thermal images.
+To test whether a single monitoring point is representative, air temperature was measured at 57 points across GH1 at 1 m height, close to canopy level. Readings ranged from 35.5 °C to 39.5 °C, a spread of 4.0 °C (Figure 6). The main plant zones on the left of the layout were warmest, peaking at about 39 °C, while the germination and seedling zones on the right were coolest.
+
+A handheld thermal camera showed even larger surface-temperature differences: 47.3 °C at the roof, 34.7 °C at the plants and 32.2 °C at the roof near the misting line (Figure 5). These are surface rather than air temperatures, but they indicate heat accumulating under the roof.
+
+![Figure 5. Thermal images of GH1: roof, plant and misting-line surface temperatures](assets/fig-gh1-thermal-images.jpg)
+
+![Figure 6. 57-point survey locations (top) and interpolated air temperature at 1 m height (bottom)](assets/fig-thermal-survey-heatmap.png)
+
+> TODO: **Add survey method:** instrument used, date and time, weather, fan states, and whether the 57 points were measured one after another or at the same time.
+
+### 2.4. Problem Analysis
+
+The site findings point to one underlying problem: decisions about GH1's cooling are made without spatially resolved thermal information. This affects two stages (Figure 7). At the design stage, the number and placement of fans were chosen without evaluating how air and heat move through the greenhouse, and testing alternatives physically is slow and costly. At the operation stage, a single sensor cannot show where crops are hottest, so fans run continuously regardless of local conditions. This project therefore treats the lack of useful thermal data, rather than a lack of cooling equipment, as the root cause to address.
+
+![Figure 7. Root cause, affected stages and the two applications of the proposed solution](assets/fig-problem-framing.png)

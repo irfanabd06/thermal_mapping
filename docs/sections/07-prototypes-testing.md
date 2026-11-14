@@ -1,16 +1,40 @@
 ---
 title: 7. Prototypes and Testing
 ---
-> TODO: For each test: **purpose, method, equipment, result, pass/fail** against an R-number.
+Semester 1 testing focused on whether the sensing chain produces trustworthy data. Each test states its purpose, method and result against the requirements in Table 5.
 
-### 7.1. Sensor Acquisition
+### 7.1. SHT45 Air Temperature and Humidity
 
-> TODO: **To write (~150 words):** SHT45 median of 10; MLX90640 mean of 10 frames, emissivity 0.95; I²C troubleshooting.
+- **Purpose:** check that the SHT45 agrees with a reference closely enough for baseline comparisons (R1).
+- **Method:** the SHT45 was logged side by side with a Kestrel 5000 weather meter, first on the bench for about 10 minutes, including a heating step, and then in GH1 for about 30 minutes (Figure 16).
+- **Result:** on the bench, the SHT45 agreed with the reference to 0.33 °C and 2.35 %RH (RMSE), meeting R1. In the greenhouse, it read 4.3 °C higher and 10 %RH lower than the reference (Table 9), a bias consistent with direct solar heating of the sensor.
+
+![Figure 16. SHT45 compared with a Kestrel 5000 on the bench (top) and in GH1 (bottom)](assets/fig-sht45-validation.png)
+
+[[table: table-sht45 | Table 9: SHT45 agreement with the Kestrel 5000 reference]]
+
+> TODO: Confirm whether the greenhouse test used the open sensor, and the date and time of both tests.
 
 ### 7.2. Sensor Enclosure
 
-> TODO: **To write (~150 words):** open vs shielded comparison; result and what it means for R3.
+- **Purpose:** reduce the solar bias found in Section 7.1 (R2).
+- **Method:** the SHT45 was compared open and inside the ventilated, louvred shield (Figure 14) against the reference.
+- **Result:** readings were closer to the reference in the shielded enclosure. The remaining bias has not yet been quantified, so R2 is not yet verified.
 
-### 7.3. RS-485 and MQTT Telemetry
+> TODO: Add the measured bias for the shielded sensor, if recorded.
 
-> TODO: **To write (~150 words):** packets sent vs received, latency, duration; result against R5.
+### 7.3. MLX90640 Canopy Temperature
+
+- **Purpose:** check that the low-cost thermal camera gives usable canopy temperatures.
+- **Method:** MLX90640 frames of the same plant were compared with a handheld thermal camera at distances of 50–500 mm (Figure 17).
+- **Result:** centre temperatures agreed within 1.3 °C, but maximum temperatures were 1.8–3.8 °C lower (Table 10), because each MLX90640 pixel averages over a larger area.
+
+![Figure 17. MLX90640 frames (left of each pair) compared with a handheld thermal camera at 50–500 mm](assets/fig-mlx90640-check.jpg)
+
+[[table: table-mlx | Table 10: MLX90640 compared with a handheld thermal camera]]
+
+### 7.4. RS-485 and MQTT Telemetry
+
+- **Purpose:** verify the data path from node to gateway (R4).
+- **Method:** an ESP32-C6 node sent packets over RS-485 to the Raspberry Pi 5, which published them through Mosquitto.
+- **Result:** complete JSON packets, including all 768 thermal pixels, the node ID and sequence numbers, were received consecutively and published over MQTT. Packet-delivery rate and latency over a long run have not yet been measured.

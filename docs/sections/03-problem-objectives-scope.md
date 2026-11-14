@@ -3,23 +3,38 @@ title: 3. Problem Statement, Objectives and Scope
 ---
 ### 3.1. Problem Statement
 
-Tropical greenhouses such as GH1 cannot be held at crop-optimal temperatures at all times without costly active cooling. Within those limits, their fans and vents are placed and operated without spatial analysis or timing logic, and they run continuously. This project develops a thermal digital twin of GH1, built from site data and updated by real-time sensors, to determine **where** cooling equipment should be placed and **when** it should run. The aim is to minimise hotspots and temperature non-uniformity, and then fan energy and cost. Physical fan actuation is used to validate the twin's predictions.
+> **How might we enable data-informed design and environmental control of tropical greenhouses to improve thermal performance and cooling effectiveness?**
 
-### 3.2. Target Problems and Solutions
+The lack of spatially resolved environmental data and validated thermal models limits the ability to evaluate greenhouse cooling configurations and to apply cooling where crops need it. This project develops a thermal digital twin of GH1, built from site data and updated by a distributed sensor grid. It is used in two ways: to compare fan configurations in simulation before they are installed, and to monitor crop-zone conditions and automate floor-fan cooling, shown on a dashboard.
 
-Table 2 maps each target problem to one solution, one objective and the requirements used to test it.
+Success is measured as improvement over GH1's current operation (the baseline), not as reaching an optimal temperature. Holding 24–30 °C at peak sun is not achievable without air-conditioning, whose running cost would outweigh the value of the crops.
 
-[[table: table-problem-solution | Table 2: Target problems, solutions and objectives]]
+### 3.2. Value to Farmers
+
+Farmers do not need the coolest greenhouse; they need a profitable one. The solution must balance three factors (Figure 8): crop-zone thermal performance, the operating cost of cooling, and the value of the crop. Cooling only where crops are growing, and only when needed, aims to reduce fan energy compared with running all fans continuously, while keeping crop hotspots in check. Fan energy and hotspot reduction will be measured directly. Effects on yield, taste and profit are expected long-term benefits that would need agricultural trials beyond this project.
+
+![Figure 8. Farmer desirability: balancing thermal performance, operating cost and crop value](assets/fig-farmer-value.png)
 
 ### 3.3. Objectives
 
-1. **O1 Spatial monitoring:** deploy a calibrated sensor network in a test section of GH1.
-2. **O2 Validated model:** build a CFD model of the test section and validate it against measurements.
-3. **O3 Placement (where):** compare fan and vent configurations in simulation and recommend a placement for GH1.
-4. **O4 Timing (when):** develop fan scheduling on the Raspberry Pi 5 and validate it with physical fans against continuous operation.
+1. **O1 Thermal characterisation:** develop a durable distributed sensor network that maps crop-zone thermal conditions in GH1 and provides data for model validation.
+2. **O2 Thermal modelling and design evaluation:** develop a CFD model of GH1 and use it to compare fan numbers, positions, orientations and speeds against the current layout.
+3. **O3 Digital twin and environmental control:** combine live measurements with the model to show conditions on a dashboard and automatically operate floor fans in response to crop-zone hotspots.
 
-### 3.4. Scope and Constraints
+The objectives follow the sequence measure → model → evaluate → monitor → control. Table 2 links each objective to the problem it addresses and the requirements used to test it (Section 4).
 
-Actuation is limited to floor circulation fans procured by the project, so the farm's existing ventilation, misting and shading are not modified. The simulation can still evaluate vents, roof openings and existing fan positions. Bringing GH1 to crop-optimal temperature at all times is out of scope, as it is not achievable without active cooling such as air-conditioning.
+[[table: table-problem-solution | Table 2: Target problems, solutions and objectives]]
 
-> TODO: **To add:** constraints list (physical, environmental, connectivity, power, operational, cost) and the test-section definition.
+### 3.4. Scope of Work
+
+Table 3 separates what this project commits to deliver in CDE4301 from the long-term application and from stretch goals. The greenhouse structure is fixed; only fans are varied.
+
+[[table: table-scope | Table 3: Scope of work]]
+
+**Out of scope:** changes to GH1's structure, vents, misting or shading; guaranteeing crop-optimal temperatures at peak sun; air-conditioning; proving yield or profit improvement; and high-accuracy weather or temperature forecasting.
+
+### 3.5. Constraints
+
+The solution must work within the constraints in Table 4, each of which shapes the design.
+
+[[table: table-constraints | Table 4: Design constraints and their implications]]
