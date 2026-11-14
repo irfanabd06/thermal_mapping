@@ -27,7 +27,7 @@ Table 4 maps each objective to its target problem and requirements.
 
 ### 3.4. Scope of Work
 
-Table 5 separates what this project commits to deliver in CDE4301 from the long-term application and from stretch goals. The greenhouse structure is fixed; only fans are varied. Physical tests use four floor fans in the germination section, a shared test section in which the CFD model and the digital twin are tested together.
+Table 5 sets out what this project will deliver, alongside the long-term application and stretch goals. Only fans are varied; the greenhouse structure stays fixed. Physical tests use four floor fans in the germination section.
 
 [[table: table-scope | Table 5: Scope of work]]
 
