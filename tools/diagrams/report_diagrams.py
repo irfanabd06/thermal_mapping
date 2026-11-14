@@ -126,42 +126,61 @@ def problem_framing():
 
 # ---------------------------------------------------------------- D2 farmer desirability
 def farmer_value():
-    fig = plt.figure(figsize=(15, 6.2))
-    ax = fig.add_axes([0.0, 0.0, 0.56, 1.0])
-    ax.set_xlim(0, 8.4)
-    ax.set_ylim(0, 6.2)
-    ax.axis("off")
-    box(ax, 0.1, 3.7, 2.6, 2.2, "Thermal performance\nReduce crop-zone\nhotspots and\nheat stress", LGREEN, GREEN, size=13)
-    box(ax, 2.9, 3.7, 2.6, 2.2, "Operating cost\nFan energy,\nmaintenance and\ncooling hardware", LRED, RED, size=13)
-    box(ax, 5.7, 3.7, 2.6, 2.2, "Crop value\nMarketable yield,\nquality and\nconsistency", LAMBER, "#e65100", size=13)
-    box(ax, 1.5, 0.4, 5.4, 2.0, "Commercial viability\nCrop value gained, minus the cost\nof cooling and operating the greenhouse", LGREY, GREY, size=13)
-    for x in (1.4, 4.2, 7.0):
-        arrow(ax, (x, 3.7), (4.2 + (x - 4.2) * 0.45, 2.4))
-    ax.text(4.2, 3.05, "balance, not maximise any one", ha="center", fontsize=12, style="italic", color=GREY)
+    """Figure 8: Venn of the farmer's three factors (Figure 7 style) + illustrative bubble chart."""
+    from matplotlib.patches import Circle
+    with plt.rc_context({"font.family": "Inter"}):
+        W, H = 18.0, 7.6
+        fig = plt.figure(figsize=(W, H))
+        bg = fig.add_axes([0, 0, 1, 1]); bg.set_xlim(0, W); bg.set_ylim(0, H); bg.axis("off")
+        grid_bg(bg, W, H)
 
-    ax2 = fig.add_axes([0.62, 0.14, 0.36, 0.76])
-    import numpy as np
-    e = np.linspace(0.05, 1.0, 200)
-    ax2.plot(e, 0.08 + 0.9 * np.exp(-3.2 * e), color=GREY, lw=2)
-    pts = {"Baseline\n(fans 24/7)": (0.42, 0.08 + 0.9 * np.exp(-3.2 * 0.42) + 0.17),
-           "Targeted fan\ncontrol (aim)": (0.30, 0.08 + 0.9 * np.exp(-3.2 * 0.30)),
-           "Air-conditioning\n(not viable)": (0.95, 0.08 + 0.9 * np.exp(-3.2 * 0.95))}
-    colors = [RED, GREEN, GREY]
-    offs = [(0.06, 0.06), (-0.02, -0.17), (-0.32, 0.12)]
-    for (k, (x, y)), c, (dx, dy) in zip(pts.items(), colors, offs):
-        ax2.scatter([x], [y], s=110, color=c, zorder=3, edgecolor="white", lw=1.5)
-        ax2.text(x + dx, y + dy, k, fontsize=9.5, color=c, fontweight="bold")
-    arrow(ax2, (0.42, pts["Baseline\n(fans 24/7)"][1] - 0.03), (0.32, pts["Targeted fan\ncontrol (aim)"][1] + 0.04), color=GREEN)
-    ax2.set_xlabel("Cooling energy and operating cost  →", fontsize=10.5)
-    ax2.set_ylabel("Crop-zone hotspot exceedance  →", fontsize=10.5)
-    ax2.set_xticks([])
-    ax2.set_yticks([])
-    ax2.set_xlim(0, 1.1)
-    ax2.set_ylim(0, 1.05)
-    for s in ("top", "right"):
-        ax2.spines[s].set_visible(False)
-    ax2.set_title("Conceptual trade-off (illustrative, not measured)", fontsize=10.5, color=GREY)
-    fig.savefig(OUT + "fig-farmer-value.png", dpi=130, bbox_inches="tight", facecolor="white")
+        # ---- left: Venn diagram
+        ax = fig.add_axes([0.0, 0.0, 0.42, 1.0]); ax.set_xlim(0, 7.56); ax.set_ylim(0, 7.6)
+        ax.set_aspect("equal"); ax.axis("off"); ax.patch.set_alpha(0)
+        r = 1.9
+        centres = {"Thermal\nperformance": (2.75, 4.35), "Low operating\ncost": (4.85, 4.35),
+                   "Crop value": (3.8, 2.55)}
+        label_pos = {"Thermal\nperformance": (2.05, 5.0), "Low operating\ncost": (5.55, 5.0),
+                     "Crop value": (3.8, 1.55)}
+        for name, (cx, cy) in centres.items():
+            ax.add_patch(Circle((cx, cy), r, fc=PANEL, alpha=0.28, ec="none", zorder=2))
+            ax.add_patch(Circle((cx, cy), r, fc="none", ec=DG, lw=2.0, zorder=3))
+            lx, ly = label_pos[name]
+            ax.text(lx, ly, name, ha="center", va="center", fontsize=13.5, fontweight="bold",
+                    color="black", zorder=4, linespacing=1.15)
+        ax.text(3.8, 3.75, "Commercially\nviable", ha="center", va="center", fontsize=12,
+                fontweight="bold", color="black", zorder=4, linespacing=1.1)
+        ax.text(3.8, 7.05, "What a commercial farmer needs", ha="center", va="center", fontsize=14,
+                fontweight="bold", color=PANEL_TXT)
+
+        # ---- right: bubble chart (illustrative)
+        ax2 = fig.add_axes([0.47, 0.04, 0.51, 0.9]); ax2.set_xlim(-1.15, 1.45); ax2.set_ylim(-1.12, 1.15)
+        ax2.set_aspect("equal", adjustable="datalim"); ax2.axis("off"); ax2.patch.set_alpha(0)
+        ax2.add_patch(FancyArrowPatch((-1.05, 0), (1.12, 0), arrowstyle="-|>", mutation_scale=18,
+                                      color="black", lw=2.2, zorder=2))
+        ax2.add_patch(FancyArrowPatch((0, -0.92), (0, 1.0), arrowstyle="-|>", mutation_scale=18,
+                                      color="black", lw=2.2, zorder=2))
+        ax2.text(1.15, 0.0, "Thermal\nperformance", ha="left", va="center", fontsize=13,
+                 fontweight="bold", color="#11a85a")
+        ax2.text(0.0, 1.07, "Operating cost", ha="center", va="center", fontsize=13,
+                 fontweight="bold", color="#11a85a")
+        # (x = thermal performance, y = operating cost, radius ~ crop value)
+        bubbles = [
+            ("Natural\nventilation", -0.78, -0.62, 0.17, "#1f0fa8"),
+            ("Baseline\n(fans 24/7)", -0.12, 0.30, 0.22, "#5b6770"),
+            ("Targeted\nfan control\n(aim)", 0.40, -0.18, 0.25, "#064d24"),
+            ("Air-\nconditioning", 0.80, 0.72, 0.34, "#a80000"),
+        ]
+        for name, x, y, rr, c in bubbles:
+            ax2.add_patch(Circle((x, y), rr, fc=c, ec="none", zorder=3))
+            ax2.text(x, y, name, ha="center", va="center", fontsize=10.5 if rr < 0.2 else 11.5,
+                     fontweight="bold", color="white", zorder=4, linespacing=1.1)
+        ax2.add_patch(FancyArrowPatch((-0.02, 0.17), (0.20, -0.02), arrowstyle="->,head_length=0.5,head_width=0.3",
+                                      mutation_scale=18, color="#064d24", lw=2.4, zorder=5))
+        ax2.text(1.4, -1.08, "*Size denotes crop value. Positions are illustrative, not measured.",
+                 ha="right", va="bottom", fontsize=10.5, fontweight="bold", color="#b71c1c")
+        fig.savefig(OUT + "fig-farmer-value.png", dpi=150, bbox_inches="tight", facecolor="white")
+        plt.close(fig)
 
 
 # ---------------------------------------------------------------- D3 architecture

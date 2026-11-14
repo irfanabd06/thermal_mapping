@@ -9,9 +9,9 @@ Without spatially resolved thermal data or a validated thermal model, cooling la
 
 ### 3.2. Value to Farmers
 
-Farmers do not need the coolest greenhouse; they need a profitable one. The solution must balance three factors (Figure 8): crop-zone thermal performance, the operating cost of cooling, and the value of the crop. Cooling only where crops are growing, and only when needed, aims to reduce fan energy compared with running all fans continuously, while keeping crop hotspots in check. Fan energy and hotspot reduction will be measured directly. Effects on yield, taste and profit are expected long-term benefits that would need agricultural trials beyond this project.
+Commercial farmers do not need the coolest greenhouse, they need a profitable one. A viable solution balances thermal performance, operating cost and crop value (Figure 8). Air-conditioning performs best but costs too much to run, while GH1's fans run continuously yet still leave hotspots. This project aims for better crop-zone thermal performance at equal or lower fan energy (R9, R10).
 
-![Figure 8. Farmer desirability: balancing thermal performance, operating cost and crop value](assets/fig-farmer-value.png)
+![Figure 8. Farmer desirability: the balance of thermal performance, operating cost and crop value (left), and illustrative positions of cooling options (right)](assets/fig-farmer-value.png)
 
 ### 3.3. Objectives
 
