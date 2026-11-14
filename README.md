@@ -1,4 +1,4 @@
-# CDE4301 — IS-405: Thermal Mapping & Greenhouse Environmental Control
+# [CDE4301] IS-405: Thermal Mapping & Greenhouse Environmental Control
 
 Final Year Project | National University of Singapore
 
