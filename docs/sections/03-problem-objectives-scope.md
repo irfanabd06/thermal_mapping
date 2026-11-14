@@ -17,13 +17,13 @@ Commercial farmers value a profitable greenhouse. A viable solution balances the
 
 ### 3.3. Objectives
 
-1. **O1 Thermal characterisation:** develop a durable sensor network, extended by temporary nodes and soft sensors, that maps crop-zone temperature and humidity in GH1.
-2. **O2 Thermal modelling and design evaluation:** develop a CFD model of GH1 and use it, with floor-fan tests in a test section, to compare fan numbers, positions, directions and speeds against the current layout.
-3. **O3 Digital twin and environmental control:** combine live measurements and weather data to predict crop-zone hotspots, show conditions on a dashboard, and switch on floor fans before hotspots form.
+1. **O1 Thermal characterisation:** identify where and when crop-zone hotspots occur in GH1, with measurements reliable enough to compare locations.
+2. **O2 Cooling layout evaluation:** determine how the number, placement, direction and speed of fans affect crop-zone temperatures, before changes are installed.
+3. **O3 Targeted cooling:** reduce crop-zone heat exposure compared with current operation by directing cooling where and when it is needed.
 
-The objectives follow the sequence measure → model → evaluate → monitor → control. Table 4 links each objective to the problem it addresses and the requirements used to test it (Section 4).
+Table 4 maps each objective to its target problem and requirements.
 
-[[table: table-problem-solution | Table 4: Target problems, solutions and objectives]]
+[[table: table-problem-solution | Table 4: Target problems, objectives and approach]]
 
 ### 3.4. Scope of Work
 

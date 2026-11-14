@@ -34,24 +34,24 @@ const tables = {
 
   // Table 4: Problem → solution map (Section 3.3)
   "table-problem-solution": {
-    columns: ["Target problem (evidence)", "Solution", "Objective", "Requirements"],
+    columns: ["Target problem (evidence)", "Objective", "Approach (Section 5)", "Requirements"],
     data: [
       [
         "P1. Insufficient spatial data: one monitoring point, yet a 4.0 °C spread across 57 points",
-        "Sensor grid with temporary nodes and soft sensors; crop-height thermal map",
         "O1 Thermal characterisation",
+        "Sensor grid, extended by soft sensors",
         "R1–R5, R14",
       ],
       [
         "P2. Fan layout chosen without thermal analysis; physical trials are slow and costly",
-        "CFD of GH1 and floor-fan tests in a shared test section to compare fan configurations",
-        "O2 Modelling and design evaluation",
+        "O2 Cooling layout evaluation",
+        "CFD study checked by floor-fan tests",
         "R6–R7",
       ],
       [
         "P3. Fans run 24/7 without spatial or timing logic; high running cost",
-        "Digital twin that predicts crop-zone hotspots 30 min ahead and runs floor fans; dashboard",
-        "O3 Digital twin and control",
+        "O3 Targeted cooling",
+        "Hotspot prediction that triggers floor fans",
         "R8–R13, R15",
       ],
     ],
