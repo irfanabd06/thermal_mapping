@@ -90,7 +90,6 @@ def problem_framing():
     with plt.rc_context({"font.family": "Inter"}):
         W, H = 17.0, 7.4
         fig, ax = canvas(W, H)
-        grid_bg(ax, W, H)
         # root cause and the two affected stages
         flat_box(ax, 0.3, 2.6, 3.4, 2.2, "Root Cause",
                  "Lack of spatially resolved\nthermal data and\nvalidated thermal models")
@@ -125,37 +124,39 @@ def problem_framing():
 
 
 # ---------------------------------------------------------------- D2 farmer desirability
+VENN_COLOURS = {"Thermal\nperformance": "#4cd38f", "Low operating\ncost": "#4a90e2", "Crop value": "#f5a623"}
+
+
 def farmer_value():
-    """Figure 8: Venn of the farmer's three factors (Figure 7 style) + illustrative bubble chart."""
+    """Figure 8: Venn diagram of the farmer's three factors."""
     from matplotlib.patches import Circle
     with plt.rc_context({"font.family": "Inter"}):
-        W, H = 18.0, 7.6
-        fig = plt.figure(figsize=(W, H))
-        bg = fig.add_axes([0, 0, 1, 1]); bg.set_xlim(0, W); bg.set_ylim(0, H); bg.axis("off")
-        grid_bg(bg, W, H)
-
-        # ---- left: Venn diagram
-        ax = fig.add_axes([0.0, 0.0, 0.42, 1.0]); ax.set_xlim(0, 7.56); ax.set_ylim(0, 7.6)
-        ax.set_aspect("equal"); ax.axis("off"); ax.patch.set_alpha(0)
+        fig = plt.figure(figsize=(8.0, 7.2))
+        ax = fig.add_axes([0, 0, 1, 1]); ax.set_xlim(0, 8.0); ax.set_ylim(0, 7.2)
+        ax.set_aspect("equal"); ax.axis("off")
         r = 1.9
-        centres = {"Thermal\nperformance": (2.75, 4.35), "Low operating\ncost": (4.85, 4.35),
-                   "Crop value": (3.8, 2.55)}
-        label_pos = {"Thermal\nperformance": (2.05, 5.0), "Low operating\ncost": (5.55, 5.0),
-                     "Crop value": (3.8, 1.55)}
+        centres = {"Thermal\nperformance": (2.95, 4.35), "Low operating\ncost": (5.05, 4.35),
+                   "Crop value": (4.0, 2.55)}
+        label_pos = {"Thermal\nperformance": (2.25, 5.0), "Low operating\ncost": (5.75, 5.0),
+                     "Crop value": (4.0, 1.55)}
         for name, (cx, cy) in centres.items():
-            ax.add_patch(Circle((cx, cy), r, fc=PANEL, alpha=0.28, ec="none", zorder=2))
-            ax.add_patch(Circle((cx, cy), r, fc="none", ec=DG, lw=2.0, zorder=3))
+            ax.add_patch(Circle((cx, cy), r, fc=VENN_COLOURS[name], alpha=0.45, ec="none", zorder=2))
             lx, ly = label_pos[name]
-            ax.text(lx, ly, name, ha="center", va="center", fontsize=13.5, fontweight="bold",
+            ax.text(lx, ly, name, ha="center", va="center", fontsize=14, fontweight="bold",
                     color="black", zorder=4, linespacing=1.15)
-        ax.text(3.8, 3.75, "Commercially\nviable", ha="center", va="center", fontsize=12,
+        ax.text(4.0, 3.75, "Commercially\nviable", ha="center", va="center", fontsize=12.5,
                 fontweight="bold", color="black", zorder=4, linespacing=1.1)
-        ax.text(3.8, 7.05, "What a commercial farmer needs", ha="center", va="center", fontsize=14,
-                fontweight="bold", color=PANEL_TXT)
+        fig.savefig(OUT + "fig-farmer-value.png", dpi=150, bbox_inches="tight", facecolor="white")
+        plt.close(fig)
 
-        # ---- right: bubble chart (illustrative)
-        ax2 = fig.add_axes([0.47, 0.04, 0.51, 0.9]); ax2.set_xlim(-1.15, 1.45); ax2.set_ylim(-1.12, 1.15)
-        ax2.set_aspect("equal", adjustable="datalim"); ax2.axis("off"); ax2.patch.set_alpha(0)
+
+def cooling_options():
+    """Figure 9: illustrative bubble chart of cooling options."""
+    from matplotlib.patches import Circle
+    with plt.rc_context({"font.family": "Inter"}):
+        fig = plt.figure(figsize=(11.0, 7.6))
+        ax2 = fig.add_axes([0, 0, 1, 1]); ax2.set_xlim(-1.15, 1.45); ax2.set_ylim(-1.12, 1.15)
+        ax2.set_aspect("equal", adjustable="datalim"); ax2.axis("off")
         ax2.add_patch(FancyArrowPatch((-1.05, 0), (1.12, 0), arrowstyle="-|>", mutation_scale=18,
                                       color="black", lw=2.2, zorder=2))
         ax2.add_patch(FancyArrowPatch((0, -0.92), (0, 1.0), arrowstyle="-|>", mutation_scale=18,
@@ -179,7 +180,7 @@ def farmer_value():
                                       mutation_scale=18, color="#064d24", lw=2.4, zorder=5))
         ax2.text(1.4, -1.08, "*Size denotes crop value. Positions are illustrative, not measured.",
                  ha="right", va="bottom", fontsize=10.5, fontweight="bold", color="#b71c1c")
-        fig.savefig(OUT + "fig-farmer-value.png", dpi=150, bbox_inches="tight", facecolor="white")
+        fig.savefig(OUT + "fig-cooling-options.png", dpi=150, bbox_inches="tight", facecolor="white")
         plt.close(fig)
 
 
@@ -306,6 +307,7 @@ def roadmap():
 
 problem_framing()
 farmer_value()
+cooling_options()
 architecture()
 trapped_hot_air()
 roadmap()
