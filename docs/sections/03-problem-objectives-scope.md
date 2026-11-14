@@ -9,7 +9,7 @@ Without spatially resolved thermal data or a validated thermal model, cooling la
 
 ### 3.2. Value to Farmers
 
-Commercial farmers value a profitable greenhouse. A viable solution balances thermal performance, operating cost and crop value (Figure 8). Air-conditioning performs best but costs too much to run, while GH1's fans run continuously yet still leave hotspots (Figure 9). This project aims for better crop-zone thermal performance at equal or lower fan energy (R9, R10).
+Commercial farmers value a profitable greenhouse. A viable solution balances thermal performance, operating cost and crop value (Figure 8). Air-conditioning performs best but costs too much to run, while GH1's fans run continuously yet still leave hotspots (Figure 9). This project aims for better crop-zone thermal performance at equal or lower fan energy (R10, R11).
 
 ![Figure 8. Farmer desirability: the balance of thermal performance, operating cost and crop value](assets/fig-farmer-value.png)
 
