@@ -50,23 +50,76 @@ def canvas(w, h):
 
 
 # ---------------------------------------------------------------- D1 problem framing
+# Style matches the user's system diagram: grid paper, white boxes with dark-green
+# borders, black arrows, green "framework" panel, Inter font.
+DG = "#1e5631"        # box border
+PANEL = "#4cd38f"     # framework panel fill
+PANEL_EC = "#3b9a68"
+PANEL_TXT = "#3f4a44"
+
+
+def grid_bg(ax, w, h, step=0.55):
+    x = 0.0
+    while x <= w:
+        ax.plot([x, x], [0, h], color="#efefef", lw=1.0, zorder=0)
+        x += step
+    y = 0.0
+    while y <= h:
+        ax.plot([0, w], [y, y], color="#efefef", lw=1.0, zorder=0)
+        y += step
+
+
+def flat_box(ax, x, y, w, h, title, body, tsize=13, bsize=11.5):
+    ax.add_patch(Rectangle((x, y), w, h, fc="white", ec=DG, lw=1.8, zorder=3))
+    ax.text(x + w / 2, y + h / 2 + 0.38, title, ha="center", va="center", fontsize=tsize,
+            fontweight="bold", color="black", zorder=4)
+    ax.text(x + w / 2, y + h / 2 - 0.3, body, ha="center", va="center", fontsize=bsize,
+            color="black", linespacing=1.35, zorder=4)
+
+
+def elbow(ax, pts, dashed=False):
+    xs, ys = zip(*pts[:-1])
+    ax.plot(list(xs) + [pts[-2][0]], list(ys) + [pts[-2][1]], color="black", lw=2.2,
+            ls="--" if dashed else "-", zorder=2, solid_capstyle="round")
+    ax.add_patch(FancyArrowPatch(pts[-2], pts[-1], arrowstyle="->,head_length=0.5,head_width=0.3",
+                                 mutation_scale=18, color="black", lw=2.2,
+                                 linestyle="--" if dashed else "-", zorder=2))
+
+
 def problem_framing():
-    fig, ax = canvas(15, 6.2)
-    box(ax, 0.2, 2.0, 2.8, 2.2, "Root cause\nLack of spatially resolved\nthermal data and validated\nthermal models", LRED, RED)
-    box(ax, 3.8, 3.5, 3.3, 2.2, "Design stage\nFan number and placement\nchosen without evaluating\nairflow and heat distribution", LAMBER, "#e65100")
-    box(ax, 3.8, 0.5, 3.3, 2.2, "Operation stage\nSingle monitoring point misses\ncrop-zone hotspots; fans run\n24/7 regardless of conditions", LAMBER, "#e65100")
-    box(ax, 7.9, 2.0, 2.4, 2.2, "Shared GH1 model\nGeometry, boundary\nconditions and\nsensor data", LGREY, GREY)
-    box(ax, 11.1, 3.5, 3.7, 2.2, "Application 1: Design evaluation\nOffline CFD compares fan number,\nposition, orientation and speed\n(structure fixed)", LBLUE, BLUE)
-    box(ax, 11.1, 0.5, 3.7, 2.2, "Application 2: Digital twin\nLive sensor grid, thermal map,\ncrop-zone hotspot control\nand dashboard", LGREEN, GREEN)
-    arrow(ax, (3.0, 3.4), (3.8, 4.4))
-    arrow(ax, (3.0, 2.8), (3.8, 1.8))
-    arrow(ax, (7.1, 4.4), (7.9, 3.6))
-    arrow(ax, (7.1, 1.6), (7.9, 2.6))
-    arrow(ax, (10.3, 3.6), (11.1, 4.4))
-    arrow(ax, (10.3, 2.6), (11.1, 1.6))
-    arrow(ax, (12.95, 3.5), (12.95, 2.7), color=BLUE, ls="--")
-    ax.text(13.05, 3.1, "recommended\nfan layout", fontsize=9, color=BLUE, va="center")
-    fig.savefig(OUT + "fig-problem-framing.png", dpi=130, bbox_inches="tight", facecolor="white")
+    with plt.rc_context({"font.family": "Inter"}):
+        W, H = 17.0, 7.4
+        fig, ax = canvas(W, H)
+        grid_bg(ax, W, H)
+        # root cause and the two affected stages
+        flat_box(ax, 0.3, 2.6, 3.4, 2.2, "Root Cause",
+                 "Lack of spatially resolved\nthermal data and\nvalidated thermal models")
+        flat_box(ax, 4.5, 4.4, 3.7, 2.2, "Design Stage",
+                 "Fan number and placement\nchosen without evaluating\nairflow and heat distribution")
+        flat_box(ax, 4.5, 0.8, 3.7, 2.2, "Operation Stage",
+                 "Single monitoring point misses\ncrop-zone hotspots; fans\nrun 24/7 regardless of conditions")
+        # proposed solution panel
+        ax.add_patch(Rectangle((9.0, 0.25), 7.7, 6.9, fc=PANEL, ec=PANEL_EC, lw=1.8, zorder=1))
+        ax.text(12.85, 6.72, "Proposed Solution: Thermal Digital Twin of GH1", ha="center",
+                va="center", fontsize=14, fontweight="bold", color=PANEL_TXT, zorder=4)
+        flat_box(ax, 9.35, 2.6, 2.6, 2.2, "Shared GH1 Model",
+                 "Geometry, boundary\nconditions and\nsensor data", tsize=12.5)
+        flat_box(ax, 12.55, 4.4, 3.85, 2.0, "Application 1: Design Evaluation",
+                 "Offline CFD compares fan number,\nposition, orientation and speed\n(structure fixed)", tsize=12, bsize=11)
+        flat_box(ax, 12.55, 0.6, 3.85, 2.2, "Application 2: Digital Twin",
+                 "Live sensor grid, thermal map,\ncrop-zone hotspot control\nand dashboard", tsize=12, bsize=11)
+        # arrows
+        elbow(ax, [(3.7, 3.7), (4.1, 3.7), (4.1, 5.5), (4.5, 5.5)])
+        elbow(ax, [(4.1, 3.7), (4.1, 1.9), (4.5, 1.9)])
+        elbow(ax, [(8.2, 5.5), (8.7, 5.5), (8.7, 3.95), (9.35, 3.95)])
+        elbow(ax, [(8.2, 1.9), (8.7, 1.9), (8.7, 3.45), (9.35, 3.45)])
+        elbow(ax, [(11.95, 3.95), (12.25, 3.95), (12.25, 5.4), (12.55, 5.4)])
+        elbow(ax, [(12.25, 3.95), (12.25, 1.7), (12.55, 1.7)])
+        elbow(ax, [(14.475, 4.4), (14.475, 2.8)], dashed=True)
+        ax.text(14.65, 3.6, "Recommended\nfan layout", fontsize=11, fontweight="bold",
+                color="black", va="center", zorder=4)
+        fig.savefig(OUT + "fig-problem-framing.png", dpi=150, bbox_inches="tight", facecolor="white")
+        plt.close(fig)
 
 
 # ---------------------------------------------------------------- D2 farmer desirability
