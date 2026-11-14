@@ -27,7 +27,7 @@ Table 4 maps each objective to its target problem and requirements.
 
 ### 3.4. Constraints
 
-The solution must work within the constraints in Table 5, each of which shapes the design.
+Table 5 separates constraints that come with the problem from those that limit possible solutions. Rapid temperature changes are the main constraint: they limit how precisely conditions can be measured, and therefore how far the CFD can be trusted.
 
 [[table: table-constraints | Table 5: Design constraints and their implications]]
 

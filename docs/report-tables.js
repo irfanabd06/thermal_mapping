@@ -72,15 +72,17 @@ const tables = {
 
   // Table 5: Constraints (Section 3.4)
   "table-constraints": {
-    columns: ["Constraint", "Description", "Design implication"],
+    columns: ["Type", "Constraint", "Description", "Design implication"],
     data: [
-      ["Physical", "Existing GH1 geometry and crop zones; no structural changes", "Nodes mounted on benches and frame; CFD varies fans only"],
-      ["Environmental", "Up to 45 °C, high humidity, daily misting, direct sun", "Shielded, ventilated enclosures; humidity-resistant electronics"],
-      ["Connectivity", "Limited network infrastructure on site", "Local-first processing on the edge gateway; wired RS-485 backbone"],
-      ["Power", "Nodes spread far from power outlets", "Low-power nodes; supply architecture to be decided"],
-      ["Operational", "Minimal disruption to cultivation; existing equipment untouched", "Actuation limited to the project's own floor fans"],
-      ["Cost", "Student budget; farmers are cost-sensitive", "Low-cost sensors; each sensor justified; per-node cost target"],
-      ["Safety", "Work alongside staff, water and mains equipment", "Low-voltage fans or certified switching; fail-safe control"],
+      ["Problem", "Physical", "Fixed greenhouse structure and crop layout; no structural changes", "Nodes mounted on benches and frame; only fans varied, in simulation and tests"],
+      ["Problem", "Thermal variability", "Temperature shifts within minutes with clouds and misting, by amounts similar to the 4 °C spatial spread", "All points sampled together every minute; trials compared with a baseline under similar weather and repeated"],
+      ["Problem", "Environmental", "Up to 45 °C, high humidity, daily misting, direct sun", "Shielded, ventilated enclosures; humidity-resistant electronics"],
+      ["Problem", "Operational", "Minimal disruption to cultivation; existing equipment untouched", "Only the project's own floor fans are controlled; physical tests confined to the germination section"],
+      ["Problem", "Cost", "Farmers are cost-sensitive; cooling must not cost more than the crop is worth", "Low-cost sensors; temporary nodes reused across locations; soft sensors reduce permanent nodes"],
+      ["Solution", "Model uncertainty", "Changing, partly unknown boundary conditions (sun, wind through netting); steady-state CFD cannot follow minute-scale changes", "CFD judged on trends and rankings (R6), not absolute temperatures; run for representative weather cases"],
+      ["Solution", "Sensor bias in sun", "Low-cost sensors read high in direct sunlight (+4.3 °C unshielded)", "Radiation shield required and its bias verified (R2)"],
+      ["Solution", "Connectivity", "Farms in rural areas may have limited or no internet access", "All live processing on a local edge computer; prediction runs on sensor data alone when offline (R13)"],
+      ["Solution", "Time and season", "Field testing runs January to March 2027, which may not include the hottest conditions", "Weather conditions recorded with every trial; results compared like-for-like with the baseline"],
     ],
   },
 
