@@ -3,7 +3,7 @@ title: 1. Introduction and Context
 ---
 Greenhouse cultivation offers a protective environment for crops against harsh weather and pests. However, in tropical regions such as Singapore, controlling temperature and humidity can pose significant challenges. The performance of cooling systems greatly depends on their design and placement. It is crucial to optimise this alongside installation and operational expenses to maintain profitability for farmers.
 
-To achieve that, farmers will have to understand the thermodynamics of their own greenhouses. This knowledge allows them to make informed decisions regarding greenhouse design and cooling systems, leading to strategic planning for climate control and resulting in healthier crops and operational sustainability.
+To achieve that, farmers will have to understand the thermal behaviour of their own greenhouses. This knowledge allows them to make informed decisions regarding greenhouse design and cooling systems, leading to strategic planning for climate control and resulting in healthier crops and operational sustainability.
 
 ### 1.1. Food Security and Local Farming
 
