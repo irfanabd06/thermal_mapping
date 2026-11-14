@@ -18,6 +18,17 @@ The report is hosted using GitHub Pages and documents the project's background, 
 
 ---
 
+## Thermal Map Dashboard
+
+**[Open the Greenhouse 1 Thermal Map](https://irfanabd06.github.io/thermal_mapping/dashboard/)**
+
+An interactive 3D model of Greenhouse 1 with the preliminary 57-point survey shown as a heat map at 1 m height, hot zones against the 29 °C target, fan positions, and site weather. It is served from [`docs/dashboard/`](docs/dashboard/) by the same GitHub Pages site as the report.
+
+- Source and build instructions: [`dashboard/`](dashboard/)
+- Greenhouse CAD model: [`cad/Greenhouse1.step`](cad/Greenhouse1.step)
+
+---
+
 ## Project Overview
 
 Tropical greenhouses experience spatially non-uniform thermal conditions due to solar radiation, ventilation patterns, greenhouse geometry and cooling configurations.
@@ -66,12 +77,15 @@ The digital twin and control architecture will build upon this data acquisition 
 
 ```text
 thermal_mapping/
+├── cad/                     # Greenhouse 1 STEP model (generated)
+├── dashboard/               # Thermal map dashboard source and build scripts
 ├── docs/                    # CDE4301 report website
 │   ├── index.html
 │   ├── index.css
 │   ├── report-tables.js
 │   ├── assets/
-│   └── components/
+│   ├── components/
+│   └── dashboard/           # Published dashboard page (generated)
 ├── experiments/             # Sensor and communication experiments
 ├── firmware/
 │   └── sensor_node/         # ESP32-C6 sensor-node firmware
