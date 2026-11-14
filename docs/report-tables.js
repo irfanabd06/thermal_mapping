@@ -34,22 +34,22 @@ const tables = {
 
   // Table 4: Problem → solution map (Section 3.3)
   "table-problem-solution": {
-    columns: ["Target problem (evidence)", "Objective", "Approach (Section 5)", "Requirements"],
+    columns: ["Target problem (evidence)", "Objective", "Approach", "Requirements"],
     data: [
       [
-        "P1. Insufficient spatial data: one monitoring point, yet a 4.0 °C spread across 57 points",
+        "P1. Uneven thermal conditions",
         "O1 Thermal characterisation",
         "Sensor grid",
         "R1–R5, R14",
       ],
       [
-        "P2. Fan layout chosen without thermal analysis; physical trials are slow and costly",
+        "P2. Inefficient airflow within greenhouse due to fan layout. Physical trials are slow and costly",
         "O2 Cooling layout evaluation",
         "Flow simulation study",
         "R6–R7",
       ],
       [
-        "P3. Fans run 24/7 without spatial or timing logic; high running cost",
+        "P3. Fans run without conditional logic, high running cost",
         "O3 Targeted cooling",
         "Hotspot prediction",
         "R8–R13, R15",
