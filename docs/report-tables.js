@@ -13,15 +13,27 @@ const tables = {
       ["Roof peak height", "~4.35 m"],
       ["Roof type", "Gable-capped monitor"],
       ["Side walls", "Insect netting on both long sides"],
-      ["Ventilation fans", "4 (running 24/7)"],
-      ["Ceiling circulation fans", "6 (running 24/7)"],
-      ["Floor circulation fans", "Installed, not in use"],
-      ["Misting", "Operates throughout the day"],
       ["Crops", "Lettuce, kai lan, bak choi, basil and others"],
     ],
   },
 
-  // Table 2: Problem → solution map (Section 3.3)
+  // Table 2: GH1 cooling equipment and operating conditions (Section 2.2)
+  "table-gh1-operation": {
+    columns: ["Item", "Details"],
+    data: [
+      ["Ventilation fans", "4, running 24/7"],
+      ["Ceiling circulation fans", "6, running 24/7"],
+      ["Floor circulation fans", "Installed, not in use"],
+      ["Misting", "Operates throughout the day"],
+      ["Shading", "Retractable shade nets"],
+      ["Monitoring", "Single point: weather station and monitoring dashboard"],
+      ["Reported peak temperature", "45 °C (operator-reported)"],
+      ["Preferred crop conditions", "24–30 °C, 60–80% RH"],
+      ["Current use", "Reported unsuitable for commercial production; now leased by NUS for research and student experimentation"],
+    ],
+  },
+
+  // Table 3: Problem → solution map (Section 3.3)
   "table-problem-solution": {
     columns: ["Target problem (evidence)", "Solution", "Objective", "Requirements"],
     data: [
@@ -46,7 +58,7 @@ const tables = {
     ],
   },
 
-  // Table 3: Scope of work (Section 3.4)
+  // Table 4: Scope of work (Section 3.4)
   "table-scope": {
     columns: ["Area", "Long-term application", "CDE4301 deliverable (committed)", "Stretch goal"],
     data: [
@@ -59,7 +71,7 @@ const tables = {
     ],
   },
 
-  // Table 4: Constraints (Section 3.5)
+  // Table 5: Constraints (Section 3.5)
   "table-constraints": {
     columns: ["Constraint", "Description", "Design implication"],
     data: [
@@ -73,7 +85,7 @@ const tables = {
     ],
   },
 
-  // Table 5: Technical requirements and targets (Section 4.2)
+  // Table 6: Technical requirements and targets (Section 4.2)
   "table-requirements": {
     columns: ["ID", "Requirement", "Target", "Rationale", "Verification", "Status"],
     data: [
@@ -93,7 +105,7 @@ const tables = {
     ],
   },
 
-  // Table 6: Subsystem goals (Section 4.3)
+  // Table 7: Subsystem goals (Section 4.3)
   "table-subsystems": {
     columns: ["Subsystem", "Goal", "Deliverables", "Verified by", "Status (end of Semester 1)"],
     data: [
@@ -104,7 +116,7 @@ const tables = {
     ],
   },
 
-  // Table 7: Concept selection (Section 5.2)
+  // Table 8: Concept selection (Section 5.2)
   "table-concepts": {
     columns: ["Decision", "Options considered", "Selected", "Reason"],
     data: [
@@ -118,7 +130,7 @@ const tables = {
     ],
   },
 
-  // Table 8: CFD study scope (Section 5.3)
+  // Table 9: CFD study scope (Section 5.3)
   "table-sim-scope": {
     columns: ["Parameter", "Treatment"],
     data: [
@@ -132,7 +144,7 @@ const tables = {
     ],
   },
 
-  // Table 9: SHT45 vs Kestrel 5000 (Section 7.1)
+  // Table 10: SHT45 vs Kestrel 5000 (Section 7.1)
   "table-sht45": {
     columns: ["Test", "Quantity", "Mean error", "MAE", "RMSE"],
     data: [
@@ -143,7 +155,7 @@ const tables = {
     ],
   },
 
-  // Table 10: MLX90640 vs handheld thermal camera (Section 7.3)
+  // Table 11: MLX90640 vs handheld thermal camera (Section 7.3)
   "table-mlx": {
     columns: ["Distance", "MLX90640 centre", "Reference centre", "Difference", "MLX90640 max", "Reference max"],
     data: [
@@ -154,7 +166,7 @@ const tables = {
     ],
   },
 
-  // Table 11: Milestones (Section 9.3)
+  // Table 12: Milestones (Section 9.3)
   "table-milestones": {
     columns: ["Milestone", "Date", "Deliverable", "Acceptance criterion"],
     data: [

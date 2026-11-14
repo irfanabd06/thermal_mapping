@@ -15,9 +15,9 @@ The growing zones and fan positions are shown in Figure 3.
 
 ### 2.2. Existing Cooling and Operating Conditions
 
-GH1 is cooled by four ventilation fans and six ceiling circulation fans that run 24 hours a day, misting that operates throughout the day, and retractable shade nets (Figure 4). Floor circulation fans are installed but not in use. Conditions are monitored at a single point by a weather station linked to a monitoring dashboard.
+GH1's existing cooling equipment and operating conditions are summarised in Table 2 and Figure 4.
 
-Operators report that GH1 can reach 45 °C, well above the 24–30 °C and 60–80% relative humidity (RH) preferred for its leafy crops. GH1 is reported to have been unsuitable for commercial production for this reason, and is now leased by NUS for research and student experimentation.
+[[table: table-gh1-operation | Table 2: GH1 cooling equipment and operating conditions]]
 
 ![Figure 4. Thermal control equipment in GH1](assets/fig-gh1-cooling-equipment.jpg)
 
