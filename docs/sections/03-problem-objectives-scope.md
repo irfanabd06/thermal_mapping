@@ -25,16 +25,16 @@ Table 4 maps each objective to its target problem and requirements.
 
 [[table: table-problem-solution | Table 4: Target problems, objectives and approach]]
 
-### 3.4. Scope of Work
+### 3.4. Constraints
 
-Table 5 sets out what this project will deliver, alongside the long-term application and stretch goals. Only fans are varied; the greenhouse structure stays fixed. Physical tests use four floor fans in the germination section.
+The solution must work within the constraints in Table 5, each of which shapes the design.
 
-[[table: table-scope | Table 5: Scope of work]]
+[[table: table-constraints | Table 5: Design constraints and their implications]]
+
+### 3.5. Scope of Work
+
+Table 6 sets out what this project will deliver, alongside the long-term application and stretch goals. Only fans are varied; the greenhouse structure stays fixed. Physical tests use four floor fans in the germination section.
+
+[[table: table-scope | Table 6: Scope of work]]
 
 **Out of scope:** changes to GH1's structure, vents, misting or shading; guaranteeing crop-optimal temperatures at peak sun; air-conditioning; proving yield or profit improvement; and developing weather forecasts (NEA data is used as an input).
-
-### 3.5. Constraints
-
-The solution must work within the constraints in Table 6, each of which shapes the design.
-
-[[table: table-constraints | Table 6: Design constraints and their implications]]

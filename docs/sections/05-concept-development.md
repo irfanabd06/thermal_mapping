@@ -13,7 +13,7 @@ The project objective was decomposed into four functions: acquire, characterise,
 
 ### 5.2. Concept Selection
 
-The main design decisions were made by comparing alternatives against the constraints in Table 6 (Table 9). The communication choice will be confirmed by benchmarking RS-485 against one wireless option in Semester 2.
+The main design decisions were made by comparing alternatives against the constraints in Table 5 (Table 9). The communication choice will be confirmed by benchmarking RS-485 against one wireless option in Semester 2.
 
 [[table: table-concepts | Table 9: Concept selection]]
 

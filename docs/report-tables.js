@@ -57,7 +57,7 @@ const tables = {
     ],
   },
 
-  // Table 5: Scope of work (Section 3.4)
+  // Table 6: Scope of work (Section 3.5)
   "table-scope": {
     columns: ["Area", "Long-term application", "CDE4301 deliverable (committed)", "Stretch goal"],
     data: [
@@ -70,7 +70,7 @@ const tables = {
     ],
   },
 
-  // Table 6: Constraints (Section 3.5)
+  // Table 5: Constraints (Section 3.4)
   "table-constraints": {
     columns: ["Constraint", "Description", "Design implication"],
     data: [
