@@ -243,6 +243,29 @@ const tables = {
       ["57.3", "T55: 39.4", "T56: 39.3", "T57: 38.5"],
     ],
   },
+
+  // Table A5: GH1 geometry (Appendix E)
+  "table-geometry": {
+    columns: ["Item", "Value", "Source"],
+    data: [
+      ["Width", "12.5 m", "Layout"],
+      ["Main section", "36 m straight", "Layout"],
+      ["Transition walls", "3.67 m (top), 2.48 m (bottom)", "Layout"],
+      ["Wing walls", "19.53 m (top), 20.5 m (bottom)", "Layout"],
+      ["Bend angle", "5.46°, toward the bottom of the layout", "Derived from the transition wall lengths"],
+      ["Centreline length", "59.1 m", "Derived from the wall labels"],
+      ["Wall height", "3.00 m", "Table, front sketch"],
+      ["Main ridge height", "3.35 m", "Front sketch"],
+      ["Raised ridge section", "about 3 m wide, full length, top at 4.35 m (confirmed); shoulder at 3.95 m (assumed)", "Sketch and table"],
+      ["Base kerb", "0.29 m", "Front sketch"],
+      ["Walls, lower half", "Insect netting, 0.3 mm, from the kerb to 1.5 m", "Confirmed"],
+      ["Walls, upper half", "Clear plastic, 0.3 mm, with 0.5 mm shading over it, 1.5 to 3.0 m", "Confirmed"],
+      ["Roof", "Same clear plastic and shading as the upper walls", "Confirmed"],
+      ["Front airlock", "2.4 m wide, 2.3 m high, 1.5 m deep, t = 3.7 to 6.1 m", "Sketch, depth assumed"],
+      ["Floor hump", "Old road hump, 2.1 m wide, arc profile, 150 mm at the peak, at s = 20 m", "Confirmed; position from the layout"],
+      ["Plant height", "1.0 m", "Sketch note"],
+    ],
+  },
 };
 
 // Called by report-loader.js once the sections are on the page.

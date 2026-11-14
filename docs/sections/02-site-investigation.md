@@ -3,6 +3,8 @@ title: 2. Site Investigation and Problem Analysis
 ---
 ### 2.1. Greenhouse 1
 
+**Site: ComCrop rooftop farm, 15 Woodlands Loop**
+
 This project uses Greenhouse 1 (GH1) at ComCrop as its reference greenhouse for studying tropical greenhouse thermal management. Site visits were conducted to document its geometry, growing zones, cooling infrastructure and operational conditions.
 
 The growing zones and fan positions are shown in Figure 2.
