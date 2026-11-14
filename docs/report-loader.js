@@ -7,7 +7,8 @@
 //   > TODO: ...                         a yellow draft note (not counted in the word limit)
 
 const REPORT_SECTIONS = [
-  "01-introduction.md",
+  "00-introduction.md",
+  "01-problem-context.md",
   "02-site-investigation.md",
   "03-problem-objectives-scope.md",
   "04-design-specifications.md",
