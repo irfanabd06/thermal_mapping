@@ -3,15 +3,15 @@ title: 2. Site Investigation and Problem Analysis
 ---
 ### 2.1. Greenhouse 1
 
-This project uses Greenhouse 1 (GH1) at ComCrop as its reference greenhouse for studying tropical greenhouse thermal management. Site visits were conducted to document its geometry, growing zones, cooling infrastructure and operational conditions. Key parameters are summarised in Table 1, and Figure 2 shows the greenhouse interior, including its growing channels, shade nets and circulation fans.
+This project uses Greenhouse 1 (GH1) at ComCrop as its reference greenhouse for studying tropical greenhouse thermal management. Site visits were conducted to document its geometry, growing zones, cooling infrastructure and operational conditions.
+
+The growing zones and fan positions are shown in Figure 2.
+
+![Figure 2. GH1 layout showing the growing zones and fan positions](assets/fig-gh1-layout.png)
 
 [[table: table-gh1 | Table 1: GH1 site parameters]]
 
-![Figure 2. Interior of Greenhouse 1 (GH1) at ComCrop, showing the hydroponic growing channels, retractable shade nets and circulation fans](assets/fig2-gh1-interior.jpg)
-
-The growing zones and fan positions are shown in Figure 3.
-
-![Figure 3. GH1 layout showing the growing zones and fan positions](assets/fig-gh1-layout.png)
+![Figure 3. Interior of Greenhouse 1 (GH1) at ComCrop, showing the hydroponic growing channels, retractable shade nets and circulation fans](assets/fig2-gh1-interior.jpg)
 
 ### 2.2. Existing Cooling and Operating Conditions
 
