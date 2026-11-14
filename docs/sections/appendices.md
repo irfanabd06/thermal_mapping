@@ -17,4 +17,6 @@ Appendices are not counted towards the word limit.
 
 ### Appendix D. Thermal Survey Data
 
-> TODO: Add the 57-point survey readings (point ID, position, temperature, time).
+Air temperature at 1 m height, measured with the Kestrel 5000. Distances are approximate positions from the front wall (exhaust fans 1 and 2). Mean 38.0 °C; main section (T1–T36) 37.5 °C; wing (T40–T57) 39.0 °C.
+
+[[table: table-survey | Table A4: 57-point air temperature survey (°C)]]
