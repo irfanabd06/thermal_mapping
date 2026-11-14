@@ -3,7 +3,7 @@ title: 3. Problem Statement, Objectives and Scope
 ---
 ### 3.1. Problem Statement
 
-> **How might we enable data-informed design and environmental control of tropical greenhouses to improve thermal performance and cooling effectiveness?**
+> **How might we make cooling in tropical greenhouses more effective when heat builds up unevenly across the greenhouse?**
 
 Without spatially resolved thermal data or a validated thermal model, cooling layouts cannot be evaluated before installation, and cooling cannot be directed to where and when crops need it.
 
