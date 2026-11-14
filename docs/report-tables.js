@@ -266,6 +266,22 @@ const tables = {
       ["Plant height", "1.0 m", "Sketch note"],
     ],
   },
+  // Table A5
+  "table-fans": {
+    columns: ["Fan", "Type", "s (m)", "t (m)", "Direction"],
+    data: [
+      ["1", "Wall exhaust, front", "0", "5.8", "Out"],
+      ["2", "Wall exhaust, front", "0", "3.07", "Out"],
+      ["3", "Ceiling circulating", "5.6", "8.1", "Toward rear"],
+      ["4", "Ceiling circulating", "16.0", "4.1", "Toward front"],
+      ["5", "Ceiling circulating", "28.8", "8.1", "Toward rear"],
+      ["6", "Ceiling circulating", "43.3", "4.1", "Toward front"],
+      ["7", "Ceiling circulating", "45.7", "8.1", "Toward rear"],
+      ["8", "Ceiling circulating", "54.8", "4.1", "Toward front"],
+      ["9", "Wall exhaust, rear", "End", "6.2", "Out"],
+      ["10", "Wall exhaust, rear", "End", "3.9", "Out"],
+    ],
+  },
 };
 
 // Called by report-loader.js once the sections are on the page.

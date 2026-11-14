@@ -6,10 +6,10 @@ Semester 1 testing focused on whether the sensing chain produces trustworthy dat
 ### 7.1. SHT45 Air Temperature and Humidity
 
 - **Purpose:** check that the SHT45 agrees with a reference closely enough for baseline comparisons (R1).
-- **Method:** the SHT45 was logged side by side with a Kestrel 5000 weather meter, first on the bench for about 10 minutes, including a heating step, and then in GH1 for about 30 minutes (Figure 15).
+- **Method:** the SHT45 was logged side by side with a Kestrel 5000 weather meter, first on the bench for about 10 minutes, including a heating step, and then in GH1 for about 30 minutes (Figure 16).
 - **Result:** on the bench, the SHT45 agreed with the reference to 0.33 °C and 2.35 %RH (RMSE), meeting R1. In the greenhouse, it read 4.3 °C higher and 10 %RH lower than the reference (Table 11), a bias consistent with direct solar heating of the sensor.
 
-![Figure 15. SHT45 compared with a Kestrel 5000 on the bench (top) and in GH1 (bottom)](assets/fig-sht45-validation.png)
+![Figure 16. SHT45 compared with a Kestrel 5000 on the bench (top) and in GH1 (bottom)](assets/fig-sht45-validation.png)
 
 [[table: table-sht45 | Table 11: SHT45 agreement with the Kestrel 5000 reference]]
 
@@ -18,7 +18,7 @@ Semester 1 testing focused on whether the sensing chain produces trustworthy dat
 ### 7.2. Sensor Enclosure
 
 - **Purpose:** reduce the solar bias found in Section 7.1 (R2).
-- **Method:** the SHT45 was compared open and inside the ventilated, louvred shield (Figure 13) against the reference.
+- **Method:** the SHT45 was compared open and inside the ventilated, louvred shield (Figure 14) against the reference.
 - **Result:** readings were closer to the reference in the shielded enclosure. The remaining bias has not yet been quantified, so R2 is not yet verified.
 
 > TODO: Add the measured bias for the shielded sensor, if recorded.
@@ -26,10 +26,10 @@ Semester 1 testing focused on whether the sensing chain produces trustworthy dat
 ### 7.3. MLX90640 Canopy Temperature
 
 - **Purpose:** check that the low-cost thermal camera gives usable canopy temperatures.
-- **Method:** MLX90640 frames of the same plant were compared with a handheld thermal camera at distances of 50–500 mm (Figure 16).
+- **Method:** MLX90640 frames of the same plant were compared with a handheld thermal camera at distances of 50–500 mm (Figure 17).
 - **Result:** centre temperatures agreed within 1.3 °C, but maximum temperatures were 1.8–3.8 °C lower (Table 12), because each MLX90640 pixel averages over a larger area.
 
-![Figure 16. MLX90640 frames (left of each pair) compared with a handheld thermal camera at 50–500 mm](assets/fig-mlx90640-check.jpg)
+![Figure 17. MLX90640 frames (left of each pair) compared with a handheld thermal camera at 50–500 mm](assets/fig-mlx90640-check.jpg)
 
 [[table: table-mlx | Table 12: MLX90640 compared with a handheld thermal camera]]
 

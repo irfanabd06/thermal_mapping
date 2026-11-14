@@ -18,8 +18,8 @@ During MLX90640 development, I²C bus-busy timeouts and EEPROM initialisation fa
 
 ### 9.3. Plan and Milestones
 
-Work continues from November 2026 to April 2027, with sensing, simulation and control running in parallel (Figure 17). Each milestone has a deliverable and an acceptance criterion (Table 13).
+Work continues from November 2026 to April 2027, with sensing, simulation and control running in parallel (Figure 18). Each milestone has a deliverable and an acceptance criterion (Table 13).
 
-![Figure 17. Project roadmap, November 2026 to April 2027](assets/fig-roadmap.png)
+![Figure 18. Project roadmap, November 2026 to April 2027](assets/fig-roadmap.png)
 
 [[table: table-milestones | Table 13: Milestones and acceptance criteria]]

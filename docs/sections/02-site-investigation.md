@@ -42,8 +42,14 @@ To test whether a single monitoring point is representative, air temperature was
 
 **Summary:** mean 38.03 °C, which is 9.0 °C over the 29 °C target. Hottest T53 at 39.5 °C, coolest T14 at 35.5 °C. Main section (T1 to T36) mean 37.45 °C, wing (T40 to T57) mean 39.03 °C.
 
-### 2.4. Problem Analysis
+### 2.4. Existing Airflow Pattern
 
-The site findings point to one underlying problem: decisions about GH1's cooling are made without spatially resolved thermal information. This affects two stages (Figure 6). At the design stage, the number and placement of fans were chosen without evaluating how air and heat move through the greenhouse, and testing alternatives physically is slow and costly. At the operation stage, a single sensor cannot show where crops are hottest, so fans run continuously regardless of local conditions. This project therefore treats the lack of useful thermal data, rather than a lack of cooling equipment, as the root cause to address.
+GH1's fans and the outside wind push air in conflicting directions (Figure 6). The four wall exhaust fans draw air out at both ends, while the six ceiling fans alternate, three blowing towards the front and three towards the rear. Wind also enters through the netted side walls along the length of the greenhouse. Where these flows meet head-on, they can cancel out and leave pockets of slow-moving air in which heat builds up, so the fans use energy without carrying heat out efficiently. Fan positions and directions are listed in Table A5. The CFD baseline (Section 5.3) will test this effect.
 
-![Figure 6. Root cause, affected stages and the two applications of the proposed solution](assets/fig-problem-framing.png)
+![Figure 6. GH1 fan airflow directions and outside wind entering through the netted side walls](assets/fig-gh1-airflow.png)
+
+### 2.5. Problem Analysis
+
+The site findings point to one underlying problem: decisions about GH1's cooling are made without spatially resolved thermal information. This affects two stages (Figure 7). At the design stage, the number and placement of fans were chosen without evaluating how air and heat move through the greenhouse, and testing alternatives physically is slow and costly. At the operation stage, a single sensor cannot show where crops are hottest, so fans run continuously regardless of local conditions. This project therefore treats the lack of useful thermal data, rather than a lack of cooling equipment, as the root cause to address.
+
+![Figure 7. Root cause, affected stages and the two applications of the proposed solution](assets/fig-problem-framing.png)
