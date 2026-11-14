@@ -42,8 +42,6 @@ To test whether a single monitoring point is representative, air temperature was
 
 **Summary:** mean 38.03 °C, which is 9.0 °C over the 29 °C target. Hottest T53 at 39.5 °C, coolest T14 at 35.5 °C. Main section (T1 to T36) mean 37.45 °C, wing (T40 to T57) mean 39.03 °C.
 
-> TODO: Add the survey time, fan states, and whether the 57 points were measured one after another or at the same time.
-
 ### 2.4. Problem Analysis
 
 The site findings point to one underlying problem: decisions about GH1's cooling are made without spatially resolved thermal information. This affects two stages (Figure 6). At the design stage, the number and placement of fans were chosen without evaluating how air and heat move through the greenhouse, and testing alternatives physically is slow and costly. At the operation stage, a single sensor cannot show where crops are hottest, so fans run continuously regardless of local conditions. This project therefore treats the lack of useful thermal data, rather than a lack of cooling equipment, as the root cause to address.
