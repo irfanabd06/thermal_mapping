@@ -13,23 +13,22 @@ const tables = {
       ["Roof peak height", "~4.35 m"],
       ["Roof type", "Gable-capped monitor"],
       ["Side walls", "Insect netting on both long sides"],
-      ["Crops", "Lettuce, kai lan, bak choi, basil and others"],
+      ["Crops", "Lettuce, Kai Lan, Bak Choi, Basil and etc"],
     ],
   },
 
   // Table 2: GH1 cooling equipment and operating conditions (Section 2.2)
   "table-gh1-operation": {
-    columns: ["Item", "Details"],
+    columns: ["Cooling equipment", "", "Details"],
     data: [
-      ["Ventilation fans", "4, running 24/7"],
-      ["Ceiling circulation fans", "6, running 24/7"],
-      ["Floor circulation fans", "Installed, not in use"],
-      ["Misting", "Operates throughout the day"],
-      ["Shading", "Retractable shade nets"],
-      ["Monitoring", "Single point: weather station and monitoring dashboard"],
-      ["Reported peak temperature", "45 °C (operator-reported)"],
-      ["Preferred crop conditions", "24–30 °C, 60–80% RH"],
-      ["Current use", "Reported unsuitable for commercial production; now leased by NUS for research and student experimentation"],
+      ["Ventilation fans", { img: "assets/eq-ventilation-fans.jpg" }, "4, running 24/7"],
+      ["Ceiling circulation fans", { img: "assets/eq-ceiling-fans.jpg" }, "6, running 24/7"],
+      ["Floor circulation fans", { img: "assets/eq-floor-fans.jpg" }, "Installed, not in use"],
+      ["Misting", { img: "assets/eq-misting.jpg" }, "Operates throughout the day"],
+      ["Shading", { img: "assets/eq-shades.jpg" }, "Retractable shade nets"],
+      ["Monitoring", { img: "assets/eq-weather-station.jpg" }, "Single point: weather station and monitoring dashboard"],
+      ["Reported peak temperature", "", "45 °C"],
+      ["Current use", "", "Retired from commercial production. GH1 is now leased by NUS for research and student experimentation"],
     ],
   },
 
@@ -221,11 +220,21 @@ const tables = {
 };
 
 // Called by report-loader.js once the sections are on the page.
+// A cell can be plain text, or { img: "assets/..." } to show a photo in the cell.
+function renderCell(cell, row) {
+  if (cell && typeof cell === "object" && cell.img) {
+    const alt = String(row[0]).replace(/"/g, "&quot;");
+    return gridjs.html(`<img class="cell-img" src="${cell.img}" alt="${alt}">`);
+  }
+  return cell;
+}
+
 function renderReportTables() {
   for (const [id, config] of Object.entries(tables)) {
     const el = document.getElementById(id);
     if (el && !el.hasChildNodes()) {
-      new gridjs.Grid({ ...config, sort: false }).render(el);
+      const data = config.data.map((row) => row.map((cell) => renderCell(cell, row)));
+      new gridjs.Grid({ ...config, data, sort: false }).render(el);
     }
   }
 }

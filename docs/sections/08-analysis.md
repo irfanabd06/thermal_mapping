@@ -7,4 +7,4 @@ title: 8. Analysis of Results
 
 **Canopy sensing.** The MLX90640 tracks the centre temperature of the reference camera but underestimates peak surface temperatures. It will therefore be used for zone-average canopy temperature rather than detecting small hot spots.
 
-**Implications for the approach.** Clouds and misting change conditions within minutes, as the sharp steps in Figure 16 show. This supports evaluating solutions against a baseline measured under comparable conditions, rather than against absolute temperature targets.
+**Implications for the approach.** Clouds and misting change conditions within minutes, as the sharp steps in Figure 15 show. This supports evaluating solutions against a baseline measured under comparable conditions, rather than against absolute temperature targets.

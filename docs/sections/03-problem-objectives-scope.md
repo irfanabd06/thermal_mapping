@@ -11,9 +11,9 @@ Success is measured as improvement over GH1's current operation (the baseline), 
 
 ### 3.2. Value to Farmers
 
-Farmers do not need the coolest greenhouse; they need a profitable one. The solution must balance three factors (Figure 8): crop-zone thermal performance, the operating cost of cooling, and the value of the crop. Cooling only where crops are growing, and only when needed, aims to reduce fan energy compared with running all fans continuously, while keeping crop hotspots in check. Fan energy and hotspot reduction will be measured directly. Effects on yield, taste and profit are expected long-term benefits that would need agricultural trials beyond this project.
+Farmers do not need the coolest greenhouse; they need a profitable one. The solution must balance three factors (Figure 7): crop-zone thermal performance, the operating cost of cooling, and the value of the crop. Cooling only where crops are growing, and only when needed, aims to reduce fan energy compared with running all fans continuously, while keeping crop hotspots in check. Fan energy and hotspot reduction will be measured directly. Effects on yield, taste and profit are expected long-term benefits that would need agricultural trials beyond this project.
 
-![Figure 8. Farmer desirability: balancing thermal performance, operating cost and crop value](assets/fig-farmer-value.png)
+![Figure 7. Farmer desirability: balancing thermal performance, operating cost and crop value](assets/fig-farmer-value.png)
 
 ### 3.3. Objectives
 

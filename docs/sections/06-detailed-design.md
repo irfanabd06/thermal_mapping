@@ -3,25 +3,25 @@ title: 6. System Architecture and Detailed Design
 ---
 ### 6.1. System Architecture
 
-The system has four subsystems (Figure 12). S1 measures conditions across the crop zones. S2 turns the measurements into a live thermal map and hotspot index (the digital twin) and, separately, runs offline CFD to evaluate fan layouts. S3 decides fan actions from the hotspot index, and S4 carries them out with floor fans, whose effect is then measured again by S1. A local dashboard shows the map, hotspots and fan status. All live processing runs on a Raspberry Pi 5, so the system keeps working without internet access.
+The system has four subsystems (Figure 11). S1 measures conditions across the crop zones. S2 turns the measurements into a live thermal map and hotspot index (the digital twin) and, separately, runs offline CFD to evaluate fan layouts. S3 decides fan actions from the hotspot index, and S4 carries them out with floor fans, whose effect is then measured again by S1. A local dashboard shows the map, hotspots and fan status. All live processing runs on a Raspberry Pi 5, so the system keeps working without internet access.
 
-![Figure 12. System architecture](assets/fig-system-architecture.png)
+![Figure 11. System architecture](assets/fig-system-architecture.png)
 
 ### 6.2. S1: Sensor Nodes
 
-Two node types share one design (Figure 13), built around an ESP32-C6 microcontroller. Type A nodes measure air temperature and humidity with an SHT45 and form the main grid. Type B nodes add an MLX90640 thermal camera (32 × 24 pixels) aimed at the canopy to estimate leaf temperature, and are placed at fewer locations. The firmware takes the median of 10 SHT45 readings and averages 10 thermal frames, with emissivity set to 0.95, to reduce noise.
+Two node types share one design (Figure 12), built around an ESP32-C6 microcontroller. Type A nodes measure air temperature and humidity with an SHT45 and form the main grid. Type B nodes add an MLX90640 thermal camera (32 × 24 pixels) aimed at the canopy to estimate leaf temperature, and are placed at fewer locations. The firmware takes the median of 10 SHT45 readings and averages 10 thermal frames, with emissivity set to 0.95, to reduce noise.
 
-![Figure 13. Sensor-node functional blocks and schematic](assets/fig-sensor-node-design.png)
+![Figure 12. Sensor-node functional blocks and schematic](assets/fig-sensor-node-design.png)
 
-Because sunlight heats exposed sensors (Section 7.1), the SHT45 sits in a ventilated, louvred shield, separated from the electronics and battery compartment (Figure 14). Making the enclosure smaller and choosing the power supply are Semester 2 tasks.
+Because sunlight heats exposed sensors (Section 7.1), the SHT45 sits in a ventilated, louvred shield, separated from the electronics and battery compartment (Figure 13). Making the enclosure smaller and choosing the power supply are Semester 2 tasks.
 
-![Figure 14. Open sensor (left) and the ventilated, shielded enclosure concept (right)](assets/fig-sensor-enclosure.jpg)
+![Figure 13. Open sensor (left) and the ventilated, shielded enclosure concept (right)](assets/fig-sensor-enclosure.jpg)
 
 ### 6.3. S1: Communication and Edge Gateway
 
-Nodes send JSON packets containing a node ID, sequence number and readings over RS-485 (9600 baud, 8N1) to a USB–RS-485 adapter on the Raspberry Pi 5 (Figure 15). On the Pi, Docker runs a Mosquitto MQTT broker and Node-RED, which time-stamp, process and store the data, with InfluxDB planned for time-series storage. Multi-node addressing and fault handling are still to be implemented.
+Nodes send JSON packets containing a node ID, sequence number and readings over RS-485 (9600 baud, 8N1) to a USB–RS-485 adapter on the Raspberry Pi 5 (Figure 14). On the Pi, Docker runs a Mosquitto MQTT broker and Node-RED, which time-stamp, process and store the data, with InfluxDB planned for time-series storage. Multi-node addressing and fault handling are still to be implemented.
 
-![Figure 15. Edge gateway and data pipeline](assets/fig-edge-gateway.png)
+![Figure 14. Edge gateway and data pipeline](assets/fig-edge-gateway.png)
 
 ### 6.4. S2: Thermal Map, CFD Model and Digital Twin
 
