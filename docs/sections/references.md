@@ -8,4 +8,4 @@ title: References
 - Katzin, D., van Mourik, S., Kempkes, F., & van Henten, E. J. (2020). GreenLight – An open source model for greenhouses with supplemental lighting: Evaluation of heat requirements under LED and HPS lamps. *Biosystems Engineering, 194*, 61–81. https://doi.org/10.1016/j.biosystemseng.2020.03.010
 - Meteorological Service Singapore. (2026). *Past climate trends*. https://www.weather.gov.sg/climate-past-climate-trends/
 - Singapore Food Agency. (2026). *Singapore Food Statistics 2025*. https://www.sfa.gov.sg/news-publications/newsroom/singapore-food-statistics-2025
-- Teitel, M., Atias, M., & Barak, M. (2010). Gradients of temperature, humidity and CO2 along a fan-ventilated greenhouse. *Biosystems Engineering, 106*(2), 166–174. https://doi.org/10.1016/j.biosystemseng.2010.03.007
+- Teitel, M., Atias, M., & Barak, M. (2010). Gradients of temperature, humidity and CO₂ along a fan-ventilated greenhouse. *Biosystems Engineering, 106*(2), 166–174.
