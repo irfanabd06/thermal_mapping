@@ -57,7 +57,7 @@ const tables = {
     ],
   },
 
-  // Table 8: Scope of work (Section 4.4)
+  // Table 7: Scope of work (Section 4.3)
   "table-scope": {
     columns: ["Area", "Long-term application", "CDE4301 deliverable (committed)", "Stretch goal"],
     data: [
@@ -112,7 +112,7 @@ const tables = {
     ],
   },
 
-  // Table 7: Subsystem goals (Section 4.3)
+  // Table 10: Subsystem goals (Section 6.2)
   "table-subsystems": {
     columns: ["Subsystem", "Goal", "Deliverables", "Verified by", "Status (end of Semester 1)"],
     data: [
@@ -123,7 +123,7 @@ const tables = {
     ],
   },
 
-  // Table 9: Concept selection (Section 5.2)
+  // Table 8: Concept selection (Section 5.2)
   "table-concepts": {
     columns: ["Decision", "Options considered", "Selected", "Reason"],
     data: [
@@ -138,7 +138,7 @@ const tables = {
     ],
   },
 
-  // Table 10: CFD study scope (Section 5.3)
+  // Table 9: CFD study scope (Section 5.3)
   "table-sim-scope": {
     columns: ["Parameter", "Treatment"],
     data: [
