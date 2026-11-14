@@ -21,7 +21,8 @@ const REPORT_SECTIONS = [
 // Shown after the report body; not counted in the word limit.
 const EXTRA_SECTIONS = ["references.md", "appendices.md"];
 
-const TABLE_SHORTCODE = /^\s*\[\[\s*table\s*:\s*([\w-]+)\s*(?:\|\s*(.*?))?\s*\]\]\s*$/i;
+// Tolerates the backslash escapes (\[ \] \|) that rich-text editors may add when saving.
+const TABLE_SHORTCODE = /^\s*\\?\[\\?\[\s*table\s*:\s*([\w-]+)\s*(?:\\?\|\s*(.*?))?\s*\\?\]\\?\]\s*$/i;
 
 function slugify(text) {
   return text

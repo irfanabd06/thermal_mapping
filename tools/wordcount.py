@@ -42,7 +42,7 @@ def count_words(markdown):
                 continue
         else:
             in_todo = False
-        if re.match(r"^\[\[\s*table\s*:", stripped, re.I) or re.match(r"^!\[.*\]\(.*\)$", stripped):
+        if re.match(r"^\\?\[\\?\[\s*table\s*:", stripped, re.I) or re.match(r"^!\[.*\]\(.*\)$", stripped):
             continue
         kept.append(line)
 
