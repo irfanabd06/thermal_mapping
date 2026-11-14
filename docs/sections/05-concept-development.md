@@ -13,9 +13,9 @@ The project objective was decomposed into four functions: acquire, characterise,
 
 ### 5.2. Concept Selection
 
-The main design decisions were made by comparing alternatives against the constraints in Table 5 (Table 8). The communication choice will be confirmed by benchmarking RS-485 against one wireless option in Semester 2.
+The main design decisions were made by comparing alternatives against the constraints in Table 6 (Table 9). The communication choice will be confirmed by benchmarking RS-485 against one wireless option in Semester 2.
 
-[[table: table-concepts | Table 8: Concept selection]]
+[[table: table-concepts | Table 9: Concept selection]]
 
 ### 5.3. Simulation-Based Cooling Evaluation
 
@@ -23,8 +23,8 @@ Airflow and heat distribution depend on how cooling equipment is arranged and op
 
 ![Figure 10. Example: options for warm air trapped under the roof](assets/fig-trapped-hot-air.png)
 
-Testing many configurations physically would be slow and costly. CFD is therefore used to compare fan numbers, positions, orientations and speeds against the baseline, with the greenhouse structure held fixed (Table 9). Configurations are ranked by crop-zone exceedance and fan power. The result is the best-performing configuration among those evaluated, not a mathematical optimum. Two or three of the best configurations will then be tested physically to validate the predictions.
+Testing many configurations physically would be slow and costly. CFD is therefore used to compare fan numbers, positions, orientations and speeds against the baseline, with the greenhouse structure held fixed (Table 10). Configurations are ranked by crop-zone exceedance and fan power. The result is the best-performing configuration among those evaluated, not a mathematical optimum. Two or three of the best configurations will then be tested physically to validate the predictions.
 
-[[table: table-sim-scope | Table 9: Scope of the CFD configuration study]]
+[[table: table-sim-scope | Table 10: Scope of the CFD configuration study]]
 
-> TODO: Confirm the assumption in Table 9: existing ventilation and ceiling fans are modelled as fixed baseline operation, and the floor fans are the configurations being varied.
+> TODO: Confirm the assumption in Table 10: existing ventilation and ceiling fans are modelled as fixed baseline operation, and the floor fans are the configurations being varied.

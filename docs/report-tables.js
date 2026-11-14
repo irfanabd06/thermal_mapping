@@ -32,7 +32,7 @@ const tables = {
       "<strong><u>Current Use</u></strong><br>Retired from commercial production. GH1 is now leased by NUS for research and student experimentation<br>Reported peak temperature: 45 °C",
   },
 
-  // Table 3: Problem → solution map (Section 3.3)
+  // Table 4: Problem → solution map (Section 3.3)
   "table-problem-solution": {
     columns: ["Target problem (evidence)", "Solution", "Objective", "Requirements"],
     data: [
@@ -57,7 +57,7 @@ const tables = {
     ],
   },
 
-  // Table 4: Scope of work (Section 3.4)
+  // Table 5: Scope of work (Section 3.4)
   "table-scope": {
     columns: ["Area", "Long-term application", "CDE4301 deliverable (committed)", "Stretch goal"],
     data: [
@@ -70,7 +70,7 @@ const tables = {
     ],
   },
 
-  // Table 5: Constraints (Section 3.5)
+  // Table 6: Constraints (Section 3.5)
   "table-constraints": {
     columns: ["Constraint", "Description", "Design implication"],
     data: [
@@ -84,7 +84,7 @@ const tables = {
     ],
   },
 
-  // Table 6: Technical requirements and targets (Section 4.2)
+  // Table 7: Technical requirements and targets (Section 4.2)
   "table-requirements": {
     columns: ["ID", "Requirement", "Target", "Rationale", "Verification", "Status"],
     data: [
@@ -104,7 +104,7 @@ const tables = {
     ],
   },
 
-  // Table 7: Subsystem goals (Section 4.3)
+  // Table 8: Subsystem goals (Section 4.3)
   "table-subsystems": {
     columns: ["Subsystem", "Goal", "Deliverables", "Verified by", "Status (end of Semester 1)"],
     data: [
@@ -115,7 +115,7 @@ const tables = {
     ],
   },
 
-  // Table 8: Concept selection (Section 5.2)
+  // Table 9: Concept selection (Section 5.2)
   "table-concepts": {
     columns: ["Decision", "Options considered", "Selected", "Reason"],
     data: [
@@ -129,7 +129,7 @@ const tables = {
     ],
   },
 
-  // Table 9: CFD study scope (Section 5.3)
+  // Table 10: CFD study scope (Section 5.3)
   "table-sim-scope": {
     columns: ["Parameter", "Treatment"],
     data: [
@@ -143,7 +143,7 @@ const tables = {
     ],
   },
 
-  // Table 10: SHT45 vs Kestrel 5000 (Section 7.1)
+  // Table 11: SHT45 vs Kestrel 5000 (Section 7.1)
   "table-sht45": {
     columns: ["Test", "Quantity", "Mean error", "MAE", "RMSE"],
     data: [
@@ -154,7 +154,7 @@ const tables = {
     ],
   },
 
-  // Table 11: MLX90640 vs handheld thermal camera (Section 7.3)
+  // Table 12: MLX90640 vs handheld thermal camera (Section 7.3)
   "table-mlx": {
     columns: ["Distance", "MLX90640 centre", "Reference centre", "Difference", "MLX90640 max", "Reference max"],
     data: [
@@ -165,7 +165,7 @@ const tables = {
     ],
   },
 
-  // Table 12: Milestones (Section 9.3)
+  // Table 13: Milestones (Section 9.3)
   "table-milestones": {
     columns: ["Milestone", "Date", "Deliverable", "Acceptance criterion"],
     data: [
@@ -218,33 +218,33 @@ const tables = {
     ],
   },
 
-  // Table A4: 57-point survey (Appendix D)
+  // Table 3: 57-point survey (Section 2.3)
   "table-survey": {
-    columns: ["Distance from front wall (m)", "Row 1", "Row 2", "Row 3"],
+    columns: ["s (m)", "Row 1", "Row 2", "Row 3"],
     data: [
-      ["1.5", "T1: 36.1", "T2: 36.4", "T3: 37.0"],
-      ["4.6", "T4: 37.0", "T5: 36.8", "T6: 37.0"],
-      ["7.7", "T7: 38.0", "T8: 35.6", "T9: 37.6"],
-      ["10.8", "T10: 38.2", "T11: 35.7", "T12: 38.1"],
-      ["13.9", "T13: 38.2", "T14: 35.5", "T15: 37.9"],
-      ["17.0", "T16: 37.7", "T17: 35.7", "T18: 39.2"],
-      ["20.1", "T19: 37.7", "T20: 36.0", "T21: 39.2"],
-      ["23.2", "T22: 36.9", "T23: 37.0", "T24: 39.1"],
-      ["26.3", "T25: 37.0", "T26: 37.1", "T27: 39.1"],
-      ["29.4", "T28: 37.2", "T29: 37.5", "T30: 38.8"],
-      ["32.5", "T31: 37.5", "T32: 37.7", "T33: 38.9"],
-      ["35.6", "T34: 37.8", "T35: 38.0", "T36: 38.0"],
-      ["38.7", "T37: 38.8", "T38: 38.9", "T39: 39.0"],
-      ["41.8", "T40: 38.8", "T41: 39.4", "T42: 39.0"],
-      ["44.9", "T43: 38.5", "T44: 39.0", "T45: 39.1"],
-      ["48.0", "T46: 38.8", "T47: 39.0", "T48: 39.1"],
-      ["51.1", "T49: 39.1", "T50: 39.2", "T51: 39.0"],
-      ["54.2", "T52: 39.4", "T53: 39.5", "T54: 38.5"],
-      ["57.3", "T55: 39.4", "T56: 39.3", "T57: 38.5"],
+      ["1.5", "T1 36.1", "T2 36.4", "T3 37.0"],
+      ["4.6", "T4 37.0", "T5 36.8", "T6 37.0"],
+      ["7.7", "T7 38.0", "T8 35.6", "T9 37.6"],
+      ["10.8", "T10 38.2", "T11 35.7", "T12 38.1"],
+      ["13.9", "T13 38.2", "T14 35.5", "T15 37.9"],
+      ["17.0", "T16 37.7", "T17 35.7", "T18 39.2"],
+      ["20.1", "T19 37.7", "T20 36.0", "T21 39.2"],
+      ["23.2", "T22 36.9", "T23 37.0", "T24 39.1"],
+      ["26.3", "T25 37.0", "T26 37.1", "T27 39.1"],
+      ["29.4", "T28 37.2", "T29 37.5", "T30 38.8"],
+      ["32.5", "T31 37.5", "T32 37.7", "T33 38.9"],
+      ["35.6", "T34 37.8", "T35 38.0", "T36 38.0"],
+      ["38.7", "T37 38.8", "T38 38.9", "T39 39.0"],
+      ["41.8", "T40 38.8", "T41 39.4", "T42 39.0"],
+      ["44.9", "T43 38.5", "T44 39.0", "T45 39.1"],
+      ["48.0", "T46 38.8", "T47 39.0", "T48 39.1"],
+      ["51.1", "T49 39.1", "T50 39.2", "T51 39.0"],
+      ["54.2", "T52 39.4", "T53 39.5", "T54 38.5"],
+      ["57.3", "T55 39.4", "T56 39.3", "T57 38.5"],
     ],
   },
 
-  // Table A5: GH1 geometry (Appendix E)
+  // Table A4: GH1 geometry (Appendix D)
   "table-geometry": {
     columns: ["Item", "Value", "Source"],
     data: [
