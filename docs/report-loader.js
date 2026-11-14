@@ -1,26 +1,15 @@
 // Builds the report page from the Markdown files in docs/sections/.
 //
-// To add, remove or reorder sections, edit the lists below.
+// To add, remove or reorder sections, edit docs/sections/sections.json.
 // Inside a section file you can use:
 //   [[table: <table-id> | <caption>]]   inserts a table defined in report-tables.js
 //   ![Figure N: caption](assets/file.png)   an image on its own line becomes a captioned figure
 //   > TODO: ...                         a yellow draft note (not counted in the word limit)
 
-const REPORT_SECTIONS = [
-  "00-introduction.md",
-  "01-problem-context.md",
-  "02-site-investigation.md",
-  "03-problem-objectives-scope.md",
-  "04-design-specifications.md",
-  "05-concept-development.md",
-  "06-detailed-design.md",
-  "07-prototypes-testing.md",
-  "08-analysis.md",
-  "09-problems-plan.md",
-];
-
-// Shown after the report body; not counted in the word limit.
-const EXTRA_SECTIONS = ["references.md", "appendices.md"];
+// The section order lives in sections/sections.json ("report" counts towards the word limit;
+// "extras" are references and appendices). It is fetched fresh on every visit, so renaming or
+// adding a section never breaks the page because of a cached copy of this script.
+const SECTIONS_MANIFEST = "sections/sections.json";
 
 // Tolerates the backslash escapes (\[ \] \|) that rich-text editors may add when saving.
 const TABLE_SHORTCODE = /^\s*\\?\[\\?\[\s*table\s*:\s*([\w-]+)\s*(?:\\?\|\s*(.*?))?\s*\\?\]\\?\]\s*$/i;
@@ -135,8 +124,11 @@ async function buildReport() {
   const body = document.getElementById("report-body");
   const extras = document.getElementById("report-extras");
   try {
-    const main = await Promise.all(REPORT_SECTIONS.map(loadSection));
-    const end = await Promise.all(EXTRA_SECTIONS.map(loadSection));
+    const manifestResponse = await fetch(SECTIONS_MANIFEST, { cache: "no-cache" });
+    if (!manifestResponse.ok) throw new Error(`Could not load ${SECTIONS_MANIFEST} (${manifestResponse.status})`);
+    const manifest = await manifestResponse.json();
+    const main = await Promise.all(manifest.report.map(loadSection));
+    const end = await Promise.all((manifest.extras || []).map(loadSection));
     body.replaceChildren();
     main.forEach((section, i) => {
       if (i > 0) body.appendChild(document.createElement("sl-divider"));
