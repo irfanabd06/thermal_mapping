@@ -44,7 +44,7 @@ To test whether a single monitoring point is representative, air temperature was
 
 ### 2.4. Existing Airflow Pattern
 
-GH1's fans and the outside wind push air in conflicting directions (Figure 6). The four wall exhaust fans draw air out at both ends, while the six ceiling fans alternate, three blowing towards the front and three towards the rear. Wind also enters through the netted side walls along the length of the greenhouse. Where these flows meet head-on, they can cancel out and leave pockets of slow-moving air in which heat builds up, so the fans use energy without carrying heat out efficiently. Fan positions and directions are listed in Table A5. The CFD baseline (Section 5.3) will test this effect.
+GH1's fans and the outside wind push air in conflicting directions (Figure 6). Exhaust fans draw air out at both ends, the ceiling fans alternate between blowing to the front and to the rear, and wind enters through the netted side walls. Where these flows meet, they can cancel out, leaving pockets of still air where heat and moisture build up and fan energy is wasted. Fan details are in Table A5; the CFD baseline (Section 5.3) will test this effect.
 
 ![Figure 6. GH1 fan airflow directions and outside wind entering through the netted side walls](assets/fig-gh1-airflow.png)
 
