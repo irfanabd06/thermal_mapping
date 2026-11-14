@@ -3,7 +3,7 @@ title: 5. Concept Development and Selection
 ---
 ### 5.1. System and Functional Decomposition
 
-The greenhouse microclimate results from interacting thermal loads (solar radiation, air temperature, humidity and leaf temperature) and cooling mechanisms (ventilation and circulation fans, shades, misting and plant transpiration), as mapped in Figure 9. Misting and transpiration cool the air but raise humidity, which limits further evaporative cooling unless the air is exchanged. This coupling is why both temperature and humidity are measured across the greenhouse.
+Greenhouse microclimates are shaped by interacting factors such as solar radiation, heat transfer, ventilation, humidity and plant transpiration (Figure 9). Solar radiation warms the greenhouse, creating temperature gradients due to uneven exposure and airflow distribution. Plants modify their surroundings through transpiration, which cools the air while increasing local humidity. Misting can further enhance evaporative cooling, although its efficiency depends on ambient humidity and ventilation: unless humid air is exchanged, it limits further cooling. Consequently, temperature and humidity can differ significantly across the greenhouse, producing heterogeneous microclimates in which conditions at a single point may not represent those elsewhere (Teitel et al., 2010; Cesar et al., 2020). This is why both temperature and humidity are measured across the greenhouse.
 
 ![Figure 9. System decomposition of the greenhouse microclimate](assets/fig-system-decomposition.jpg)
 
