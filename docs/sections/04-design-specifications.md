@@ -13,12 +13,20 @@ where A<sub>i</sub> is 1 for a zone with crops and 0 otherwise, T<sub>i</sub> is
 
 ### 4.2. Technical Requirements
 
-Table 7 lists the technical requirements. Targets marked "proposed" will be finalised from bench data and baseline measurements.
+Table 6 lists the technical requirements. Targets marked "proposed" will be finalised from bench data and baseline measurements.
 
-[[table: table-requirements | Table 7: Technical requirements and targets]]
+[[table: table-requirements | Table 6: Technical requirements and targets]]
 
 ### 4.3. Subsystem Goals
 
-Table 8 defines what each subsystem must deliver and how it will be verified.
+Table 7 defines what each subsystem must deliver and how it will be verified.
 
-[[table: table-subsystems | Table 8: Subsystem goals, deliverables and verification]]
+[[table: table-subsystems | Table 7: Subsystem goals, deliverables and verification]]
+
+### 4.4. Scope of Work
+
+Table 8 sets out what this project will deliver, alongside the long-term application and stretch goals. Only fans are varied; the greenhouse structure stays fixed. Physical tests use four floor fans in the germination section.
+
+[[table: table-scope | Table 8: Scope of work]]
+
+**Out of scope:** changes to GH1's structure, vents, misting or shading; guaranteeing crop-optimal temperatures at peak sun; air-conditioning; proving yield or profit improvement; and developing weather forecasts (NEA data is used as an input).

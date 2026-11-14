@@ -57,7 +57,7 @@ const tables = {
     ],
   },
 
-  // Table 6: Scope of work (Section 3.5)
+  // Table 8: Scope of work (Section 4.4)
   "table-scope": {
     columns: ["Area", "Long-term application", "CDE4301 deliverable (committed)", "Stretch goal"],
     data: [
@@ -88,7 +88,7 @@ const tables = {
     ],
   },
 
-  // Table 7: Technical requirements and targets (Section 4.2)
+  // Table 6: Technical requirements and targets (Section 4.2)
   "table-requirements": {
     columns: ["ID", "Requirement", "Target", "Rationale", "Verification", "Status"],
     data: [
@@ -110,7 +110,7 @@ const tables = {
     ],
   },
 
-  // Table 8: Subsystem goals (Section 4.3)
+  // Table 7: Subsystem goals (Section 4.3)
   "table-subsystems": {
     columns: ["Subsystem", "Goal", "Deliverables", "Verified by", "Status (end of Semester 1)"],
     data: [

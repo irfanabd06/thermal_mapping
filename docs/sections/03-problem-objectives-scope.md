@@ -1,5 +1,5 @@
 ---
-title: 3. Problem Statement, Objectives and Scope
+title: 3. Problem Statement, Objectives and Constraints
 ---
 ### 3.1. Problem Statement
 
@@ -30,11 +30,3 @@ Table 4 maps each objective to its target problem and requirements.
 Table 5 lists constraints from the problem and from the project. The main one is rapid temperature change, which limits how precisely conditions can be measured and modelled.
 
 [[table: table-constraints | Table 5: Design constraints and their implications]]
-
-### 3.5. Scope of Work
-
-Table 6 sets out what this project will deliver, alongside the long-term application and stretch goals. Only fans are varied; the greenhouse structure stays fixed. Physical tests use four floor fans in the germination section.
-
-[[table: table-scope | Table 6: Scope of work]]
-
-**Out of scope:** changes to GH1's structure, vents, misting or shading; guaranteeing crop-optimal temperatures at peak sun; air-conditioning; proving yield or profit improvement; and developing weather forecasts (NEA data is used as an input).
