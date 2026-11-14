@@ -113,28 +113,32 @@ https://irfanabd06.github.io/thermal_mapping/
 
 ### Editing the Report
 
+The report text lives in Markdown files, one per section, in [`docs/sections/`](docs/sections/). `docs/index.html` loads them automatically, so there is no need to edit HTML.
+
 | Task | Location |
 |---|---|
-| Report content | `docs/index.html` |
+| Report text | `docs/sections/*.md` |
+| Section order | `REPORT_SECTIONS` in `docs/report-loader.js` |
 | Report tables | `docs/report-tables.js` |
 | Images and figures | `docs/assets/` |
 | Website styling | `docs/index.css` |
 | Reusable website components | `docs/components/` |
 
-Draft placeholders are marked using `<sl-alert class="todo">` blocks in `docs/index.html`. Remove each placeholder after completing its corresponding section.
+**Visual editor:** the repo includes a [Pages CMS](https://pagescms.org) configuration (`.pages.yml`). Sign in at [app.pagescms.org](https://app.pagescms.org) with GitHub and open this repo to edit sections in a rich-text editor; each save is a commit.
 
-To add figures, place image files in `docs/assets/` and use the existing image component:
+Inside a section file:
 
-```html
-<image-component
-  source="assets/example.png"
-  subtitle="Figure 1: Example caption">
-</image-component>
-```
+| To add | Write |
+|---|---|
+| A table from `report-tables.js` | `[[table: table-requirements \| Table 3: Technical requirements and targets]]` |
+| A captioned figure | `![Figure 1: GH1 layout](assets/gh1-layout.png)` on its own line |
+| A draft note (not counted) | `> TODO: what still needs writing` |
+
+**Local preview:** the page loads the section files over HTTP, so opening `index.html` directly will not work. Run `python3 -m http.server` inside `docs/` and open http://localhost:8000.
 
 ### Word Count
 
-Run the existing word-count script:
+Count the words in the report sections (TODO notes, tables, references and appendices are excluded):
 
 ```bash
 python3 tools/wordcount.py

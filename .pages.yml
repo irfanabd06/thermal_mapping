@@ -1,0 +1,30 @@
+# Pages CMS configuration (https://pagescms.org)
+# Lets you edit the report in a browser-based rich-text editor.
+# Every save is a commit to this repo, and GitHub Pages republishes the site.
+
+media:
+  input: docs/assets
+  output: assets
+
+content:
+  - name: report
+    label: Report sections
+    type: collection
+    path: docs/sections
+    format: yaml-frontmatter
+    subfolders: false
+    view:
+      fields: [title]
+      primary: title
+      sort: [title]
+    fields:
+      - name: title
+        label: Section title
+        type: string
+        required: true
+      - name: body
+        label: Content
+        type: rich-text
+        options:
+          format: markdown
+          switcher: true
