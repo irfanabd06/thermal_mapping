@@ -12,7 +12,3 @@ While greenhouses can shield crops from rain and pests, they require effective t
 ### 1.2. Greenhouse Thermodynamics and Microclimate Heterogeneity
 
 Greenhouse microclimates are shaped by various interacting factors such as solar radiation, heat transfer, ventilation, humidity, and plant transpiration. Solar radiation warms the greenhouse, creating temperature gradients due to uneven exposure and airflow distribution. Plants too play a crucial role in modifying their surroundings through transpiration, which cools the air while increasing local humidity. Misting systems can further enhance evaporative cooling, although their efficiency depends on ambient humidity and ventilation. Consequently, temperature and humidity levels can differ significantly across the greenhouse. This variability results in heterogeneous microclimates, meaning that conditions at a single point may not accurately represent those experienced in other areas of the greenhouse (Teitel et al., 2010; Cesar et al., 2020).
-
-### 1.3. Existing Work and Gap
-
-> TODO: **To write (~140 words):** What commercial greenhouse controllers, published greenhouse CFD studies (Guzmán et al., 2019) and microclimate-mapping methods (Brentarolli et al., 2024) already do. The gap: low-cost, spatially informed placement *and* timing of cooling for tropical greenhouses. One-sentence value proposition for the operator.
