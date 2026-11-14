@@ -5,9 +5,7 @@ title: 3. Problem Statement, Objectives and Scope
 
 > **How might we enable data-informed design and environmental control of tropical greenhouses to improve thermal performance and cooling effectiveness?**
 
-The lack of spatially resolved environmental data and validated thermal models limits the ability to evaluate greenhouse cooling configurations and to apply cooling where crops need it. This project has two applications. First, an offline CFD model, checked by floor-fan tests, compares fan placements, directions and speeds before installation. Second, a digital twin built from a sensor grid and soft sensors monitors crop-zone temperature and humidity, predicts when floor fans are needed, and shows conditions on a dashboard.
-
-Success is measured as improvement over GH1's current operation (the baseline), not as reaching an optimal temperature. Holding 24–29 °C at peak sun is not achievable without air-conditioning, whose running cost would outweigh the value of the crops.
+Without spatially resolved thermal data or a validated thermal model, cooling layouts cannot be evaluated before installation, and cooling cannot be directed to where and when crops need it.
 
 ### 3.2. Value to Farmers
 
