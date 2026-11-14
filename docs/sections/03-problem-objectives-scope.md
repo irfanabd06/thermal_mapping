@@ -21,20 +21,20 @@ Farmers do not need the coolest greenhouse; they need a profitable one. The solu
 2. **O2 Thermal modelling and design evaluation:** develop a CFD model of GH1 and use it to compare fan numbers, positions, orientations and speeds against the current layout.
 3. **O3 Digital twin and environmental control:** combine live measurements with the model to show conditions on a dashboard and automatically operate floor fans in response to crop-zone hotspots.
 
-The objectives follow the sequence measure → model → evaluate → monitor → control. Table 2 links each objective to the problem it addresses and the requirements used to test it (Section 4).
+The objectives follow the sequence measure → model → evaluate → monitor → control. Table 3 links each objective to the problem it addresses and the requirements used to test it (Section 4).
 
-[[table: table-problem-solution | Table 2: Target problems, solutions and objectives]]
+[[table: table-problem-solution | Table 3: Target problems, solutions and objectives]]
 
 ### 3.4. Scope of Work
 
-Table 3 separates what this project commits to deliver in CDE4301 from the long-term application and from stretch goals. The greenhouse structure is fixed; only fans are varied.
+Table 4 separates what this project commits to deliver in CDE4301 from the long-term application and from stretch goals. The greenhouse structure is fixed; only fans are varied.
 
-[[table: table-scope | Table 3: Scope of work]]
+[[table: table-scope | Table 4: Scope of work]]
 
 **Out of scope:** changes to GH1's structure, vents, misting or shading; guaranteeing crop-optimal temperatures at peak sun; air-conditioning; proving yield or profit improvement; and high-accuracy weather or temperature forecasting.
 
 ### 3.5. Constraints
 
-The solution must work within the constraints in Table 4, each of which shapes the design.
+The solution must work within the constraints in Table 5, each of which shapes the design.
 
-[[table: table-constraints | Table 4: Design constraints and their implications]]
+[[table: table-constraints | Table 5: Design constraints and their implications]]

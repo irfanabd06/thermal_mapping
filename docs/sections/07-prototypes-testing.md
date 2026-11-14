@@ -1,17 +1,17 @@
 ---
 title: 7. Prototypes and Testing
 ---
-Semester 1 testing focused on whether the sensing chain produces trustworthy data. Each test states its purpose, method and result against the requirements in Table 5.
+Semester 1 testing focused on whether the sensing chain produces trustworthy data. Each test states its purpose, method and result against the requirements in Table 6.
 
 ### 7.1. SHT45 Air Temperature and Humidity
 
 - **Purpose:** check that the SHT45 agrees with a reference closely enough for baseline comparisons (R1).
 - **Method:** the SHT45 was logged side by side with a Kestrel 5000 weather meter, first on the bench for about 10 minutes, including a heating step, and then in GH1 for about 30 minutes (Figure 16).
-- **Result:** on the bench, the SHT45 agreed with the reference to 0.33 °C and 2.35 %RH (RMSE), meeting R1. In the greenhouse, it read 4.3 °C higher and 10 %RH lower than the reference (Table 9), a bias consistent with direct solar heating of the sensor.
+- **Result:** on the bench, the SHT45 agreed with the reference to 0.33 °C and 2.35 %RH (RMSE), meeting R1. In the greenhouse, it read 4.3 °C higher and 10 %RH lower than the reference (Table 10), a bias consistent with direct solar heating of the sensor.
 
 ![Figure 16. SHT45 compared with a Kestrel 5000 on the bench (top) and in GH1 (bottom)](assets/fig-sht45-validation.png)
 
-[[table: table-sht45 | Table 9: SHT45 agreement with the Kestrel 5000 reference]]
+[[table: table-sht45 | Table 10: SHT45 agreement with the Kestrel 5000 reference]]
 
 > TODO: Confirm whether the greenhouse test used the open sensor, and the date and time of both tests.
 
@@ -27,11 +27,11 @@ Semester 1 testing focused on whether the sensing chain produces trustworthy dat
 
 - **Purpose:** check that the low-cost thermal camera gives usable canopy temperatures.
 - **Method:** MLX90640 frames of the same plant were compared with a handheld thermal camera at distances of 50–500 mm (Figure 17).
-- **Result:** centre temperatures agreed within 1.3 °C, but maximum temperatures were 1.8–3.8 °C lower (Table 10), because each MLX90640 pixel averages over a larger area.
+- **Result:** centre temperatures agreed within 1.3 °C, but maximum temperatures were 1.8–3.8 °C lower (Table 11), because each MLX90640 pixel averages over a larger area.
 
 ![Figure 17. MLX90640 frames (left of each pair) compared with a handheld thermal camera at 50–500 mm](assets/fig-mlx90640-check.jpg)
 
-[[table: table-mlx | Table 10: MLX90640 compared with a handheld thermal camera]]
+[[table: table-mlx | Table 11: MLX90640 compared with a handheld thermal camera]]
 
 ### 7.4. RS-485 and MQTT Telemetry
 
