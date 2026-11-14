@@ -33,3 +33,5 @@ experiments/mlx90640_test/thermal_frames.txt
 
 # Generated sensor measurements
 experiments/sht45_test/sht45_test.csv
+# Dashboard build scratch folder (results are copied to docs/dashboard and cad)
+dashboard/out/

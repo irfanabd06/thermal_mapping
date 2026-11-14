@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Greenhouse 1 Thermal Map</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@500;600&display=swap" rel="stylesheet">
+<style>
+/* Layout idea: control-room sheet. A wide 3D viewport is the centrepiece, a status rail
+   sits beside it, and plan-aligned evidence (profile, grid of readings) runs underneath. */
+:root {
+  --mode: light;
+  --bg: #eef0ec;
+  --surface: #fbfbf9;
+  --surface-2: #f3f4f0;
+  --ink: #14181a;
+  --ink-2: #4a5155;
+  --ink-3: #747b7f;
+  --line: #d9dcd6;
+  --accent: #17624a;
+  --accent-ink: #ffffff;
+  --scene: #e4e8e3;
+  --good: #0ca30c;
+  --warn: #fab219;
+  --crit: #d03b3b;
+  --s1: #2a78d6;
+  --s2: #eb6834;
+  --s3: #1baf7a;
+  --font-display: "IBM Plex Sans Condensed", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+  --font-body: "IBM Plex Sans", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --mode: dark;
+    --bg: #111413; --surface: #191d1b; --surface-2: #202523; --ink: #eef0ec; --ink-2: #bcc2bc;
+    --ink-3: #8b928c; --line: #2d3330; --accent: #5cc79b; --accent-ink: #0c1512; --scene: #0d100f;
+    --s1: #3987e5; --s2: #d95926; --s3: #199e70;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --mode: dark;
+  --bg: #111413; --surface: #191d1b; --surface-2: #202523; --ink: #eef0ec; --ink-2: #bcc2bc;
+  --ink-3: #8b928c; --line: #2d3330; --accent: #5cc79b; --accent-ink: #0c1512; --scene: #0d100f;
+  --s1: #3987e5; --s2: #d95926; --s3: #199e70;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--bg); color: var(--ink); font: 14px/1.45 var(--font-body); }
+.wrap { max-width: 1480px; margin: 0 auto; padding: 20px 20px 48px; display: flex; flex-direction: column; gap: 16px; }
+h1, h2, h3 { font-family: var(--font-display); font-weight: 600; margin: 0; text-wrap: balance; }
+h1 { font-size: 26px; letter-spacing: .01em; }
+h2 { font-size: 15px; text-transform: uppercase; letter-spacing: .08em; color: var(--ink-2); }
+.num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+header.top { display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: flex-end; justify-content: space-between; }
+.sub { color: var(--ink-2); margin-top: 2px; }
+.source { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.chip { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 2px 6px; padding: 4px 10px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); color: var(--ink-2); font-size: 12.5px; }
+.chip b { color: var(--ink); font-weight: 600; }
+.dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ink-3); }
+.btn { border: 1px solid var(--line); background: var(--surface); border-radius: 6px; padding: 5px 11px; cursor: pointer; }
+.btn:hover { border-color: var(--ink-3); }
+.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+
+.tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); }
+.tabs button { border: 1px solid transparent; border-bottom: 0; background: transparent; padding: 8px 16px; border-radius: 8px 8px 0 0; cursor: pointer; font-family: var(--font-display); font-size: 15px; font-weight: 600; letter-spacing: .04em; color: var(--ink-2); margin-bottom: -1px; }
+.tabs button:hover { color: var(--ink); }
+.tabs button[aria-selected="true"] { background: var(--surface); border-color: var(--line); color: var(--ink); box-shadow: inset 0 3px 0 var(--accent); }
+.panel { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+[hidden] { display: none !important; }
+.tiles { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; }
+.tile { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; min-width: 0; }
+.tile .k { font-size: 12px; color: var(--ink-2); text-transform: uppercase; letter-spacing: .06em; }
+.tile .v { font-family: var(--font-mono); font-size: 28px; font-weight: 500; line-height: 1.15; margin-top: 4px; }
+.tile .v small { font-size: 14px; color: var(--ink-2); font-weight: 400; }
+.tile .d { color: var(--ink-2); font-size: 12.5px; margin-top: 2px; }
+.tile.alert { border-left: 4px solid var(--crit); }
+
+.main { display: grid; grid-template-columns: minmax(0, 1fr) 350px; gap: 16px; align-items: start; }
+.col { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; min-width: 0; }
+.card > .hd { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; justify-content: space-between; padding: 11px 14px; border-bottom: 1px solid var(--line); }
+.card > .bd { padding: 12px 14px; }
+.hint { color: var(--ink-3); font-size: 12.5px; }
+
+.toolbar { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+.seg button { border: 0; background: transparent; padding: 5px 10px; cursor: pointer; border-right: 1px solid var(--line); }
+.seg button:last-child { border-right: 0; }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+.layers { display: flex; flex-wrap: wrap; gap: 4px 12px; padding: 9px 14px; border-bottom: 1px solid var(--line); font-size: 13px; }
+.layers label { display: inline-flex; gap: 5px; align-items: center; cursor: pointer; white-space: nowrap; }
+.layers input { accent-color: var(--accent); }
+
+.viewport { position: relative; height: clamp(460px, 74vh, 860px); background: var(--scene); border-radius: 0 0 8px 8px; overflow: hidden; touch-action: none; cursor: grab; }
+.viewport.drag { cursor: grabbing; }
+.viewport canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+#overlay { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.sdot { position: absolute; width: 9px; height: 9px; margin: -4.5px 0 0 -4.5px; border-radius: 50%; background: var(--ink); border: 1.5px solid var(--surface); pointer-events: auto; cursor: pointer; padding: 0; }
+.sdot.hot { width: 13px; height: 13px; margin: -6.5px 0 0 -6.5px; background: var(--crit); border-color: #fff; }
+.sdot.sel { outline: 2px solid var(--ink); outline-offset: 2px; }
+.lab { position: absolute; transform: translate(-50%, -50%); white-space: nowrap; font-size: 11.5px; }
+.lab.fl { background: var(--surface); border: 1px solid var(--ink-2); color: var(--ink); border-radius: 4px; padding: 0 5px; font-family: var(--font-mono); font-weight: 600; }
+.lab.fl.rc { border-radius: 999px; }
+.lab.zone { color: var(--ink-2); font-family: var(--font-display); text-transform: uppercase; letter-spacing: .08em; font-size: 11px; }
+.lab.peak { transform: translate(-50%, -100%); background: var(--crit); color: #fff; border-radius: 4px; padding: 1px 6px; font-family: var(--font-mono); font-weight: 600; }
+.legend { position: absolute; left: 12px; bottom: 12px; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px 6px; width: 250px; font-size: 12px; }
+.legend .bar { height: 10px; border-radius: 2px; margin: 5px 0 2px; }
+.legend .ticks { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 11px; color: var(--ink-2); }
+.zoom { position: absolute; right: 12px; bottom: 12px; display: flex; flex-direction: column; gap: 4px; }
+.zoom button { width: 30px; height: 30px; padding: 0; font-size: 17px; line-height: 1; }
+.nogl { position: absolute; inset: 0; display: none; align-items: center; justify-content: center; padding: 24px; text-align: center; color: var(--ink-2); }
+
+#tip { position: fixed; z-index: 20; pointer-events: none; background: var(--surface); color: var(--ink); border: 1px solid var(--ink-3); border-radius: 6px; padding: 7px 9px; font-size: 12.5px; box-shadow: 0 4px 14px rgba(0,0,0,.18); display: none; max-width: 240px; }
+#tip .t { font-weight: 600; }
+#tip table { border-collapse: collapse; margin-top: 3px; }
+#tip td { padding: 0 8px 0 0; }
+#tip td:last-child { padding: 0; text-align: right; font-family: var(--font-mono); }
+.sw { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 5px; vertical-align: baseline; }
+
+.thr { display: flex; align-items: center; gap: 10px; }
+.thr input[type=range] { flex: 1; accent-color: var(--crit); min-width: 0; }
+.thr output { font-family: var(--font-mono); font-weight: 600; min-width: 62px; text-align: right; }
+.zonelist { list-style: none; margin: 12px 0 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.zonelist li { border-left: 4px solid var(--crit); padding: 2px 0 2px 10px; }
+.zonelist .ttl { font-weight: 600; }
+.zonelist .ids { color: var(--ink-2); font-size: 12.5px; font-family: var(--font-mono); overflow-wrap: anywhere; }
+.pill { display: inline-flex; align-items: center; gap: 4px; padding: 1px 8px; border-radius: 999px; font-size: 12px; font-weight: 600; border: 1px solid transparent; white-space: nowrap; }
+.pill.crit { background: color-mix(in srgb, var(--crit) 16%, transparent); border-color: var(--crit); }
+.pill.warn { background: color-mix(in srgb, var(--warn) 22%, transparent); border-color: var(--warn); }
+.pill.good { background: color-mix(in srgb, var(--good) 14%, transparent); border-color: var(--good); }
+.pill.off { color: var(--ink-2); border-color: var(--line); font-weight: 500; }
+table.t { width: 100%; border-collapse: collapse; font-size: 13px; }
+table.t th { text-align: left; font-weight: 500; color: var(--ink-2); font-size: 12px; padding: 4px 6px 4px 0; border-bottom: 1px solid var(--line); }
+table.t td { padding: 6px 6px 6px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+table.t tr:last-child td { border-bottom: 0; }
+table.t .r { text-align: right; }
+table.t td.r { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.fans { display: grid; grid-template-columns: 1fr; gap: 0; }
+.fan { display: grid; grid-template-columns: 30px 1fr auto; gap: 8px; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--line); }
+.fan:last-child { border-bottom: 0; }
+.fan .n { font-family: var(--font-mono); font-weight: 600; border: 1px solid var(--ink-2); border-radius: 4px; text-align: center; }
+.fan.circ .n { border-radius: 999px; }
+.fan .w { font-size: 12.5px; color: var(--ink-2); }
+ul.notes { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; }
+ul.notes li { max-width: 68ch; }
+
+.legendrow { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 12.5px; color: var(--ink-2); }
+.legendrow i { display: inline-block; width: 14px; height: 3px; border-radius: 2px; vertical-align: middle; margin-right: 6px; }
+#profile { width: 100%; display: block; }
+#profile text { font-family: var(--font-body); font-size: 11.5px; fill: var(--ink-2); }
+#profile .num { font-family: var(--font-mono); }
+.scroll { overflow-x: auto; }
+table.grid { border-collapse: collapse; font-size: 12.5px; width: 100%; min-width: 980px; }
+table.grid th { font-weight: 500; color: var(--ink-2); padding: 4px 3px; text-align: center; font-size: 11.5px; }
+table.grid th.rh { text-align: left; white-space: nowrap; padding-right: 10px; }
+table.grid td { padding: 2px; text-align: center; }
+.cell { display: block; width: 100%; border: 1px solid transparent; background: transparent; border-radius: 4px; padding: 3px 0 0; cursor: pointer; font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.cell small { display: block; color: var(--ink-3); font-size: 10.5px; }
+.cell i { display: block; height: 5px; margin-top: 3px; border-radius: 0 0 3px 3px; }
+.cell.hot { font-weight: 600; border-color: var(--crit); }
+.cell.sel { outline: 2px solid var(--ink); outline-offset: 1px; }
+.cell:hover { border-color: var(--ink-3); }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+dialog { border: 1px solid var(--line); border-radius: 10px; background: var(--surface); color: var(--ink); padding: 18px; width: min(520px, calc(100vw - 32px)); }
+dialog::backdrop { background: rgba(0,0,0,.45); }
+dialog textarea { width: 100%; height: 220px; font-family: var(--font-mono); font-size: 12.5px; background: var(--surface-2); border: 1px solid var(--line); border-radius: 6px; padding: 8px; margin: 10px 0; }
+dialog .row { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; }
+#pasteMsg { color: var(--crit); font-size: 12.5px; min-height: 18px; }
+
+.site { display: grid; grid-template-columns: 1fr 1fr 1.35fr; }
+.site > div { padding: 12px 16px 14px; border-right: 1px solid var(--line); min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.site > div:last-child { border-right: 0; }
+.site .big { font-family: var(--font-display); font-size: 19px; font-weight: 600; }
+.site a { color: var(--accent); }
+.wxT { font-family: var(--font-mono); font-size: 30px; font-weight: 500; line-height: 1.1; }
+.wxT small { font-size: 14px; color: var(--ink-2); font-weight: 400; }
+.kv { display: grid; grid-template-columns: auto 1fr; gap: 2px 14px; font-size: 13px; }
+.kv dt { color: var(--ink-2); } .kv dd { margin: 0; font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.inl { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; }
+.inl input { width: 74px; padding: 3px 6px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface-2); text-align: right; font-family: var(--font-mono); }
+#wxChart { width: 100%; display: block; }
+#wxChart text { font-family: var(--font-mono); font-size: 11px; fill: var(--ink-2); }
+@media (max-width: 1100px) { .site { grid-template-columns: 1fr 1fr; } .site > div:nth-child(2) { border-right: 0; } .site > div:last-child { grid-column: 1 / -1; border-top: 1px solid var(--line); } }
+@media (max-width: 640px) { .site { grid-template-columns: 1fr; } .site > div { border-right: 0; border-top: 1px solid var(--line); } .site > div:first-child { border-top: 0; } }
+@media (max-width: 1100px) { .main { grid-template-columns: 1fr; } .tiles { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 640px) {
+  .wrap { padding: 16px 16px 40px; } .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .viewport { height: clamp(360px, 64vh, 560px); } .sdot { width: 6px; height: 6px; margin: -3px 0 0 -3px; border-width: 1px; } .sdot.hot { width: 8px; height: 8px; margin: -4px 0 0 -4px; } .two { grid-template-columns: 1fr; } .legend { width: 190px; } h1 { font-size: 22px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <h1>Greenhouse 1 Thermal Map</h1>
+      <div class="sub">CDE4301 Thermal Mapping &amp; Environmental Control in a Greenhouse</div>
+    </div>
+    <div class="source">
+      <span class="chip"><span class="dot" id="srcDot"></span><b id="srcName">Survey snapshot</b><span id="srcMeta">57 points at 1 m height, time not recorded</span></span>
+      <button class="btn" id="btnPaste" type="button">Load other readings</button>
+    </div>
+  </header>
+
+  <section class="tiles" aria-label="Summary">
+    <div class="tile alert"><div class="k">Over target</div><div class="v"><span id="kHot">–</span><small> of <span id="kN">57</span></small></div><div class="d" id="kHotD"></div></div>
+    <div class="tile"><div class="k">Hottest point</div><div class="v"><span id="kMax">–</span><small> °C</small></div><div class="d" id="kMaxD"></div></div>
+    <div class="tile"><div class="k">Coolest point</div><div class="v"><span id="kMin">–</span><small> °C</small></div><div class="d" id="kMinD"></div></div>
+    <div class="tile"><div class="k">House mean</div><div class="v"><span id="kMean">–</span><small> °C</small></div><div class="d" id="kMeanD"></div></div>
+    <div class="tile"><div class="k">Spread across house</div><div class="v"><span id="kSpread">–</span><small> °C</small></div><div class="d">Hottest minus coolest point</div></div>
+  </section>
+
+  <nav class="tabs" role="tablist" aria-label="Views">
+    <button type="button" role="tab" id="tabMon" aria-controls="panelMon" aria-selected="true">Monitoring</button>
+    <button type="button" role="tab" id="tabMap" aria-controls="panelMap" aria-selected="false">3D map</button>
+  </nav>
+
+  <div class="panel" id="panelMap" role="tabpanel" aria-labelledby="tabMap" hidden>
+    <section class="card">
+      <div class="hd">
+        <h2>3D thermal map</h2>
+        <div class="toolbar">
+          <div class="seg" role="group" aria-label="Colour by">
+            <button type="button" id="mAbs" aria-pressed="true">Temperature</button>
+            <button type="button" id="mDev" aria-pressed="false">Difference from mean</button>
+          </div>
+          <div class="seg" role="group" aria-label="View">
+            <button type="button" id="vIso" aria-pressed="true">3D</button>
+            <button type="button" id="vTop" aria-pressed="false">Plan</button>
+            <button type="button" id="vFront" aria-pressed="false">Front</button>
+          </div>
+        </div>
+      </div>
+      <div class="layers" id="layers">
+        <label><input type="checkbox" id="lHeat" checked> Heat map</label>
+        <label><input type="checkbox" id="lIso" checked> 0.5 °C contour lines</label>
+        <label><input type="checkbox" id="lRelief"> Raise hot areas</label>
+        <label><input type="checkbox" id="lSens" checked> Measurement points</label>
+        <label><input type="checkbox" id="lFans" checked> Fans and airflow</label>
+        <label><input type="checkbox" id="lBeds" checked> Beds and equipment</label>
+        <label><input type="checkbox" id="lShell" checked> Walls and roof</label>
+        <label><input type="checkbox" id="lLabels" checked> Labels</label>
+      </div>
+      <div class="viewport" id="viewport">
+        <canvas id="gl" aria-label="3D model of Greenhouse 1 with the temperature map at 1 m height. The grid of readings below gives the same values as a table."></canvas>
+        <div id="overlay"></div>
+        <div class="legend" id="legend"></div>
+        <div class="zoom"><button class="btn" type="button" id="zIn" aria-label="Zoom in">+</button><button class="btn" type="button" id="zOut" aria-label="Zoom out">−</button></div>
+        <div class="nogl" id="nogl">This browser could not start the 3D view. The profile chart and the grid of readings below show the same data.</div>
+      </div>
+    </section>
+  </div>
+
+  <div class="panel" id="panelMon" role="tabpanel" aria-labelledby="tabMon">
+  <section class="card site" aria-label="Site and weather">
+    <div>
+      <h2>Site</h2>
+      <div class="big">Comcrop rooftop farm</div>
+      <div>15 Woodlands Loop, Singapore 738322</div>
+      <div class="hint">On the roof of a four-storey factory block, where the rooftop car park used to be. About 1.449° N, 103.807° E.</div>
+      <dl class="kv"><dt>Local time</dt><dd id="sgTime">–</dd><dt>Sun now</dt><dd id="sunNow">–</dd><dt>Sunrise, sunset</dt><dd id="sunRS">–</dd></dl>
+      <div><a href="https://www.google.com/maps/search/?api=1&amp;query=15+Woodlands+Loop+Singapore+738322">Open the address in Google Maps</a></div>
+    </div>
+    <div>
+      <h2>Outdoor air now</h2>
+      <div id="wxNow"><div class="hint">Loading weather…</div></div>
+      <div class="inl" style="margin-top:auto"><label for="outSurvey">Outdoor temperature during the survey</label><input type="number" id="outSurvey" step="0.1" min="15" max="45" placeholder="°C"><span>°C</span></div>
+      <div class="hint" id="outCmp"></div>
+    </div>
+    <div>
+      <h2>Outdoor air, next 24 hours</h2>
+      <svg id="wxChart" role="img" aria-label="Forecast outdoor air temperature for the next 24 hours against the target"></svg>
+      <div id="wxWindow" class="hint"></div>
+    </div>
+  </section>
+
+  <div class="main">
+    <div class="col">
+      <section class="card">
+        <div class="hd"><h2>Temperature along the house</h2>
+          <div class="legendrow" id="profLegend"></div></div>
+        <div class="bd"><svg id="profile" role="img" aria-label="Temperature at each measurement column for the three rows, from rear wall to front wall"></svg>
+          <div class="hint">Drawn the same way round as the layout: rear wall on the left, front wall on the right. Rows are numbered from the bottom of the layout drawing.</div></div>
+      </section>
+
+      <section class="card">
+        <div class="hd"><h2>Grid of readings</h2><span class="hint">°C at 1 m height. Select a cell to mark that point here and on the 3D map tab.</span></div>
+        <div class="bd scroll"><table class="grid" id="grid"></table></div>
+      </section>
+  <div class="two">
+        <section class="card">
+          <div class="hd"><h2>How the map is built</h2></div>
+          <div class="bd"><ul class="notes">
+            <li>The 57 readings are placed on a grid of 19 columns along the house and 3 rows across it, all at 1 m height. Spacing was 3 to 3.5 m on site. The map uses 3.1 m along the house and 3.25 m across, so any point may be up to about 0.5 m from where it was taken.</li>
+            <li>Colour between points is a smooth interpolation of the readings. The strips between the outer rows and the walls, and beyond the first and last columns, repeat the nearest reading.</li>
+            <li>Only one height was measured, so the map says nothing yet about temperature near the roof or at floor level.</li>
+            <li>The readings carry no time stamps. Outdoor temperature and sun changed while the survey was walked, so part of the pattern may be time, not place.</li>
+          </ul></div>
+        </section>
+        <section class="card">
+          <div class="hd"><h2>Model basis</h2></div>
+      <div class="bd"><ul class="notes">
+        <li>Confirmed: 3.00 m walls, 3.35 m main ridge, and a raised ridge section about 3 m wide that runs the full length and tops out at 4.35 m. Target 29 °C.</li>
+        <li>Confirmed: walls are 0.3 mm insect netting on the lower half and 0.3 mm clear plastic with 0.5 mm shading over it on the upper half. The roof is the same plastic and shading.</li>
+        <li>Confirmed: the hump is a floor hump left from the old road, 2.1 m wide and 150 mm high at its peak, about 20 m from the front wall.</li>
+        <li>Plan built from the labelled wall lengths: 36 m straight section, a transition of 3.67 m and 2.48 m, then a wing of 19.53 m and 20.5 m. These give a 5.5° bend and about 59 m along the centreline.</li>
+        <li>Not yet known: which compass direction the house faces. Wind direction and sun bearing cannot be tied to a wall until it is.</li>
+        <li>Still assumed: the fan in the wing marked 9 on the layout is fan 7. Bed widths, tank sizes, station sizes and fan heights are scaled from the drawing and photos.</li>
+      </ul></div>
+        </section>
+      </div>
+    </div>
+
+    <aside class="col">
+      <section class="card">
+        <div class="hd"><h2>Hot zones</h2></div>
+        <div class="bd">
+          <div class="thr"><label for="tgt">Target temperature</label><span style="flex:1"></span><input type="number" id="tgt" min="15" max="45" step="0.5" value="29" class="num" style="width:74px;padding:3px 6px;border:1px solid var(--line);border-radius:6px;background:var(--surface-2);text-align:right"><span>°C</span></div>
+          <div class="hint" id="tgtNote" style="margin:4px 0 12px"></div>
+          <label for="thr">Hotspot limit: flag points at or above</label>
+          <div class="thr"><input type="range" id="thr" min="29" max="40" step="0.1" value="39"><output id="thrOut" for="thr">39.0 °C</output></div>
+          <div class="hint" id="thrNote"></div>
+          <ul class="zonelist" id="zones"></ul>
+        </div>
+      </section>
+      <section class="card">
+        <div class="hd"><h2>By area</h2></div>
+        <div class="bd"><table class="t" id="areas"></table></div>
+      </section>
+      <section class="card">
+        <div class="hd"><h2>What this snapshot shows</h2></div>
+        <div class="bd"><ul class="notes" id="insights"></ul></div>
+      </section>
+      <section class="card">
+        <div class="hd"><h2>Fans</h2><span class="pill off">No control feed yet</span></div>
+        <div class="bd"><div class="fans" id="fans"></div></div>
+      </section>
+    </aside>
+  </div>
+
+  </div>
+</div>
+
+<div id="tip" role="status"></div>
+<dialog id="dlg">
+  <h3>Load other readings</h3>
+  <p class="hint">One point per line, for example <span class="num">T12 38.1</span>. Points you leave out keep their current value.</p>
+  <label for="paste" class="hint">Readings</label>
+  <textarea id="paste" spellcheck="false"></textarea>
+  <div id="pasteMsg"></div>
+  <div class="row">
+    <button class="btn" type="button" id="dlgReset">Restore survey</button>
+    <button class="btn" type="button" id="dlgCancel">Cancel</button>
+    <button class="btn primary" type="button" id="dlgApply">Apply</button>
+  </div>
+</dialog>
+
+<script>
+(() => {
+"use strict";
+const MODEL = {"params":{"W":12.5,"L_MAIN":36.0,"TH":0.0952359867625698,"R0":26.05042016806723,"LW":3.0750000000000006,"S_W1":39.075,"WING_TOP":19.53,"WING_BOT":20.5,"WALL_H":3.0,"RIDGE_H":3.35,"PEAK_H":4.35,"PLANT_H":1.0,"BENCH_H":0.6,"S0":1.5,"DS":3.1,"T0":3.0,"DT":3.25,"HUMP_S":20.0,"HUMP_W":2.1},"solids":[{"n":"FLOOR_MAIN","c":"floor","v":[36.0,0,-0.1,0.0,0,-0.1,0.0,12.5,-0.1,36.0,12.5,-0.1,36.0,0,0.0,0.0,0,0.0,0.0,12.5,0.0,36.0,12.5,0.0],"i":[3,0,1,1,2,3,4,7,6,6,5,4,0,4,5,5,1,0,1,5,6,6,2,1,2,6,7,7,3,2,3,7,4,4,0,3],"e":[0,1,0,3,0,4,1,2,1,5,2,3,2,6,3,7,4,5,4,7,5,6,6,7]},{"n":"FLOOR_TRANSITION","c":"floor","v":[0.0,0,-0.1,-2.477,-0.118,-0.1,-3.666,12.325,-0.1,0.0,12.5,-0.1,0.0,0,0.0,-2.477,-0.118,0.0,-3.666,12.325,0.0,0.0,12.5,0.0],"i":[3,0,1,1,2,3,4,7,6,6,5,4,0,4,5,5,1,0,1,5,6,6,2,1,2,6,7,7,3,2,3,7,4,4,0,3],"e":[0,1,0,3,0,4,1,2,1,5,2,3,2,6,3,7,4,5,4,7,5,6,6,7]},{"n":"FLOOR_WING","c":"floor","v":[-2.477,-0.118,-0.1,-22.884,-2.067,-0.1,-23.107,10.468,-0.1,-3.666,12.325,-0.1,-2.477,-0.118,0.0,-22.884,-2.067,0.0,-23.107,10.468,0.0,-3.666,12.325,0.0],"i":[3,0,1,1,2,3,4,7,6,6,5,4,0,4,5,5,1,0,1,5,6,6,2,1,2,6,7,7,3,2,3,7,4,4,0,3],"e":[0,1,0,3,0,4,1,2,1,5,2,3,2,6,3,7,4,5,4,7,5,6,6,7]},{"n":"WALL_BOTTOM_MAIN_KERB","c":"kerb","v":[35.98,0,0.0,0.0,0,0.0,0.0,0.02,0.0,35.98,0.02,0.0,35.98,0,0.29,0.0,0,0.29,0.0,0.02,0.29,35.98,0.02,0.29],"i":[3,0,1,1,2,3,4,7,6,6,5,4,0,4,5,5,1,0,1,5,6,6,2,1,2,6,7,7,3,2,3,7,4,4,0,3],"e":[0,1,0,3,0,4,1,2,1,5,2,3,2,6,3,7,4,5,4,7,5,6,6,7]},{"n":"WALL_BOTTOM_MAIN_NETTING_0P3MM","c":"mesh","v":[35.98,0,0.29,0.0,0,0.29,0.0,0.02,0.29,35.98,0.02,0.29,35.98,0,1.5,0.0,0,1.5,0.0,0.02,1.5,35.98,0.02,1.5],"i":[3,0,1,1,2,3,4,7,6,6,5,4,0,4,5,5,1,0,1,5,6,6,2,1,2,6,7,7,3,2,3,7,4,4,0,3],"e":[0,1,0,3,0,4,1,2,1,5,2,3,2,6,3,7,4,5,4,7,5,6,6,7]},{"n":"WALL_BOTTOM_MAIN_PLASTIC_0P3MM_SHADE_0P5MM","c":"plastic","v":[35.98,0,1.5,0.0,0,1.5,0.0,0.02,1.5,35.98,0.02,1.5,35.98,0,3.0,0.0,0,3.0,0.0,0.02,3.0,35.98,0.02,3.0],"i":[3,0,1,1,2,3,4,7,6,6,5,4,0,4,5,5,1,0,1,5,6,6,2,1,2,6,7,7,3,2,3,7,4,4,0,3],"e":[0,1,0,3,0,4,1,2,1,5,2,3,2,6,3,7,4,5,4,7,5,6,6,7]},{"n":"WALL_BOTTOM_TRANSITION_KERB","c":"kerb","v":[0.0,0,0.0,-2.477,-0.118,0.0,-2.479,-0.098,0.0,0.0,0.02,0.0,0.0,0,0.29,-2.477,-0.118,0.29,-2.479,-0.098,0.29,0.0,0.02,0.29],"i":[3,0,1,1,2,3,4,7,6,6,5,4,0,4,5,5,1,0,1,5,6,6,2,1,2,6,7,7,3,2,3,7,4,4,0,3],"e":[0,1,0,3,0,4,1,2,1,5,2,3,2,6,3,7,4,5,4,7,5,6,6,7]},{"n":"WALL_BOTTOM_TRANSITION_NETTING_0P3MM","c":"mesh","v":[0.0,0,0.29,-2.477,-0.118,0.29,-2.479,-0.098,0.29,0.0,0.02,0.29,0.0,0,1.5,-2.477,-0.118,1.5,-2.479,-0.098,1.5,0.0,0.02,1.5],"i":[3,0,1,1,2,3,4,7,6,6,5,4,0,4,5,5,1,0,1,5,6,6,2,1,2,6,7,7,3,2,3,7,4,4,0,3],"e":[0,1,0,3,0,4,1,2,1,5,2,3,2,6,3,7,4,5,4,7,5,6,6,7]},{"n":"WALL_BOTTOM_TRANSITION_PLASTIC_0P3MM_SHADE_0P5MM","c":"plastic","v":[0.0,0,1.5,-2.477,-0.118,1.5,-2.479,-0.098,1.5,0.0,0.02,1.5,0.0,0,3.0,-2.477,-0.118,3.0,-2.479,-0.098,3.0,0.0,0.02,3.0],"i":[3,0,1,1,2,3,4,7,6,6,5,4,0,4,5,5,1,0,1,5,6,6,2,1,2,6,7,7,3,2,3,7,4,4,0,3],"e":[0,1,0,3,0,4,1,2,1,5,2,3,2,6,3,7,4,5,4,7,5,6,6,7]},{"n":"WALL_BOTTOM_WING_KERB","c":"kerb","v":[-2.477,-0.118,0.0,-22.864,-2.066,0.0,-22.865,-2.045,0.0,-2.479,-0.098,0.0,-2.477,-0.118,0.29,-22.864,-2.066,0.29,-22.865,-2.045,0.29,-2.479,-0.098,0.29],"i":[3,0,1,1,2,3,4,7,6,6,5,4,0,4,5,5,1,0,1,5,6,6,2,1,2,6,7,7,3,2,3,7,4,4,0,3],"e":[0,1,0,3,0,4,1,2,1,5,2,3,2,6,3,7,4,5,4,7,5,6,6,7]},{"n":"WALL_BOTTOM_WING_NETTING_0P3MM","c":"mesh","v":[-2.477,-0.118,0.29,-22.864,-2.066,0.29,-22.865,-2.045,0.29,-2.479,-0.098,0.29,-2.477,-0.118,1.5,-22.864,-2.066,1.5,-22.865,-2.045,1.5,-2.479,-0.098,1.5],"i":[3,0,1,1,2,3,4,7,6,6,5,4,0,4,5,5,1,0,1,5,6,6,2,1,2,6,7,7,3,2,3,7,4,4,0,3],"e":[0,1,0,3,0,4,1,2,1,5,2,3,2,6,3,7,4,5,4,7,5,6,6,7]},{"n":"WALL_BOTTOM_WING_PLASTIC_0P3MM_SHADE_0P5MM","c":"plastic","v":[-2.477,-0.118,1.5,-22.864,-2.066,1.5,-22.865,-2.045,1.5,-2.479,-0.098,1.5,-2.477,-0.118,3.0,-22.864,-2.066,3.0,-22.865,-2.045,3.0,-2.479,-0.098,3.0],"i":[3,0,1,1,2,3,4,7,6,6,5,4,0,4,5,5,1,0,1,5,6,6,2,1,2,6,7,7,3,2,3,7,4,4,0,3],"e":[0,1,0,3,0,4,1,2,1,5,2,3,2,6,3,7,4,5,4,7,5,6,6,7]},{"n":"WALL_TOP_MAIN_KERB","c":"kerb","v":[35.98,12.48,0.0,0.0,12.48,0.0,0.0,12.5,0.0,35.98,12.5,0.0,35.98,12.48,0.29,0.0,12.48,0.29,0.0,12.5,0.29,35.98,12.5,0.29],"i":[3,0,1,1,2,3,4,7,6,6,5,4,0,4,5,5,1,0,1,5,6,6,2,1,2,6,7,7,3,2,3,7,4,4,0,3],"e":[0,1,0,3,0,4,1,2,1,5,2,3,2,6,3,7,4,5,4,7,5,6,6,7]},{"n":"WALL_TOP_MAIN_NETTING_0P3MM","c":"mesh","v":[35.98,12.48,0.29,0.0,12.48,0.29,0.0,12.5,0.29,35.98,12.5,0.29,35.98,12.48,1.5,0.0,12.48,1.5,0.0,12.5,1.5,35.98,12.5,1.5],"i":[3,0,1,1,2,3,4,7,6,6,5,4,0,4,5,5,1,0,1,5,6,6,2,1,2,6,7,7,3,2,3,7,4,4,0,3],"e":[0,1,0,3,0,4,1,2,1,5,2,3,2,6,3,7,4,5,4,7,5,6,6,7]},{"n":"WALL_TOP_MAIN_PLASTIC_0P3MM_SHADE_0P5MM","c":"plastic","v":[35.98,12.48,1.5,0.0,12.48,1.5,0.0,12.5,1.5,35.98,12.5,1.5,35.98,12.48,3.0,0.0,12.48,3.0,0.0,12.5,3.0,35.98,12.5,3.0],"i":[3,0,1,1,2,3,4,7,6,6,5,4,0,4,5,5,1,0,1,5,6,6,2,1,2,6,7,7,3,2,3,7,4,4,0,3],"e":[0,1,0,3,0,4,1,2,1,5,2,3,2,6,3,7,4,5,4,7,5,6,6,7]},{"n":"WALL_TOP_TRANSITION_KERB","c":"kerb","v":[0.0,12.48,0.0,-3.664,12.305,0.0,-3.666,12.325,0.0,0.0,12.5,0.0,0.0,12.48,0.29,-3.664,12.305,0.29,-3.666,12.325,0.29,0.0,12.5,0.29],"i":[3,0,1,1,2,3,4,7,6,6,5,4,0,4,5,5,1,0,1,5,6,6,2,1,2,6,7,7,3,2,3,7,4,4,0,3],"e":[0,1,0,3,0,4,1,2,1,5,2,3,2,6,3,7,4,5,4,7,5,6,6,7]},{"n":"WALL_TOP_TRANSITION_NETTING_0P3MM","c":"mesh","v":[0.0,12.48,0.29,-3.664,12.305,0.29,-3.666,12.325,0.29,0.0,12.5,0.29,0.0,12.48,1.5,-3.664,12.305,1.5,-3.666,12.325,1.5,0.0,12.5,1.5],"i":[3,0,1,1,2,3,4,7,6,6,5,4,0,4,5,5,1,0,1,5,6,6,2,1,2,6,7,7,3,2,3,7,4,4,0,3],"e":[0,1,0,3,0,4,1,2,1,5,2,3,2,6,3,7,4,5,4,7,5,6,6,7]},{"n":"WALL_TOP_TRANSITION_PLASTIC_0P3MM_SHADE_0P5MM","c":"plastic","v":[0.0,12.48,1.5,-3.664,12.305,1.5,-3.666,12.325,1.5,0.0,12.5,1.5,0.0,12.48,3.0,-3.664,12.305,3.0,-3.666,12.325,3.0,0.0,12.5,3.0],"i":[3,0,1,1,2,3,4,7,6,6,5,4,0,4,5,5,1,0,1,5,6,6,2,1,2,6,7,7,3,2,3,7,4,4,0,3],"e":[0,1,0,3,0,4,1,2,1,5,2,3,2,6,3,7,4,5,4,7,5,6,6,7]},{"n":"WALL_TOP_WING_KERB","c":"kerb","v":[-3.664,12.305,0.0,-23.087,10.45,0.0,-23.087,10.47,0.0,-3.666,12.325,0.0,-3.664,12.305,0.29,-23.087,10.45,0.29,-23.087,10.47,0.29,-3.666,12.325,0.29],"i":[3,0,1,1,2,3,4,7,6,6,5,4,0,4,5,5,1,0,1,5,6,6,2,1,2,6,7,7,3,2,3,7,4,4,0,3],"e":[0,1,0,3,0,4,1,2,1,5,2,3,2,6,3,7,4,5,4,7,5,6,6,7]},{"n":"WALL_TOP_WING_NETTING_0P3MM","c":"mesh","v":[-3.664,12.305,0.29,-23.087,10.45,0.29,-23.087,10.47,0.29,-3.666,12.325,0.29,-3.664,12.305,1.5,-23.087,10.45,1.5,-23.087,10.47,1.5,-3.666,12.325,1.5],"i":[3,0,1,1,2,3,4,7,6,6,5,4,0,4,5,5,1,0,1,5,6,6,2,1,2,6,7,7,3,2,3,7,4,4,0,3],"e":[0,1,0,3,0,4,1,2,1,5,2,3,2,6,3,7,4,5,4,7,5,6,6,7]},{"n":"WALL_TOP_WING_PLASTIC_0P3MM_SHADE_0P5MM","c":"plastic","v":[-3.664,12.305,1.5,-23.087,10.45,1.5,-23.087,10.47,1.5,-3.666,12.325,1.5,-3.664,12.305,3.0,-23.087,10.45,3.0,-23.087,10.47,3.0,-3.666,12.325,3.0],"i":[3,0,1,1,2,3,4,7,6,6,5,4,0,4,5,5,1,0,1,5,6,6,2,1,2,6,7,7,3,2,3,7,4,4,0,3],"e":[0,1,0,3,0,4,1,2,1,5,2,3,2,6,3,7,4,5,4,7,5,6,6,7]},{"n":"ROOF_BOTTOM_MAIN","c":"roof","v":[36.0,0,3.0,0.0,0,3.0,0.0,4.75,3.266,36.0,4.75,3.266,36.0,0,3.02,0.0,0,3.02,0.0,4.75,3.286,36.0,4.75,3.286],"i":[3,0,1,1,2,3,4,7,6,6,5,4,0,4,5,5,1,0,1,5,6,6,2,1,2,6,7,7,3,2,3,7,4,4,0,3],"e":[0,1,0,3,0,4,1,2,1,5,2,3,2,6,3,7,4,5,4,7,5,6,6,7]},{"n":"ROOF_BOTTOM_TRANSITION","c":"roof","v":[0.0,0,3.0,-2.477,-0.118,3.0,-2.929,4.61,3.266,0.0,4.75,3.266,0.0,0,3.02,-2.477,-0.118,3.02,-2.929,4.61,3.286,0.0,4.75,3.286],"i":[3,0,1,1,2,3,4,7,6,6,5,4,0,4,5,5,1,0,1,5,6,6,2,1,2,6,7,7,3,2,3,7,4,4,0,3],"e":[0,1,0,3,0,4,1,2,1,5,2,3,2,6,3,7,4,5,4,7,5,6,6,7]},{"n":"ROOF_BOTTOM_WING","c":"roof","v":[-2.477,-0.118,3.0,-22.884,-2.067,3.0,-22.969,2.696,3.266,-2.929,4.61,3.266,-2.477,-0.118,3.02,-22.884,-2.067,3.02,-22.969,2.696,3.286,-2.929,4.61,3.286],"i":[3,0,1,1,2,3,4,7,6,6,5,4,0,4,5,5,1,0,1,5,6,6,2,1,2,6,7,7,3,2,3,7,4,4,0,3],"e":[0,1,0,3,0,4,1,2,1,5,2,3,2,6,3,7,4,5,4,7,5,6,6,7]},{"n":"ROOF_TOP_MAIN","c":"roof","v":[36.0,7.75,3.266,0.0,7.75,3.266,0.0,12.5,3.0,36.0,12.5,3.0,36.0,7.75,3.286,0.0,7.75,3.286,0.0,12.5,3.02,36.0,12.5,3.02],"i":[3,0,1,1,2,3,4,7,6,6,5,4,0,4,5,5,1,0,1,5,6,6,2,1,2,6,7,7,3,2,3,7,4,4,0,3],"e":[0,1,0,3,0,4,1,2,1,5,2,3,2,6,3,7,4,5,4,7,5,6,6,7]},{"n":"ROOF_TOP_TRANSITION","c":"roof","v":[0.0,7.75,3.266,-3.214,7.597,3.266,-3.666,12.325,3.0,0.0,12.5,3.0,0.0,7.75,3.286,-3.214,7.597,3.286,-3.666,12.325,3.02,0.0,12.5,3.02],"i":[3,0,1,1,2,3,4,7,6,6,5,4,0,4,5,5,1,0,1,5,6,6,2,1,2,6,7,7,3,2,3,7,4,4,0,3],"e":[0,1,0,3,0,4,1,2,1,5,2,3,2,6,3,7,4,5,4,7,5,6,6,7]},{"n":"ROOF_TOP_WING","c":"roof","v":[-3.214,7.597,3.266,-23.023,5.705,3.266,-23.107,10.468,3.0,-3.666,12.325,3.0,-3.214,7.597,3.286,-23.023,5.705,3.286,-23.107,10.468,3.02,-3.666,12.325,3.02],"i":[3,0,1,1,2,3,4,7,6,6,5,4,0,4,5,5,1,0,1,5,6,6,2,1,2,6,7,7,3,2,3,7,4,4,0,3],"e":[0,1,0,3,0,4,1,2,1,5,2,3,2,6,3,7,4,5,4,7,5,6,6,7]},{"n":"RIDGE_RAISED_SIDE_BOTTOM_MAIN","c":"monitor","v":[35.98,4.75,3.266,0.0,4.75,3.266,0.0,4.77,3.267,35.98,4.77,3.267,35.98,4.75,3.93,0.0,4.75,3.93,0.0,4.77,3.935,35.98,4.77,3.935],"i":[3,0,1,1,2,3,4,7,6,6,5,4,0,4,5,5,1,0,1,5,6,6,2,1,2,6,7,7,3,2,3,7,4,4,0,3],"e":[0,1,0,3,0,4,1,2,1,5,2,3,2,6,3,7,4,5,4,7,5,6,6,7]},{"n":"RIDGE_RAISED_SIDE_BOTTOM_TRANSITION","c":"monitor","v":[0.0,4.75,3.266,-2.929,4.61,3.266,-2.931,4.63,3.267,0.0,4.77,3.267,0.0,4.75,3.93,-2.929,4.61,3.93,-2.931,4.63,3.935,0.0,4.77,3.935],"i":[3,0,1,1,2,3,4,7,6,6,5,4,0,4,5,5,1,0,1,5,6,6,2,1,2,6,7,7,3,2,3,7,4,4,0,3],"e":[0,1,0,3,0,4,1,2,1,5,2,3,2,6,3,7,4,5,4,7,5,6,6,7]},{"n":"RIDGE_RAISED_SIDE_BOTTOM_WING","c":"monitor","v":[-2.929,4.61,3.266,-22.949,2.698,3.266,-22.949,2.718,3.267,-2.931,4.63,3.267,-2.929,4.61,3.93,-22.949,2.698,3.93,-22.949,2.718,3.935,-2.931,4.63,3.935],"i":[3,0,1,1,2,3,4,7,6,6,5,4,0,4,5,5,1,0,1,5,6,6,2,1,2,6,7,7,3,2,3,7,4,4,0,3],"e":[0,1,0,3,0,4,1,2,1,5,2,3,2,6,3,7,4,5,4,7,5,6,6,7]},{"n":"RIDGE_RAISED_SIDE_TOP_MAIN","c":"monitor","v":[35.98,7.73,3.267,0.0,7.73,3.267,0.0,7.75,3.266,35.98,7.75,3.266,35.98,7.73,3.935,0.0,7.73,3.935,0.0,7.75,3.93,35.98,7.75,3.93],"i":[3,0,1,1,2,3,4,7,6,6,5,4,0,4,5,5,1,0,1,5,6,6,2,1,2,6,7,7,3,2,3,7,4,4,0,3],"e":[0,1,0,3,0,4,1,2,1,5,2,3,2,6,3,7,4,5,4,7,5,6,6,7]},{"n":"RIDGE_RAISED_SIDE_TOP_TRANSITION","c":"monitor","v":[0.0,7.73,3.267,-3.212,7.577,3.267,-3.214,7.597,3.266,0.0,7.75,3.266,0.0,7.73,3.935,-3.212,7.577,3.935,-3.214,7.597,3.93,0.0,7.75,3.93],"i":[3,0,1,1,2,3,4,7,6,6,5,4,0,4,5,5,1,0,1,5,6,6,2,1,2,6,7,7,3,2,3,7,4,4,0,3],"e":[0,1,0,3,0,4,1,2,1,5,2,3,2,6,3,7,4,5,4,7,5,6,6,7]},{"n":"RIDGE_RAISED_SIDE_TOP_WING","c":"monitor","v":[-3.212,7.577,3.267,-23.002,5.686,3.267,-23.003,5.707,3.266,-3.214,7.597,3.266,-3.212,7.577,3.935,-23.002,5.686,3.935,-23.003,5.707,3.93,-3.214,7.597,3.93],"i":[3,0,1,1,2,3,4,7,6,6,5,4,0,4,5,5,1,0,1,5,6,6,2,1,2,6,7,7,3,2,3,7,4,4,0,3],"e":[0,1,0,3,0,4,1,2,1,5,2,3,2,6,3,7,4,5,4,7,5,6,6,7]},{"n":"RIDGE_RAISED_ROOF_BOTTOM_MAIN","c":"monitor","v":[36.0,4.75,3.93,0.0,4.75,3.93,0.0,6.25,4.33,36.0,6.25,4.33,36.0,4.75,3.95,0.0,4.75,3.95,0.0,6.25,4.35,36.0,6.25,4.35],"i":[3,0,1,1,2,3,4,7,6,6,5,4,0,4,5,5,1,0,1,5,6,6,2,1,2,6,7,7,3,2,3,7,4,4,0,3],"e":[0,1,0,3,0,4,1,2,1,5,2,3,2,6,3,7,4,5,4,7,5,6,6,7]},{"n":"RIDGE_RAISED_ROOF_BOTTOM_TRANSITION","c":"monitor","v":[0.0,4.75,3.93,-2.929,4.61,3.93,-3.072,6.104,4.33,0.0,6.25,4.33,0.0,4.75,3.95,-2.929,4.61,3.95,-3.072,6.104,4.35,0.0,6.25,4.35],"i":[3,0,1,1,2,3,4,7,6,6,5,4,0,4,5,5,1,0,1,5,6,6,2,1,2,6,7,7,3,2,3,7,4,4,0,3],"e":[0,1,0,3,0,4,1,2,1,5,2,3,2,6,3,7,4,5,4,7,5,6,6,7]},{"n":"RIDGE_RAISED_ROOF_BOTTOM_WING","c":"monitor","v":[-2.929,4.61,3.93,-22.969,2.696,3.93,-22.996,4.2,4.33,-3.072,6.104,4.33,-2.929,4.61,3.95,-22.969,2.696,3.95,-22.996,4.2,4.35,-3.072,6.104,4.35],"i":[3,0,1,1,2,3,4,7,6,6,5,4,0,4,5,5,1,0,1,5,6,6,2,1,2,6,7,7,3,2,3,7,4,4,0,3],"e":[0,1,0,3,0,4,1,2,1,5,2,3,2,6,3,7,4,5,4,7,5,6,6,7]},{"n":"RIDGE_RAISED_ROOF_TOP_MAIN","c":"monitor","v":[36.0,6.25,4.33,0.0,6.25,4.33,0.0,7.75,3.93,36.0,7.75,3.93,36.0,6.25,4.35,0.0,6.25,4.35,0.0,7.75,3.95,36.0,7.75,3.95],"i":[3,0,1,1,2,3,4,7,6,6,5,4,0,4,5,5,1,0,1,5,6,6,2,1,2,6,7,7,3,2,3,7,4,4,0,3],"e":[0,1,0,3,0,4,1,2,1,5,2,3,2,6,3,7,4,5,4,7,5,6,6,7]},{"n":"RIDGE_RAISED_ROOF_TOP_TRANSITION","c":"monitor","v":[0.0,6.25,4.33,-3.072,6.104,4.33,-3.214,7.597,3.93,0.0,7.75,3.93,0.0,6.25,4.35,-3.072,6.104,4.35,-3.214,7.597,3.95,0.0,7.75,3.95],"i":[3,0,1,1,2,3,4,7,6,6,5,4,0,4,5,5,1,0,1,5,6,6,2,1,2,6,7,7,3,2,3,7,4,4,0,3],"e":[0,1,0,3,0,4,1,2,1,5,2,3,2,6,3,7,4,5,4,7,5,6,6,7]},{"n":"RIDGE_RAISED_ROOF_TOP_WING","c":"monitor","v":[-3.072,6.104,4.33,-22.996,4.2,4.33,-23.023,5.705,3.93,-3.214,7.597,3.93,-3.072,6.104,4.35,-22.996,4.2,4.35,-23.023,5.705,3.95,-3.214,7.597,3.95],"i":[3,0,1,1,2,3,4,7,6,6,5,4,0,4,5,5,1,0,1,5,6,6,2,1,2,6,7,7,3,2,3,7,4,4,0,3],"e":[0,1,0,3,0,4,1,2,1,5,2,3,2,6,3,7,4,5,4,7,5,6,6,7]},{"n":"END_WALL_FRONT_KERB","c":"kerb","v":[36.0,0,0,36.0,12.5,0,36.0,12.5,0.29,36.0,0,0.29,35.98,0,0,35.98,12.5,0,35.98,12.5,0.29,35.98,0,0.29],"i":[3,0,1,1,2,3,4,7,6,6,5,4,0,4,5,5,1,0,1,5,6,6,2,1,2,6,7,7,3,2,3,7,4,4,0,3],"e":[0,1,0,3,0,4,1,2,1,5,2,3,2,6,3,7,4,5,4,7,5,6,6,7]},{"n":"END_WALL_REAR_KERB","c":"kerb","v":[-22.884,-2.067,0,-23.107,10.468,0,-23.107,10.468,0.29,-22.884,-2.067,0.29,-22.864,-2.066,0,-23.087,10.47,0,-23.087,10.47,0.29,-22.864,-2.066,0.29],"i":[0,3,2,2,1,0,7,4,5,5,6,7,4,0,1,1,5,4,5,1,2,2,6,5,6,2,3,3,7,6,7,3,0,0,4,7],"e":[0,1,0,3,0,4,1,2,1,5,2,3,2,6,3,7,4,5,4,7,5,6,6,7]},{"n":"END_WALL_FRONT_NETTING_0P3MM","c":"mesh","v":[36.0,0,0.29,36.0,12.5,0.29,36.0,12.5,1.5,36.0,0,1.5,35.98,0,0.29,35.98,12.5,0.29,35.98,12.5,1.5,35.98,0,1.5],"i":[3,0,1,1,2,3,4,7,6,6,5,4,0,4,5,5,1,0,1,5,6,6,2,1,2,6,7,7,3,2,3,7,4,4,0,3],"e":[0,1,0,3,0,4,1,2,1,5,2,3,2,6,3,7,4,5,4,7,5,6,6,7]},{"n":"END_WALL_REAR_NETTING_0P3MM","c":"mesh","v":[-22.884,-2.067,0.29,-23.107,10.468,0.29,-23.107,10.468,1.5,-22.884,-2.067,1.5,-22.864,-2.066,0.29,-23.087,10.47,0.29,-23.087,10.47,1.5,-22.864,-2.066,1.5],"i":[0,3,2,2,1,0,7,4,5,5,6,7,4,0,1,1,5,4,5,1,2,2,6,5,6,2,3,3,7,6,7,3,0,0,4,7],"e":[0,1,0,3,0,4,1,2,1,5,2,3,2,6,3,7,4,5,4,7,5,6,6,7]},{"n":"END_WALL_FRONT_PLASTIC_0P3MM_SHADE_0P5MM","c":"plastic","v":[36.0,0,1.5,36.0,12.5,1.5,36.0,12.5,3.0,36.0,7.75,3.266,36.0,7.75,3.93,36.0,6.25,4.33,36.0,4.75,3.93,36.0,4.75,3.266,36.0,0,3.0,35.98,0,1.5,35.98,12.5,1.5,35.98,12.5,3.0,35.98,7.75,3.266,35.98,7.75,3.93,35.98,6.25,4.33,35.98,4.75,3.93,35.98,4.75,3.266,35.98,0,3.0],"i":[8,0,1,8,1,2,8,2,3,3,4,5,3,5,6,3,6,7,3,7,8,9,17,16,16,15,14,16,14,13,9,16,13,9,13,12,9,12,11,11,10,9,0,9,10,10,1,0,1,10,11,11,2,1,2,11,12,12,3,2,3,12,13,13,4,3,4,13,14,14,5,4,5,14,15,15,6,5,6,15,16,16,7,6,7,16,17,17,8,7,8,17,9,9,0,8],"e":[0,1,0,8,0,9,1,2,1,10,2,3,2,11,3,4,3,12,4,5,4,13,5,6,5,14,6,7,6,15,7,8,7,16,8,17,9,10,9,17,10,11,11,12,12,13,13,14,14,15,15,16,16,17]},{"n":"END_WALL_REAR_PLASTIC_0P3MM_SHADE_0P5MM","c":"plastic","v":[-22.884,-2.067,1.5,-23.107,10.468,1.5,-23.107,10.468,3.0,-23.023,5.705,3.266,-23.023,5.705,3.93,-22.996,4.2,4.33,-22.969,2.696,3.93,-22.969,2.696,3.266,-22.884,-2.067,3.0,-22.864,-2.066,1.5,-23.087,10.47,1.5,-23.087,10.47,3.0,-23.003,5.707,3.266,-23.003,5.707,3.93,-22.976,4.202,4.33,-22.949,2.698,3.93,-22.949,2.698,3.266,-22.864,-2.066,3.0],"i":[0,8,7,7,6,5,7,5,4,0,7,4,0,4,3,0,3,2,2,1,0,17,9,10,17,10,11,17,11,12,12,13,14,12,14,15,12,15,16,12,16,17,9,0,1,1,10,9,10,1,2,2,11,10,11,2,3,3,12,11,12,3,4,4,13,12,13,4,5,5,14,13,14,5,6,6,15,14,15,6,7,7,16,15,16,7,8,8,17,16,17,8,0,0,9,17],"e":[0,1,0,8,0,9,1,2,1,10,2,3,2,11,3,4,3,12,4,5,4,13,5,6,5,14,6,7,6,15,7,8,7,16,8,17,9,10,9,17,10,11,11,12,12,13,13,14,14,15,15,16,16,17]},{"n":"BED_GERMINATION","c":"germ","v":[34.1,9.0,0.0,24.7,9.0,0.0,24.7,11.8,0.0,34.1,11.8,0.0,34.1,9.0,1.0,24.7,9.0,1.0,24.7,11.8,1.0,34.1,11.8,1.0],"i":[3,0,1,1,2,3,4,7,6,6,5,4,0,4,5,5,1,0,1,5,6,6,2,1,2,6,7,7,3,2,3,7,4,4,0,3],"e":[0,1,0,3,0,4,1,2,1,5,2,3,2,6,3,7,4,5,4,7,5,6,6,7]},{"n":"BED_PLANTS_MAIN_R3","c":"bed","v":[23.9,9.0,0.0,2.1,9.0,0.0,2.1,11.8,0.0,23.9,11.8,0.0,23.9,9.0,1.0,2.1,9.0,1.0,2.1,11.8,1.0,23.9,11.8,1.0],"i":[3,0,1,1,2,3,4,7,6,6,5,4,0,4,5,5,1,0,1,5,6,6,2,1,2,6,7,7,3,2,3,7,4,4,0,3],"e":[0,1,0,3,0,4,1,2,1,5,2,3,2,6,3,7,4,5,4,7,5,6,6,7]},{"n":"BED_PLANTS_MAIN_R2_FRONT","c":"bed","v":[34.1,4.85,0.0,17.1,4.85,0.0,17.1,7.65,0.0,34.1,7.65,0.0,34.1,4.85,1.0,17.1,4.85,1.0,17.1,7.65,1.0,34.1,7.65,1.0],"i":[3,0,1,1,2,3,4,7,6,6,5,4,0,4,5,5,1,0,1,5,6,6,2,1,2,6,7,7,3,2,3,7,4,4,0,3],"e":[0,1,0,3,0,4,1,2,1,5,2,3,2,6,3,7,4,5,4,7,5,6,6,7]},{"n":"BED_PLANTS_MAIN_R2_REAR","c":"bed","v":[14.9,4.85,0.0,2.1,4.85,0.0,2.1,7.65,0.0,14.9,7.65,0.0,14.9,4.85,1.0,2.1,4.85,1.0,2.1,7.65,1.0,14.9,7.65,1.0],"i":[3,0,1,1,2,3,4,7,6,6,5,4,0,4,5,5,1,0,1,5,6,6,2,1,2,6,7,7,3,2,3,7,4,4,0,3],"e":[0,1,0,3,0,4,1,2,1,5,2,3,2,6,3,7,4,5,4,7,5,6,6,7]},{"n":"BED_SEEDLING_CHANNELS","c":"bed","v":[34.1,0.7,0.0,17.1,0.7,0.0,17.1,3.5,0.0,34.1,3.5,0.0,34.1,0.7,1.0,17.1,0.7,1.0,17.1,3.5,1.0,34.1,3.5,1.0],"i":[3,0,1,1,2,3,4,7,6,6,5,4,0,4,5,5,1,0,1,5,6,6,2,1,2,6,7,7,3,2,3,7,4,4,0,3],"e":[0,1,0,3,0,4,1,2,1,5,2,3,2,6,3,7,4,5,4,7,5,6,6,7]},{"n":"BED_PLANTS_MAIN_R1_REAR","c":"bed","v":[14.9,0.7,0.0,2.1,0.7,0.0,2.1,3.5,0.0,14.9,3.5,0.0,14.9,0.7,1.0,2.1,0.7,1.0,2.1,3.5,1.0,14.9,3.5,1.0],"i":[3,0,1,1,2,3,4,7,6,6,5,4,0,4,5,5,1,0,1,5,6,6,2,1,2,6,7,7,3,2,3,7,4,4,0,3],"e":[0,1,0,3,0,4,1,2,1,5,2,3,2,6,3,7,4,5,4,7,5,6,6,7]},{"n":"BED_PLANTS_WING_R3","c":"bed","v":[-5.523,8.632,0.0,-21.65,7.091,0.0,-21.916,9.879,0.0,-5.789,11.419,0.0,-5.523,8.632,1.0,-21.65,7.091,1.0,-21.916,9.879,1.0,-5.789,11.419,1.0],"i":[3,0,1,1,2,3,4,7,6,6,5,4,0,4,5,5,1,0,1,5,6,6,2,1,2,6,7,7,3,2,3,7,4,4,0,3],"e":[0,1,0,3,0,4,1,2,1,5,2,3,2,6,3,7,4,5,4,7,5,6,6,7]},{"n":"BED_PLANTS_WING_R2","c":"bed","v":[-5.128,4.501,0.0,-21.255,2.96,0.0,-21.521,5.748,0.0,-5.395,7.288,0.0,-5.128,4.501,1.0,-21.255,2.96,1.0,-21.521,5.748,1.0,-5.395,7.288,1.0],"i":[3,0,1,1,2,3,4,7,6,6,5,4,0,4,5,5,1,0,1,5,6,6,2,1,2,6,7,7,3,2,3,7,4,4,0,3],"e":[0,1,0,3,0,4,1,2,1,5,2,3,2,6,3,7,4,5,4,7,5,6,6,7]},{"n":"BED_PLANTS_WING_R1","c":"bed","v":[-4.734,0.37,0.0,-20.86,-1.171,0.0,-21.127,1.616,0.0,-5.0,3.157,0.0,-4.734,0.37,1.0,-20.86,-1.171,1.0,-21.127,1.616,1.0,-5.0,3.157,1.0],"i":[3,0,1,1,2,3,4,7,6,6,5,4,0,4,5,5,1,0,1,5,6,6,2,1,2,6,7,7,3,2,3,7,4,4,0,3],"e":[0,1,0,3,0,4,1,2,1,5,2,3,2,6,3,7,4,5,4,7,5,6,6,7]},{"n":"RESERVOIR_MAIN_R1","c":"tank","v":[2.0,1.1,0.0,0.5,1.1,0.0,0.5,3.1,0.0,2.0,3.1,0.0,2.0,1.1,0.8,0.5,1.1,0.8,0.5,3.1,0.8,2.0,3.1,0.8],"i":[3,0,1,1,2,3,4,7,6,6,5,4,0,4,5,5,1,0,1,5,6,6,2,1,2,6,7,7,3,2,3,7,4,4,0,3],"e":[0,1,0,3,0,4,1,2,1,5,2,3,2,6,3,7,4,5,4,7,5,6,6,7]},{"n":"RESERVOIR_WING_R1","c":"tank","v":[-3.08,0.929,0.0,-4.573,0.787,0.0,-4.763,2.778,0.0,-3.27,2.92,0.0,-3.08,0.929,0.8,-4.573,0.787,0.8,-4.763,2.778,0.8,-3.27,2.92,0.8],"i":[3,0,1,1,2,3,4,7,6,6,5,4,0,4,5,5,1,0,1,5,6,6,2,1,2,6,7,7,3,2,3,7,4,4,0,3],"e":[0,1,0,3,0,4,1,2,1,5,2,3,2,6,3,7,4,5,4,7,5,6,6,7]},{"n":"RESERVOIR_MAIN_R2","c":"tank","v":[2.0,5.25,0.0,0.5,5.25,0.0,0.5,7.25,0.0,2.0,7.25,0.0,2.0,5.25,0.8,0.5,5.25,0.8,0.5,7.25,0.8,2.0,7.25,0.8],"i":[3,0,1,1,2,3,4,7,6,6,5,4,0,4,5,5,1,0,1,5,6,6,2,1,2,6,7,7,3,2,3,7,4,4,0,3],"e":[0,1,0,3,0,4,1,2,1,5,2,3,2,6,3,7,4,5,4,7,5,6,6,7]},{"n":"RESERVOIR_WING_R2","c":"tank","v":[-3.474,5.061,0.0,-4.967,4.918,0.0,-5.158,6.909,0.0,-3.664,7.052,0.0,-3.474,5.061,0.8,-4.967,4.918,0.8,-5.158,6.909,0.8,-3.664,7.052,0.8],"i":[3,0,1,1,2,3,4,7,6,6,5,4,0,4,5,5,1,0,1,5,6,6,2,1,2,6,7,7,3,2,3,7,4,4,0,3],"e":[0,1,0,3,0,4,1,2,1,5,2,3,2,6,3,7,4,5,4,7,5,6,6,7]},{"n":"RESERVOIR_MAIN_R3","c":"tank","v":[2.0,9.4,0.0,0.5,9.4,0.0,0.5,11.4,0.0,2.0,11.4,0.0,2.0,9.4,0.8,0.5,9.4,0.8,0.5,11.4,0.8,2.0,11.4,0.8],"i":[3,0,1,1,2,3,4,7,6,6,5,4,0,4,5,5,1,0,1,5,6,6,2,1,2,6,7,7,3,2,3,7,4,4,0,3],"e":[0,1,0,3,0,4,1,2,1,5,2,3,2,6,3,7,4,5,4,7,5,6,6,7]},{"n":"RESERVOIR_WING_R3","c":"tank","v":[-3.869,9.192,0.0,-5.362,9.049,0.0,-5.552,11.04,0.0,-4.059,11.183,0.0,-3.869,9.192,0.8,-5.362,9.049,0.8,-5.552,11.04,0.8,-4.059,11.183,0.8],"i":[3,0,1,1,2,3,4,7,6,6,5,4,0,4,5,5,1,0,1,5,6,6,2,1,2,6,7,7,3,2,3,7,4,4,0,3],"e":[0,1,0,3,0,4,1,2,1,5,2,3,2,6,3,7,4,5,4,7,5,6,6,7]},{"n":"FLOOR_HUMP_A","c":"hump","v":[17.05,0.02,0.0,16.875,0.02,0.046,16.7,0.02,0.084,16.525,0.02,0.113,16.35,0.02,0.134,16.175,0.02,0.146,16.0,0.02,0.15,15.825,0.02,0.146,15.65,0.02,0.134,15.475,0.02,0.113,15.3,0.02,0.084,15.125,0.02,0.046,14.95,0.02,0.0,17.05,9.0,0.0,16.875,9.0,0.046,16.7,9.0,0.084,16.525,9.0,0.113,16.35,9.0,0.134,16.175,9.0,0.146,16.0,9.0,0.15,15.825,9.0,0.146,15.65,9.0,0.134,15.475,9.0,0.113,15.3,9.0,0.084,15.125,9.0,0.046,14.95,9.0,0.0],"i":[12,0,1,12,1,2,12,2,3,12,3,4,12,4,5,12,5,6,12,6,7,12,7,8,12,8,9,12,9,10,10,11,12,13,25,24,13,24,23,13,23,22,13,22,21,13,21,20,13,20,19,13,19,18,13,18,17,13,17,16,13,16,15,15,14,13,0,13,14,14,1,0,1,14,15,15,2,1,2,15,16,16,3,2,3,16,17,17,4,3,4,17,18,18,5,4,5,18,19,19,6,5,6,19,20,20,7,6,7,20,21,21,8,7,8,21,22,22,9,8,9,22,23,23,10,9,10,23,24,24,11,10,11,24,25,25,12,11,12,25,13,13,0,12],"e":[0,1,0,12,0,13,1,2,1,14,2,3,2,15,3,4,3,16,4,5,4,17,5,6,5,18,6,7,6,19,7,8,7,20,8,9,8,21,9,10,9,22,10,11,10,23,11,12,11,24,12,25,13,14,13,25,14,15,15,16,16,17,17,18,18,19,19,20,20,21,21,22,22,23,23,24,24,25]},{"n":"FLOOR_HUMP_B","c":"hump","v":[17.05,11.8,0.0,16.875,11.8,0.046,16.7,11.8,0.084,16.525,11.8,0.113,16.35,11.8,0.134,16.175,11.8,0.146,16.0,11.8,0.15,15.825,11.8,0.146,15.65,11.8,0.134,15.475,11.8,0.113,15.3,11.8,0.084,15.125,11.8,0.046,14.95,11.8,0.0,17.05,12.48,0.0,16.875,12.48,0.046,16.7,12.48,0.084,16.525,12.48,0.113,16.35,12.48,0.134,16.175,12.48,0.146,16.0,12.48,0.15,15.825,12.48,0.146,15.65,12.48,0.134,15.475,12.48,0.113,15.3,12.48,0.084,15.125,12.48,0.046,14.95,12.48,0.0],"i":[12,0,1,12,1,2,12,2,3,12,3,4,12,4,5,12,5,6,12,6,7,12,7,8,12,8,9,12,9,10,10,11,12,13,25,24,13,24,23,13,23,22,13,22,21,13,21,20,13,20,19,13,19,18,13,18,17,13,17,16,13,16,15,15,14,13,0,13,14,14,1,0,1,14,15,15,2,1,2,15,16,16,3,2,3,16,17,17,4,3,4,17,18,18,5,4,5,18,19,19,6,5,6,19,20,20,7,6,7,20,21,21,8,7,8,21,22,22,9,8,9,22,23,23,10,9,10,23,24,24,11,10,11,24,25,25,12,11,12,25,13,13,0,12],"e":[0,1,0,12,0,13,1,2,1,14,2,3,2,15,3,4,3,16,4,5,4,17,5,6,5,18,6,7,6,19,7,8,7,20,8,9,8,21,9,10,9,22,10,11,10,23,11,12,11,24,12,25,13,14,13,25,14,15,15,16,16,17,17,18,18,19,19,20,20,21,21,22,22,23,23,24,24,25]},{"n":"WEATHER_STATION","c":"station","v":[-0.219,9.29,0.0,-2.405,9.185,0.0,-2.521,10.88,0.0,-0.229,10.989,0.0,-0.219,9.29,1.5,-2.405,9.185,1.5,-2.521,10.88,1.5,-0.229,10.989,1.5],"i":[3,0,1,1,2,3,4,7,6,6,5,4,0,4,5,5,1,0,1,5,6,6,2,1,2,6,7,7,3,2,3,7,4,4,0,3],"e":[0,1,0,3,0,4,1,2,1,5,2,3,2,6,3,7,4,5,4,7,5,6,6,7]},{"n":"WORK_STATION_TRANSITION","c":"station","v":[-0.193,5.091,0.0,-1.927,5.008,0.0,-2.032,6.703,0.0,-0.203,6.79,0.0,-0.193,5.091,0.9,-1.927,5.008,0.9,-2.032,6.703,0.9,-0.203,6.79,0.9],"i":[3,0,1,1,2,3,4,7,6,6,5,4,0,4,5,5,1,0,1,5,6,6,2,1,2,6,7,7,3,2,3,7,4,4,0,3],"e":[0,1,0,3,0,4,1,2,1,5,2,3,2,6,3,7,4,5,4,7,5,6,6,7]},{"n":"WORK_STATION_FRONT","c":"station","v":[35.6,0.2,0.0,34.5,0.2,0.0,34.5,2.9,0.0,35.6,2.9,0.0,35.6,0.2,0.9,34.5,0.2,0.9,34.5,2.9,0.9,35.6,2.9,0.9],"i":[3,0,1,1,2,3,4,7,6,6,5,4,0,4,5,5,1,0,1,5,6,6,2,1,2,6,7,7,3,2,3,7,4,4,0,3],"e":[0,1,0,3,0,4,1,2,1,5,2,3,2,6,3,7,4,5,4,7,5,6,6,7]},{"n":"UNLABELLED_BOX_TRANSITION","c":"station","v":[-0.243,0.088,0.0,-1.779,0.015,0.0,-1.868,1.311,0.0,-0.255,1.388,0.0,-0.243,0.088,2.0,-1.779,0.015,2.0,-1.868,1.311,2.0,-0.255,1.388,2.0],"i":[3,0,1,1,2,3,4,7,6,6,5,4,0,4,5,5,1,0,1,5,6,6,2,1,2,6,7,7,3,2,3,7,4,4,0,3],"e":[0,1,0,3,0,4,1,2,1,5,2,3,2,6,3,7,4,5,4,7,5,6,6,7]},{"n":"AIRLOCK_FRONT","c":"airlock","v":[37.5,3.7,0.0,36.0,3.7,0.0,36.0,6.1,0.0,37.5,6.1,0.0,37.5,3.7,2.3,36.0,3.7,2.3,36.0,6.1,2.3,37.5,6.1,2.3],"i":[3,0,1,1,2,3,4,7,6,6,5,4,0,4,5,5,1,0,1,5,6,6,2,1,2,6,7,7,3,2,3,7,4,4,0,3],"e":[0,1,0,3,0,4,1,2,1,5,2,3,2,6,3,7,4,5,4,7,5,6,6,7]},{"n":"WATER_TANK_MAIN","c":"tank","v":[2.3,13.5,0.0,0.2,13.5,0.0,0.2,15.0,0.0,2.3,15.0,0.0,2.3,13.5,1.8,0.2,13.5,1.8,0.2,15.0,1.8,2.3,15.0,1.8],"i":[3,0,1,1,2,3,4,7,6,6,5,4,0,4,5,5,1,0,1,5,6,6,2,1,2,6,7,7,3,2,3,7,4,4,0,3],"e":[0,1,0,3,0,4,1,2,1,5,2,3,2,6,3,7,4,5,4,7,5,6,6,7]},{"n":"WATER_TANK_WING","c":"tank","v":[-4.06,13.292,0.0,-6.25,13.083,0.0,-6.392,14.576,0.0,-4.202,14.785,0.0,-4.06,13.292,1.8,-6.25,13.083,1.8,-6.392,14.576,1.8,-4.202,14.785,1.8],"i":[3,0,1,1,2,3,4,7,6,6,5,4,0,4,5,5,1,0,1,5,6,6,2,1,2,6,7,7,3,2,3,7,4,4,0,3],"e":[0,1,0,3,0,4,1,2,1,5,2,3,2,6,3,7,4,5,4,7,5,6,6,7]},{"n":"EXHAUST_FAN_1","c":"fan_exh","v":[36.3,5.5,2.4,36.0,5.5,2.4,36.0,6.1,2.4,36.3,6.1,2.4,36.3,5.5,2.9,36.0,5.5,2.9,36.0,6.1,2.9,36.3,6.1,2.9],"i":[3,0,1,1,2,3,4,7,6,6,5,4,0,4,5,5,1,0,1,5,6,6,2,1,2,6,7,7,3,2,3,7,4,4,0,3],"e":[0,1,0,3,0,4,1,2,1,5,2,3,2,6,3,7,4,5,4,7,5,6,6,7]},{"n":"EXHAUST_FAN_2","c":"fan_exh","v":[36.3,2.77,2.4,36.0,2.77,2.4,36.0,3.37,2.4,36.3,3.37,2.4,36.3,2.77,2.9,36.0,2.77,2.9,36.0,3.37,2.9,36.3,3.37,2.9],"i":[3,0,1,1,2,3,4,7,6,6,5,4,0,4,5,5,1,0,1,5,6,6,2,1,2,6,7,7,3,2,3,7,4,4,0,3],"e":[0,1,0,3,0,4,1,2,1,5,2,3,2,6,3,7,4,5,4,7,5,6,6,7]},{"n":"CIRCULATING_FAN_3","c":"fan_circ","v":[30.5,8.4,2.5,30.5,8.377,2.615,30.5,8.312,2.712,30.5,8.215,2.777,30.5,8.1,2.8,30.5,7.985,2.777,30.5,7.888,2.712,30.5,7.823,2.615,30.5,7.8,2.5,30.5,7.823,2.385,30.5,7.888,2.288,30.5,7.985,2.223,30.5,8.1,2.2,30.5,8.215,2.223,30.5,8.312,2.288,30.5,8.377,2.385,30.3,8.4,2.5,30.3,8.377,2.615,30.3,8.312,2.712,30.3,8.215,2.777,30.3,8.1,2.8,30.3,7.985,2.777,30.3,7.888,2.712,30.3,7.823,2.615,30.3,7.8,2.5,30.3,7.823,2.385,30.3,7.888,2.288,30.3,7.985,2.223,30.3,8.1,2.2,30.3,8.215,2.223,30.3,8.312,2.288,30.3,8.377,2.385],"i":[15,0,1,15,1,2,15,2,3,15,3,4,15,4,5,15,5,6,15,6,7,15,7,8,15,8,9,15,9,10,15,10,11,15,11,12,15,12,13,13,14,15,16,31,30,16,30,29,16,29,28,16,28,27,16,27,26,16,26,25,16,25,24,16,24,23,16,23,22,16,22,21,16,21,20,16,20,19,16,19,18,18,17,16,0,16,17,17,1,0,1,17,18,18,2,1,2,18,19,19,3,2,3,19,20,20,4,3,4,20,21,21,5,4,5,21,22,22,6,5,6,22,23,23,7,6,7,23,24,24,8,7,8,24,25,25,9,8,9,25,26,26,10,9,10,26,27,27,11,10,11,27,28,28,12,11,12,28,29,29,13,12,13,29,30,30,14,13,14,30,31,31,15,14,15,31,16,16,0,15],"e":[0,1,0,15,0,16,1,2,1,17,2,3,2,18,3,4,3,19,4,5,4,20,5,6,5,21,6,7,6,22,7,8,7,23,8,9,8,24,9,10,9,25,10,11,10,26,11,12,11,27,12,13,12,28,13,14,13,29,14,15,14,30,15,31,16,17,16,31,17,18,18,19,19,20,20,21,21,22,22,23,23,24,24,25,25,26,26,27,27,28,28,29,29,30,30,31]},{"n":"CIRCULATING_FAN_4","c":"fan_circ","v":[20.1,4.4,2.5,20.1,4.377,2.615,20.1,4.312,2.712,20.1,4.215,2.777,20.1,4.1,2.8,20.1,3.985,2.777,20.1,3.888,2.712,20.1,3.823,2.615,20.1,3.8,2.5,20.1,3.823,2.385,20.1,3.888,2.288,20.1,3.985,2.223,20.1,4.1,2.2,20.1,4.215,2.223,20.1,4.312,2.288,20.1,4.377,2.385,19.9,4.4,2.5,19.9,4.377,2.615,19.9,4.312,2.712,19.9,4.215,2.777,19.9,4.1,2.8,19.9,3.985,2.777,19.9,3.888,2.712,19.9,3.823,2.615,19.9,3.8,2.5,19.9,3.823,2.385,19.9,3.888,2.288,19.9,3.985,2.223,19.9,4.1,2.2,19.9,4.215,2.223,19.9,4.312,2.288,19.9,4.377,2.385],"i":[15,0,1,15,1,2,15,2,3,15,3,4,15,4,5,15,5,6,15,6,7,15,7,8,15,8,9,15,9,10,15,10,11,15,11,12,15,12,13,13,14,15,16,31,30,16,30,29,16,29,28,16,28,27,16,27,26,16,26,25,16,25,24,16,24,23,16,23,22,16,22,21,16,21,20,16,20,19,16,19,18,18,17,16,0,16,17,17,1,0,1,17,18,18,2,1,2,18,19,19,3,2,3,19,20,20,4,3,4,20,21,21,5,4,5,21,22,22,6,5,6,22,23,23,7,6,7,23,24,24,8,7,8,24,25,25,9,8,9,25,26,26,10,9,10,26,27,27,11,10,11,27,28,28,12,11,12,28,29,29,13,12,13,29,30,30,14,13,14,30,31,31,15,14,15,31,16,16,0,15],"e":[0,1,0,15,0,16,1,2,1,17,2,3,2,18,3,4,3,19,4,5,4,20,5,6,5,21,6,7,6,22,7,8,7,23,8,9,8,24,9,10,9,25,10,11,10,26,11,12,11,27,12,13,12,28,13,14,13,29,14,15,14,30,15,31,16,17,16,31,17,18,18,19,19,20,20,21,21,22,22,23,23,24,24,25,25,26,26,27,27,28,28,29,29,30,30,31]},{"n":"CIRCULATING_FAN_5","c":"fan_circ","v":[7.3,8.4,2.5,7.3,8.377,2.615,7.3,8.312,2.712,7.3,8.215,2.777,7.3,8.1,2.8,7.3,7.985,2.777,7.3,7.888,2.712,7.3,7.823,2.615,7.3,7.8,2.5,7.3,7.823,2.385,7.3,7.888,2.288,7.3,7.985,2.223,7.3,8.1,2.2,7.3,8.215,2.223,7.3,8.312,2.288,7.3,8.377,2.385,7.1,8.4,2.5,7.1,8.377,2.615,7.1,8.312,2.712,7.1,8.215,2.777,7.1,8.1,2.8,7.1,7.985,2.777,7.1,7.888,2.712,7.1,7.823,2.615,7.1,7.8,2.5,7.1,7.823,2.385,7.1,7.888,2.288,7.1,7.985,2.223,7.1,8.1,2.2,7.1,8.215,2.223,7.1,8.312,2.288,7.1,8.377,2.385],"i":[15,0,1,15,1,2,15,2,3,15,3,4,15,4,5,15,5,6,15,6,7,15,7,8,15,8,9,15,9,10,15,10,11,15,11,12,15,12,13,13,14,15,16,31,30,16,30,29,16,29,28,16,28,27,16,27,26,16,26,25,16,25,24,16,24,23,16,23,22,16,22,21,16,21,20,16,20,19,16,19,18,18,17,16,0,16,17,17,1,0,1,17,18,18,2,1,2,18,19,19,3,2,3,19,20,20,4,3,4,20,21,21,5,4,5,21,22,22,6,5,6,22,23,23,7,6,7,23,24,24,8,7,8,24,25,25,9,8,9,25,26,26,10,9,10,26,27,27,11,10,11,27,28,28,12,11,12,28,29,29,13,12,13,29,30,30,14,13,14,30,31,31,15,14,15,31,16,16,0,15],"e":[0,1,0,15,0,16,1,2,1,17,2,3,2,18,3,4,3,19,4,5,4,20,5,6,5,21,6,7,6,22,7,8,7,23,8,9,8,24,9,10,9,25,10,11,10,26,11,12,11,27,12,13,12,28,13,14,13,29,14,15,14,30,15,31,16,17,16,31,17,18,18,19,19,20,20,21,21,22,22,23,23,24,24,25,25,26,26,27,27,28,28,29,29,30,30,31]},{"n":"CIRCULATING_FAN_6","c":"fan_circ","v":[-6.977,3.872,2.5,-6.975,3.849,2.615,-6.969,3.785,2.712,-6.959,3.688,2.777,-6.948,3.573,2.8,-6.938,3.459,2.777,-6.928,3.362,2.712,-6.922,3.298,2.615,-6.92,3.275,2.5,-6.922,3.298,2.385,-6.928,3.362,2.288,-6.938,3.459,2.223,-6.948,3.573,2.2,-6.959,3.688,2.223,-6.969,3.785,2.288,-6.975,3.849,2.385,-7.176,3.853,2.5,-7.174,3.83,2.615,-7.168,3.766,2.712,-7.158,3.669,2.777,-7.148,3.554,2.8,-7.137,3.44,2.777,-7.127,3.343,2.712,-7.121,3.279,2.615,-7.119,3.256,2.5,-7.121,3.279,2.385,-7.127,3.343,2.288,-7.137,3.44,2.223,-7.148,3.554,2.2,-7.158,3.669,2.223,-7.168,3.766,2.288,-7.174,3.83,2.385],"i":[15,0,1,15,1,2,15,2,3,15,3,4,15,4,5,15,5,6,15,6,7,15,7,8,15,8,9,15,9,10,15,10,11,15,11,12,15,12,13,13,14,15,16,31,30,16,30,29,16,29,28,16,28,27,16,27,26,16,26,25,16,25,24,16,24,23,16,23,22,16,22,21,16,21,20,16,20,19,16,19,18,18,17,16,0,16,17,17,1,0,1,17,18,18,2,1,2,18,19,19,3,2,3,19,20,20,4,3,4,20,21,21,5,4,5,21,22,22,6,5,6,22,23,23,7,6,7,23,24,24,8,7,8,24,25,25,9,8,9,25,26,26,10,9,10,26,27,27,11,10,11,27,28,28,12,11,12,28,29,29,13,12,13,29,30,30,14,13,14,30,31,31,15,14,15,31,16,16,0,15],"e":[0,1,0,15,0,16,1,2,1,17,2,3,2,18,3,4,3,19,4,5,4,20,5,6,5,21,6,7,6,22,7,8,7,23,8,9,8,24,9,10,9,25,10,11,10,26,11,12,11,27,12,13,12,28,13,14,13,29,14,15,14,30,15,31,16,17,16,31,17,18,18,19,19,20,20,21,21,22,22,23,23,24,24,25,25,26,26,27,27,28,28,29,29,30,30,31]},{"n":"CIRCULATING_FAN_7","c":"fan_circ","v":[-9.747,7.626,2.5,-9.744,7.603,2.615,-9.738,7.538,2.712,-9.729,7.441,2.777,-9.718,7.327,2.8,-9.707,7.213,2.777,-9.698,7.116,2.712,-9.692,7.051,2.615,-9.689,7.029,2.5,-9.692,7.051,2.385,-9.698,7.116,2.288,-9.707,7.213,2.223,-9.718,7.327,2.2,-9.729,7.441,2.223,-9.738,7.538,2.288,-9.744,7.603,2.385,-9.946,7.607,2.5,-9.943,7.584,2.615,-9.937,7.519,2.712,-9.928,7.422,2.777,-9.917,7.308,2.8,-9.906,7.194,2.777,-9.897,7.097,2.712,-9.891,7.032,2.615,-9.889,7.009,2.5,-9.891,7.032,2.385,-9.897,7.097,2.288,-9.906,7.194,2.223,-9.917,7.308,2.2,-9.928,7.422,2.223,-9.937,7.519,2.288,-9.943,7.584,2.385],"i":[15,0,1,15,1,2,15,2,3,15,3,4,15,4,5,15,5,6,15,6,7,15,7,8,15,8,9,15,9,10,15,10,11,15,11,12,15,12,13,13,14,15,16,31,30,16,30,29,16,29,28,16,28,27,16,27,26,16,26,25,16,25,24,16,24,23,16,23,22,16,22,21,16,21,20,16,20,19,16,19,18,18,17,16,0,16,17,17,1,0,1,17,18,18,2,1,2,18,19,19,3,2,3,19,20,20,4,3,4,20,21,21,5,4,5,21,22,22,6,5,6,22,23,23,7,6,7,23,24,24,8,7,8,24,25,25,9,8,9,25,26,26,10,9,10,26,27,27,11,10,11,27,28,28,12,11,12,28,29,29,13,12,13,29,30,30,14,13,14,30,31,31,15,14,15,31,16,16,0,15],"e":[0,1,0,15,0,16,1,2,1,17,2,3,2,18,3,4,3,19,4,5,4,20,5,6,5,21,6,7,6,22,7,8,7,23,8,9,8,24,9,10,9,25,10,11,10,26,11,12,11,27,12,13,12,28,13,14,13,29,14,15,14,30,15,31,16,17,16,31,17,18,18,19,19,20,20,21,21,22,22,23,23,24,24,25,25,26,26,27,27,28,28,29,29,30,30,31]},{"n":"CIRCULATING_FAN_8","c":"fan_circ","v":[-18.425,2.779,2.5,-18.423,2.756,2.615,-18.417,2.691,2.712,-18.407,2.594,2.777,-18.396,2.48,2.8,-18.385,2.366,2.777,-18.376,2.269,2.712,-18.37,2.204,2.615,-18.368,2.181,2.5,-18.37,2.204,2.385,-18.376,2.269,2.288,-18.385,2.366,2.223,-18.396,2.48,2.2,-18.407,2.594,2.223,-18.417,2.691,2.288,-18.423,2.756,2.385,-18.624,2.76,2.5,-18.622,2.737,2.615,-18.616,2.672,2.712,-18.606,2.575,2.777,-18.595,2.461,2.8,-18.585,2.347,2.777,-18.575,2.25,2.712,-18.569,2.185,2.615,-18.567,2.162,2.5,-18.569,2.185,2.385,-18.575,2.25,2.288,-18.585,2.347,2.223,-18.595,2.461,2.2,-18.606,2.575,2.223,-18.616,2.672,2.288,-18.622,2.737,2.385],"i":[15,0,1,15,1,2,15,2,3,15,3,4,15,4,5,15,5,6,15,6,7,15,7,8,15,8,9,15,9,10,15,10,11,15,11,12,15,12,13,13,14,15,16,31,30,16,30,29,16,29,28,16,28,27,16,27,26,16,26,25,16,25,24,16,24,23,16,23,22,16,22,21,16,21,20,16,20,19,16,19,18,18,17,16,0,16,17,17,1,0,1,17,18,18,2,1,2,18,19,19,3,2,3,19,20,20,4,3,4,20,21,21,5,4,5,21,22,22,6,5,6,22,23,23,7,6,7,23,24,24,8,7,8,24,25,25,9,8,9,25,26,26,10,9,10,26,27,27,11,10,11,27,28,28,12,11,12,28,29,29,13,12,13,29,30,30,14,13,14,30,31,31,15,14,15,31,16,16,0,15],"e":[0,1,0,15,0,16,1,2,1,17,2,3,2,18,3,4,3,19,4,5,4,20,5,6,5,21,6,7,6,22,7,8,7,23,8,9,8,24,9,10,9,25,10,11,10,26,11,12,11,27,12,13,12,28,13,14,13,29,14,15,14,30,15,31,16,17,16,31,17,18,18,19,19,20,20,21,21,22,22,23,23,24,24,25,25,26,26,27,27,28,28,29,29,30,30,31]},{"n":"EXHAUST_FAN_9","c":"fan_exh","v":[-22.99,3.849,2.4,-23.288,3.821,2.4,-23.299,4.423,2.4,-23.0,4.451,2.4,-22.99,3.849,2.9,-23.288,3.821,2.9,-23.299,4.423,2.9,-23.0,4.451,2.9],"i":[3,0,1,1,2,3,4,7,6,6,5,4,0,4,5,5,1,0,1,5,6,6,2,1,2,6,7,7,3,2,3,7,4,4,0,3],"e":[0,1,0,3,0,4,1,2,1,5,2,3,2,6,3,7,4,5,4,7,5,6,6,7]},{"n":"EXHAUST_FAN_10","c":"fan_exh","v":[-22.949,1.543,2.4,-23.247,1.514,2.4,-23.258,2.116,2.4,-22.959,2.145,2.4,-22.949,1.543,2.9,-23.247,1.514,2.9,-23.258,2.116,2.9,-22.959,2.145,2.9],"i":[3,0,1,1,2,3,4,7,6,6,5,4,0,4,5,5,1,0,1,5,6,6,2,1,2,6,7,7,3,2,3,7,4,4,0,3],"e":[0,1,0,3,0,4,1,2,1,5,2,3,2,6,3,7,4,5,4,7,5,6,6,7]}],"fans":[{"id":"1","type":"exhaust","s":0.0,"t":5.8,"dir":-1,"where":"Front wall","z":2.65,"x":36.0,"y":5.8,"dx":1.0,"dy":-0.0},{"id":"2","type":"exhaust","s":0.0,"t":3.07,"dir":-1,"where":"Front wall","z":2.65,"x":36.0,"y":3.07,"dx":1.0,"dy":-0.0},{"id":"3","type":"circ","s":5.6,"t":8.1,"dir":1,"where":"Main, front","z":2.5,"x":30.4,"y":8.1,"dx":-1.0,"dy":0.0},{"id":"4","type":"circ","s":16.0,"t":4.1,"dir":-1,"where":"Main, middle","z":2.5,"x":20.0,"y":4.1,"dx":1.0,"dy":-0.0},{"id":"5","type":"circ","s":28.8,"t":8.1,"dir":1,"where":"Main, rear","z":2.5,"x":7.2,"y":8.1,"dx":-1.0,"dy":0.0},{"id":"6","type":"circ","s":43.275,"t":4.1,"dir":-1,"where":"Wing, near","z":2.5,"x":-7.048,"y":3.564,"dx":0.9955,"dy":0.0951},{"id":"7","type":"circ","s":45.675,"t":8.1,"dir":1,"where":"Wing, near","z":2.5,"x":-9.818,"y":7.318,"dx":-0.9955,"dy":-0.0951},{"id":"8","type":"circ","s":54.775,"t":4.1,"dir":-1,"where":"Wing, far","z":2.5,"x":-18.496,"y":2.47,"dx":0.9955,"dy":0.0951},{"id":"9","type":"exhaust","s":59.094,"t":6.2,"dir":1,"where":"Rear wall","z":2.65,"x":-22.995,"y":4.15,"dx":-0.9955,"dy":-0.0951},{"id":"10","type":"exhaust","s":59.272,"t":3.9,"dir":1,"where":"Rear wall","z":2.65,"x":-22.954,"y":1.844,"dx":-0.9955,"dy":-0.0951}],"sensors":[{"id":"T1","col":0,"row":1,"s":1.5,"t":3.0,"x":34.5,"y":3.0},{"id":"T2","col":0,"row":2,"s":1.5,"t":6.25,"x":34.5,"y":6.25},{"id":"T3","col":0,"row":3,"s":1.5,"t":9.5,"x":34.5,"y":9.5},{"id":"T4","col":1,"row":1,"s":4.6,"t":3.0,"x":31.4,"y":3.0},{"id":"T5","col":1,"row":2,"s":4.6,"t":6.25,"x":31.4,"y":6.25},{"id":"T6","col":1,"row":3,"s":4.6,"t":9.5,"x":31.4,"y":9.5},{"id":"T7","col":2,"row":1,"s":7.7,"t":3.0,"x":28.3,"y":3.0},{"id":"T8","col":2,"row":2,"s":7.7,"t":6.25,"x":28.3,"y":6.25},{"id":"T9","col":2,"row":3,"s":7.7,"t":9.5,"x":28.3,"y":9.5},{"id":"T10","col":3,"row":1,"s":10.8,"t":3.0,"x":25.2,"y":3.0},{"id":"T11","col":3,"row":2,"s":10.8,"t":6.25,"x":25.2,"y":6.25},{"id":"T12","col":3,"row":3,"s":10.8,"t":9.5,"x":25.2,"y":9.5},{"id":"T13","col":4,"row":1,"s":13.9,"t":3.0,"x":22.1,"y":3.0},{"id":"T14","col":4,"row":2,"s":13.9,"t":6.25,"x":22.1,"y":6.25},{"id":"T15","col":4,"row":3,"s":13.9,"t":9.5,"x":22.1,"y":9.5},{"id":"T16","col":5,"row":1,"s":17.0,"t":3.0,"x":19.0,"y":3.0},{"id":"T17","col":5,"row":2,"s":17.0,"t":6.25,"x":19.0,"y":6.25},{"id":"T18","col":5,"row":3,"s":17.0,"t":9.5,"x":19.0,"y":9.5},{"id":"T19","col":6,"row":1,"s":20.1,"t":3.0,"x":15.9,"y":3.0},{"id":"T20","col":6,"row":2,"s":20.1,"t":6.25,"x":15.9,"y":6.25},{"id":"T21","col":6,"row":3,"s":20.1,"t":9.5,"x":15.9,"y":9.5},{"id":"T22","col":7,"row":1,"s":23.2,"t":3.0,"x":12.8,"y":3.0},{"id":"T23","col":7,"row":2,"s":23.2,"t":6.25,"x":12.8,"y":6.25},{"id":"T24","col":7,"row":3,"s":23.2,"t":9.5,"x":12.8,"y":9.5},{"id":"T25","col":8,"row":1,"s":26.3,"t":3.0,"x":9.7,"y":3.0},{"id":"T26","col":8,"row":2,"s":26.3,"t":6.25,"x":9.7,"y":6.25},{"id":"T27","col":8,"row":3,"s":26.3,"t":9.5,"x":9.7,"y":9.5},{"id":"T28","col":9,"row":1,"s":29.4,"t":3.0,"x":6.6,"y":3.0},{"id":"T29","col":9,"row":2,"s":29.4,"t":6.25,"x":6.6,"y":6.25},{"id":"T30","col":9,"row":3,"s":29.4,"t":9.5,"x":6.6,"y":9.5},{"id":"T31","col":10,"row":1,"s":32.5,"t":3.0,"x":3.5,"y":3.0},{"id":"T32","col":10,"row":2,"s":32.5,"t":6.25,"x":3.5,"y":6.25},{"id":"T33","col":10,"row":3,"s":32.5,"t":9.5,"x":3.5,"y":9.5},{"id":"T34","col":11,"row":1,"s":35.6,"t":3.0,"x":0.4,"y":3.0},{"id":"T35","col":11,"row":2,"s":35.6,"t":6.25,"x":0.4,"y":6.25},{"id":"T36","col":11,"row":3,"s":35.6,"t":9.5,"x":0.4,"y":9.5},{"id":"T37","col":12,"row":1,"s":38.7,"t":3.0,"x":-2.426,"y":2.884},{"id":"T38","col":12,"row":2,"s":38.7,"t":6.25,"x":-2.697,"y":6.121},{"id":"T39","col":12,"row":3,"s":38.7,"t":9.5,"x":-2.968,"y":9.359},{"id":"T40","col":13,"row":1,"s":41.8,"t":3.0,"x":-5.475,"y":2.609},{"id":"T41","col":13,"row":2,"s":41.8,"t":6.25,"x":-5.784,"y":5.845},{"id":"T42","col":13,"row":3,"s":41.8,"t":9.5,"x":-6.093,"y":9.08},{"id":"T43","col":14,"row":1,"s":44.9,"t":3.0,"x":-8.561,"y":2.314},{"id":"T44","col":14,"row":2,"s":44.9,"t":6.25,"x":-8.87,"y":5.55},{"id":"T45","col":14,"row":3,"s":44.9,"t":9.5,"x":-9.179,"y":8.785},{"id":"T46","col":15,"row":1,"s":48.0,"t":3.0,"x":-11.647,"y":2.02},{"id":"T47","col":15,"row":2,"s":48.0,"t":6.25,"x":-11.956,"y":5.255},{"id":"T48","col":15,"row":3,"s":48.0,"t":9.5,"x":-12.265,"y":8.49},{"id":"T49","col":16,"row":1,"s":51.1,"t":3.0,"x":-14.733,"y":1.725},{"id":"T50","col":16,"row":2,"s":51.1,"t":6.25,"x":-15.042,"y":4.96},{"id":"T51","col":16,"row":3,"s":51.1,"t":9.5,"x":-15.351,"y":8.195},{"id":"T52","col":17,"row":1,"s":54.2,"t":3.0,"x":-17.819,"y":1.43},{"id":"T53","col":17,"row":2,"s":54.2,"t":6.25,"x":-18.128,"y":4.665},{"id":"T54","col":17,"row":3,"s":54.2,"t":9.5,"x":-18.437,"y":7.901},{"id":"T55","col":18,"row":1,"s":57.3,"t":3.0,"x":-20.905,"y":1.135},{"id":"T56","col":18,"row":2,"s":57.3,"t":6.25,"x":-21.214,"y":4.371},{"id":"T57","col":18,"row":3,"s":57.3,"t":9.5,"x":-21.523,"y":7.606}],"beds":[{"label":"Germination","row":3,"s0":1.9,"s1":11.3,"t0":9.0,"t1":11.8,"germ":true},{"label":"Plants","row":3,"s0":12.1,"s1":33.9,"t0":9.0,"t1":11.8,"germ":false},{"label":"Plants","row":2,"s0":1.9,"s1":18.9,"t0":4.85,"t1":7.65,"germ":false},{"label":"Plants","row":2,"s0":21.1,"s1":33.9,"t0":4.85,"t1":7.65,"germ":false},{"label":"Seedling channels","row":1,"s0":1.9,"s1":18.9,"t0":0.7,"t1":3.5,"germ":false},{"label":"Plants","row":1,"s0":21.1,"s1":33.9,"t0":0.7,"t1":3.5,"germ":false},{"label":"Plants","row":3,"s0":41.275,"s1":57.475,"t0":9.0,"t1":11.8,"germ":false},{"label":"Plants","row":2,"s0":41.275,"s1":57.475,"t0":4.85,"t1":7.65,"germ":false},{"label":"Plants","row":1,"s0":41.275,"s1":57.475,"t0":0.7,"t1":3.5,"germ":false}]};
+const SURVEY = {"T1":36.1,"T2":36.4,"T3":37.0,"T4":37.0,"T5":36.8,"T6":37.0,"T7":38.0,"T8":35.6,"T9":37.6,"T10":38.2,"T11":35.7,"T12":38.1,"T13":38.2,"T14":35.5,"T15":37.9,"T16":37.7,"T17":35.7,"T18":39.2,"T19":37.7,"T20":36.0,"T21":39.2,"T22":36.9,"T23":37.0,"T24":39.1,"T25":37.0,"T26":37.1,"T27":39.1,"T28":37.2,"T29":37.5,"T30":38.8,"T31":37.5,"T32":37.7,"T33":38.9,"T34":37.8,"T35":38.0,"T36":38.0,"T37":38.8,"T38":38.9,"T39":39.0,"T40":38.8,"T41":39.4,"T42":39.0,"T43":38.5,"T44":39.0,"T45":39.1,"T46":38.8,"T47":39.0,"T48":39.1,"T49":39.1,"T50":39.2,"T51":39.0,"T52":39.4,"T53":39.5,"T54":38.5,"T55":39.4,"T56":39.3,"T57":38.5};
+const G = MODEL.params, SENS = MODEL.sensors, NCOL = 19, NROW = 3;
+const $ = id => document.getElementById(id);
+const fmt = v => v.toFixed(1);
+const colS = k => G.S0 + G.DS * k;
+
+/* ---------- state ---------- */
+const state = { T: Object.assign({}, SURVEY), target: 29.0, thr: 39.0, mode: "abs", sel: null,
+  source: "Survey snapshot", meta: "57 points at 1 m height, time not recorded", live: false };
+let stats = null;
+
+/* ---------- geometry mapping (same as the CAD model) ---------- */
+const sEnd = t => G.S_W1 + G.WING_BOT + (G.WING_TOP - G.WING_BOT) * t / G.W;
+const UX = -Math.cos(G.TH), UY = -Math.sin(G.TH);
+function plan(s, t) {
+  if (s <= G.L_MAIN) return [G.L_MAIN - s, t];
+  const wx = -(G.R0 + t) * Math.sin(G.TH), wy = -G.R0 + (G.R0 + t) * Math.cos(G.TH);
+  if (s <= G.S_W1) { const f = (s - G.L_MAIN) / G.LW; return [wx * f, t + (wy - t) * f]; }
+  const d = s - G.S_W1; return [wx + d * UX, wy + d * UY];
+}
+const CX = 6.5, CY = 5.2;
+const W3 = (x, y, z) => [x - CX, z, -(y - CY)];
+const ST3 = (s, t, z) => { const p = plan(s, t); return W3(p[0], p[1], z); };
+
+/* ---------- colour ramps ---------- */
+const SEQ = ["#fff3b0", "#fed26b", "#fca348", "#f4692f", "#dc2f2a", "#a50f2d"];
+const DIVL = ["#1c5cab", "#5598e7", "#b7d3f6", "#f0efec", "#f3b7a9", "#e0604f", "#a8201f"];
+const DIVD = ["#3987e5", "#2f65a8", "#2f4667", "#383835", "#6b3a36", "#b9453d", "#e66767"];
+const hex = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16) / 255);
+function rampAt(stops, f) {
+  f = Math.min(1, Math.max(0, f)) * (stops.length - 1);
+  const i = Math.min(stops.length - 2, Math.floor(f)), a = hex(stops[i]), b = hex(stops[i + 1]), u = f - i;
+  return [a[0] + (b[0] - a[0]) * u, a[1] + (b[1] - a[1]) * u, a[2] + (b[2] - a[2]) * u];
+}
+const css = c => `rgb(${c.map(v => Math.round(v * 255)).join(",")})`;
+const isDark = () => getComputedStyle(document.documentElement).getPropertyValue("--mode").trim() === "dark";
+function colourOf(T) {
+  if (state.mode === "abs") return rampAt(SEQ, (T - stats.d0) / (stats.d1 - stats.d0));
+  return rampAt(isDark() ? DIVD : DIVL, (T - stats.mean + stats.dev) / (2 * stats.dev));
+}
+
+/* ---------- statistics, interpolation ---------- */
+function grid() { const g = []; for (let k = 0; k < NCOL; k++) { g.push([]); for (let r = 0; r < NROW; r++) g[k].push(state.T["T" + (3 * k + r + 1)]); } return g; }
+function recompute() {
+  const vals = SENS.map(s => state.T[s.id]);
+  const mean = vals.reduce((a, b) => a + b, 0) / vals.length;
+  let mx = SENS[0], mn = SENS[0];
+  for (const s of SENS) { if (state.T[s.id] > state.T[mx.id]) mx = s; if (state.T[s.id] < state.T[mn.id]) mn = s; }
+  const max = state.T[mx.id], min = state.T[mn.id];
+  const dev = Math.max(0.5, Math.ceil(Math.max(max - mean, mean - min) * 2) / 2);
+  stats = { mean, max, min, maxS: mx, minS: mn, d0: Math.floor(min * 2) / 2, d1: Math.max(Math.ceil(max * 2) / 2, Math.floor(min * 2) / 2 + 0.5), dev, g: grid() };
+}
+const cub = (a, b, c, d, f) => b + 0.5 * f * (c - a + f * (2 * a - 5 * b + 4 * c - d + f * (3 * (b - c) + d - a)));
+function tempAt(s, t) {
+  const g = stats.g, cs = Math.min(NCOL - 1, Math.max(0, (s - G.S0) / G.DS)), ct = Math.min(NROW - 1, Math.max(0, (t - G.T0) / G.DT));
+  const k = Math.min(NCOL - 2, Math.floor(cs)), fs = cs - k, r = Math.min(NROW - 2, Math.floor(ct)), ft = ct - r;
+  const col = j => { const K = i => g[Math.min(NCOL - 1, Math.max(0, i))][Math.min(NROW - 1, Math.max(0, j))]; return cub(K(k - 1), K(k), K(k + 1), K(k + 2), fs); };
+  const v = cub(col(r - 1), col(r), col(r + 1), col(r + 2), ft);
+  return Math.min(stats.max, Math.max(stats.min, v));
+}
+const relief = () => $("lRelief").checked;
+const surfZ = T => G.PLANT_H + 0.03 + (relief() ? (T - stats.min) * 0.45 : 0);
+
+/* ---------- hot zones ---------- */
+const AREAS = [
+  { name: "Main, front third", span: "0 to 12 m", cols: [0, 3] }, { name: "Main, middle third", span: "12 to 24 m", cols: [4, 7] },
+  { name: "Main, rear third", span: "24 to 36 m", cols: [8, 11] }, { name: "Transition", span: "36 to 39 m", cols: [12, 12] },
+  { name: "Wing, near half", span: "39 to 49 m", cols: [13, 15] }, { name: "Wing, far half", span: "49 to 59 m", cols: [16, 18] }];
+const areaOf = col => AREAS.find(a => col >= a.cols[0] && col <= a.cols[1]);
+function clusters() {
+  const hot = new Set(SENS.filter(s => state.T[s.id] >= state.thr - 1e-9).map(s => s.id)), seen = new Set(), out = [];
+  const at = (k, r) => (k < 0 || k >= NCOL || r < 1 || r > 3) ? null : "T" + (3 * k + r);
+  for (const s of SENS) {
+    if (!hot.has(s.id) || seen.has(s.id)) continue;
+    const q = [s], mem = []; seen.add(s.id);
+    while (q.length) { const c = q.pop(); mem.push(c);
+      for (let dk = -1; dk <= 1; dk++) for (let dr = -1; dr <= 1; dr++) { const id = at(c.col + dk, c.row + dr);
+        if (id && hot.has(id) && !seen.has(id)) { seen.add(id); q.push(SENS[parseInt(id.slice(1)) - 1]); } } }
+    mem.sort((a, b) => state.T[b.id] - state.T[a.id]);
+    const cx = mem.reduce((a, m) => a + m.x, 0) / mem.length, cy = mem.reduce((a, m) => a + m.y, 0) / mem.length;
+    const near = MODEL.fans.map(f => ({ f, d: Math.hypot(f.x - cx, f.y - cy) })).sort((a, b) => a.d - b.d).slice(0, 2);
+    const s0 = Math.min(...mem.map(m => m.s)), s1 = Math.max(...mem.map(m => m.s));
+    const names = [...new Set(mem.map(m => areaOf(m.col).name.split(",")[0]))];
+    out.push({ mem, peak: mem[0], near, s0, s1, where: names.join(" and ") });
+  }
+  return out.sort((a, b) => b.mem.length - a.mem.length);
+}
+
+/* ---------- WebGL ---------- */
+const canvas = $("gl"), vp = $("viewport"), overlay = $("overlay");
+const gl = canvas.getContext("webgl", { antialias: true, alpha: false }) || canvas.getContext("experimental-webgl");
+let prog, loc = {}, dirty = true;
+const cam = { az: 0.14, el: 0.74, dist: 70, target: [0, 1.2, 0] };
+function initGL() {
+  if (!gl) { $("nogl").style.display = "flex"; return false; }
+  const sh = (type, src) => { const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); return s; };
+  prog = gl.createProgram();
+  gl.attachShader(prog, sh(gl.VERTEX_SHADER, "attribute vec3 aP;attribute vec3 aN;attribute vec4 aC;uniform mat4 uM;varying vec4 vC;varying vec3 vN;void main(){vC=aC;vN=aN;gl_Position=uM*vec4(aP,1.0);}"));
+  gl.attachShader(prog, sh(gl.FRAGMENT_SHADER, "precision mediump float;varying vec4 vC;varying vec3 vN;uniform vec3 uL;uniform float uLit;void main(){float d=abs(dot(normalize(vN+vec3(0.0,0.0001,0.0)),uL));float s=mix(1.0,0.6+0.4*d,uLit);gl_FragColor=vec4(vC.rgb*s,vC.a);}"));
+  gl.linkProgram(prog);
+  if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) { $("nogl").style.display = "flex"; return false; }
+  gl.useProgram(prog);
+  for (const n of ["aP", "aN", "aC"]) loc[n] = gl.getAttribLocation(prog, n);
+  for (const n of ["uM", "uL", "uLit"]) loc[n] = gl.getUniformLocation(prog, n);
+  return true;
+}
+class Batch {
+  constructor() { this.d = []; }
+  v(p, n, c) { this.d.push(p[0], p[1], p[2], n[0], n[1], n[2], c[0], c[1], c[2], c[3]); }
+  tri(a, b, c, col) { const u = [b[0] - a[0], b[1] - a[1], b[2] - a[2]], w = [c[0] - a[0], c[1] - a[1], c[2] - a[2]];
+    const n = [u[1] * w[2] - u[2] * w[1], u[2] * w[0] - u[0] * w[2], u[0] * w[1] - u[1] * w[0]]; this.v(a, n, col); this.v(b, n, col); this.v(c, n, col); }
+  tri3(a, b, c, ca, cb, cc) { const u = [b[0] - a[0], b[1] - a[1], b[2] - a[2]], w = [c[0] - a[0], c[1] - a[1], c[2] - a[2]];
+    const n = [u[1] * w[2] - u[2] * w[1], u[2] * w[0] - u[0] * w[2], u[0] * w[1] - u[1] * w[0]]; this.v(a, n, ca); this.v(b, n, cb); this.v(c, n, cc); }
+  quad(a, b, c, d, col) { this.tri(a, b, c, col); this.tri(a, c, d, col); }
+  line(a, b, col) { this.v(a, [0, 1, 0], col); this.v(b, [0, 1, 0], col); }
+  get count() { return this.d.length / 10; }
+}
+const bufs = {};
+function upload(name, batch, extra) {
+  if (bufs[name]) gl.deleteBuffer(bufs[name].b);
+  const b = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, b); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(batch.d), gl.STATIC_DRAW);
+  bufs[name] = Object.assign({ b, n: batch.count }, extra || {});
+}
+function draw(name, mode, lit, first, count) {
+  const o = bufs[name]; if (!o || !o.n) return;
+  gl.bindBuffer(gl.ARRAY_BUFFER, o.b);
+  gl.enableVertexAttribArray(loc.aP); gl.vertexAttribPointer(loc.aP, 3, gl.FLOAT, false, 40, 0);
+  gl.enableVertexAttribArray(loc.aN); gl.vertexAttribPointer(loc.aN, 3, gl.FLOAT, false, 40, 12);
+  gl.enableVertexAttribArray(loc.aC); gl.vertexAttribPointer(loc.aC, 4, gl.FLOAT, false, 40, 24);
+  gl.uniform1f(loc.uLit, lit);
+  gl.drawArrays(mode, first || 0, count === undefined ? o.n : count);
+}
+
+/* scene palette per theme */
+function pal() {
+  const d = isDark();
+  return {
+    bg: hex(d ? "#0d100f" : "#e4e8e3"), ink: d ? [0.93, 0.94, 0.92] : [0.08, 0.09, 0.1],
+    floor: d ? [0.17, 0.19, 0.18, 1] : [0.83, 0.85, 0.81, 1], kerb: d ? [0.36, 0.38, 0.37, 1] : [0.6, 0.62, 0.59, 1],
+    mesh: d ? [0.45, 0.7, 0.58, 0.22] : [0.25, 0.5, 0.4, 0.2], plastic: d ? [0.7, 0.82, 0.86, 0.1] : [0.55, 0.68, 0.74, 0.13],
+    roof: d ? [0.7, 0.82, 0.86, 0.06] : [0.55, 0.68, 0.74, 0.08], monitor: d ? [0.7, 0.82, 0.86, 0.1] : [0.55, 0.68, 0.74, 0.13],
+    bed: d ? [0.2, 0.42, 0.24, 1] : [0.36, 0.6, 0.36, 1], germ: d ? [0.42, 0.56, 0.2, 1] : [0.62, 0.78, 0.36, 1],
+    tank: d ? [0.2, 0.42, 0.66, 1] : [0.33, 0.58, 0.84, 1], hump: [0.9, 0.72, 0.1, 1],
+    station: d ? [0.42, 0.43, 0.42, 1] : [0.66, 0.66, 0.63, 1], airlock: d ? [0.6, 0.63, 0.66, 0.35] : [0.4, 0.43, 0.46, 0.35],
+    fan_exh: [0.92, 0.41, 0.2, 1], fan_circ: d ? [0.85, 0.87, 0.85, 1] : [0.16, 0.17, 0.18, 1], crit: [0.82, 0.23, 0.23, 1]
+  };
+}
+const SHELL = new Set(["mesh", "plastic", "roof", "monitor", "kerb", "airlock"]);
+const EQUIP = new Set(["bed", "germ", "tank", "hump", "station", "fan_exh", "fan_circ"]);
+let transList = [];
+function solidVerts(sd) { const out = []; for (let i = 0; i < sd.v.length; i += 3) out.push(W3(sd.v[i], sd.v[i + 1], sd.v[i + 2])); return out; }
+function buildStatic() {
+  if (!gl) return;
+  const p = pal(), opq = new Batch(), eq = new Batch(), fan = new Batch(), lines = new Batch(), tr = new Batch(); transList = [];
+  const edge = [p.ink[0], p.ink[1], p.ink[2], isDark() ? 0.5 : 0.46];
+  for (const sd of MODEL.solids) {
+    const V = solidVerts(sd), col = p[sd.c], transparent = col[3] < 1;
+    const tgt = transparent ? tr : (sd.c.startsWith("fan") ? fan : (EQUIP.has(sd.c) ? eq : opq));
+    const first = tgt.count;
+    for (let i = 0; i < sd.i.length; i += 3) tgt.tri(V[sd.i[i]], V[sd.i[i + 1]], V[sd.i[i + 2]], col);
+    if (transparent) { const c = [0, 0, 0]; for (const q of V) { c[0] += q[0] / V.length; c[1] += q[1] / V.length; c[2] += q[2] / V.length; }
+      transList.push({ first, count: tgt.count - first, c }); }
+    if (SHELL.has(sd.c) && sd.c !== "kerb") for (let i = 0; i < sd.e.length; i += 2) lines.line(V[sd.e[i]], V[sd.e[i + 1]], edge);
+  }
+  // airflow arrows
+  const ac = [p.ink[0], p.ink[1], p.ink[2], 0.9];
+  for (const f of MODEL.fans) {
+    const len = f.type === "exhaust" ? 2.2 : 3.2, w = 0.11, hx = f.dx, hy = f.dy, nx = -hy, ny = hx, z = f.z;
+    const a = [f.x + hx * 0.5, f.y + hy * 0.5], b = [f.x + hx * (0.5 + len), f.y + hy * (0.5 + len)];
+    const q = (pt, o, e) => W3(pt[0] + nx * o + hx * e, pt[1] + ny * o + hy * e, z);
+    fan.quad(q(a, -w, 0), q(b, -w, 0), q(b, w, 0), q(a, w, 0), ac);
+    fan.tri(q(b, -0.42, 0), q(b, 0, 0.9), q(b, 0.42, 0), ac);
+  }
+  upload("opq", opq); upload("eq", eq); upload("fan", fan); upload("shellLines", lines); upload("tr", tr);
+  gl.clearColor(p.bg[0], p.bg[1], p.bg[2], 1);
+}
+function buildHeat() {
+  if (!gl) return;
+  const p = pal(), heat = new Batch(), iso = new Batch(), out = new Batch();
+  const NS = 120, NT = 25, S = [], Tt = [], val = [], pos = [];
+  for (let j = 0; j <= NT; j++) { const t = G.W * j / NT; Tt.push(t); S.push([]); val.push([]); pos.push([]);
+    for (let i = 0; i <= NS; i++) { const s = sEnd(t) * i / NS, T = tempAt(s, t); S[j].push(s); val[j].push(T); pos[j].push(ST3(s, t, surfZ(T))); } }
+  for (let j = 0; j < NT; j++) for (let i = 0; i < NS; i++) {
+    const c = (a, b) => { const k = colourOf(val[a][b]); return [k[0], k[1], k[2], 0.93]; };
+    heat.tri3(pos[j][i], pos[j][i + 1], pos[j + 1][i + 1], c(j, i), c(j, i + 1), c(j + 1, i + 1));
+    heat.tri3(pos[j][i], pos[j + 1][i + 1], pos[j + 1][i], c(j, i), c(j + 1, i + 1), c(j + 1, i));
+  }
+  // contour lines every 0.5 degC (marching squares on the same grid)
+  const ic = [p.ink[0], p.ink[1], p.ink[2], 0.5];
+  for (let L = Math.ceil(stats.min * 2) / 2; L <= stats.max; L += 0.5) {
+    for (let j = 0; j < NT; j++) for (let i = 0; i < NS; i++) {
+      const cs = [[j, i], [j, i + 1], [j + 1, i + 1], [j + 1, i]], pts = [];
+      for (let e = 0; e < 4; e++) { const a = cs[e], b = cs[(e + 1) % 4], va = val[a[0]][a[1]], vb = val[b[0]][b[1]];
+        if ((va < L) !== (vb < L)) { const f = (L - va) / (vb - va), s = S[a[0]][a[1]] + (S[b[0]][b[1]] - S[a[0]][a[1]]) * f, t = Tt[a[0]] + (Tt[b[0]] - Tt[a[0]]) * f; pts.push(ST3(s, t, surfZ(L) + 0.03)); } }
+      if (pts.length >= 2) iso.line(pts[0], pts[1], ic);
+      if (pts.length === 4) iso.line(pts[2], pts[3], ic);
+    }
+  }
+  // bed outlines on top of the map, sensor stems, hot-zone beacons
+  const oc = [p.ink[0], p.ink[1], p.ink[2], 0.24];
+  if (!relief()) for (const b of MODEL.beds) { const z = G.PLANT_H + 0.06, c = [ST3(b.s0, b.t0, z), ST3(b.s1, b.t0, z), ST3(b.s1, b.t1, z), ST3(b.s0, b.t1, z)];
+    for (let i = 0; i < 4; i++) out.line(c[i], c[(i + 1) % 4], oc); }
+  const beacon = new Batch();
+  for (const cl of clusters()) { const s = cl.peak, z0 = surfZ(state.T[s.id]), z1 = Math.max(4.9, z0 + 1.6), w = 0.07;
+    const a = (dx, dy, z) => W3(s.x + dx, s.y + dy, z);
+    beacon.quad(a(-w, 0, z0), a(w, 0, z0), a(w, 0, z1), a(-w, 0, z1), p.crit); beacon.quad(a(0, -w, z0), a(0, w, z0), a(0, w, z1), a(0, -w, z1), p.crit); }
+  upload("heat", heat); upload("iso", iso); upload("out", out); upload("beacon", beacon);
+}
+
+/* matrices */
+const mul = (a, b) => { const o = new Float32Array(16); for (let c = 0; c < 4; c++) for (let r = 0; r < 4; r++) o[c * 4 + r] = a[r] * b[c * 4] + a[4 + r] * b[c * 4 + 1] + a[8 + r] * b[c * 4 + 2] + a[12 + r] * b[c * 4 + 3]; return o; };
+const nrm = v => { const l = Math.hypot(v[0], v[1], v[2]) || 1; return [v[0] / l, v[1] / l, v[2] / l]; };
+const crs = (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
+let MVP = new Float32Array(16), eye = [0, 0, 0], vw = 1, vh = 1;
+const FOV = 0.56;
+function updateMVP() {
+  const ce = Math.cos(cam.el), se = Math.sin(cam.el);
+  eye = [cam.target[0] + cam.dist * ce * Math.sin(cam.az), cam.target[1] + cam.dist * se, cam.target[2] + cam.dist * ce * Math.cos(cam.az)];
+  const z = nrm([eye[0] - cam.target[0], eye[1] - cam.target[1], eye[2] - cam.target[2]]), x = nrm(crs([0, 1, 0], z)), y = crs(z, x);
+  const V = [x[0], y[0], z[0], 0, x[1], y[1], z[1], 0, x[2], y[2], z[2], 0, -(x[0] * eye[0] + x[1] * eye[1] + x[2] * eye[2]), -(y[0] * eye[0] + y[1] * eye[1] + y[2] * eye[2]), -(z[0] * eye[0] + z[1] * eye[1] + z[2] * eye[2]), 1];
+  const f = 1 / Math.tan(FOV / 2), n = 0.5, fa = 600, a = vw / vh;
+  const Pm = [f / a, 0, 0, 0, 0, f, 0, 0, 0, 0, (fa + n) / (n - fa), -1, 0, 0, 2 * fa * n / (n - fa), 0];
+  MVP = mul(Pm, V);
+}
+function project(p) {
+  const w = MVP[3] * p[0] + MVP[7] * p[1] + MVP[11] * p[2] + MVP[15]; if (w <= 0.01) return null;
+  const x = (MVP[0] * p[0] + MVP[4] * p[1] + MVP[8] * p[2] + MVP[12]) / w, y = (MVP[1] * p[0] + MVP[5] * p[1] + MVP[9] * p[2] + MVP[13]) / w;
+  return [(x * 0.5 + 0.5) * vw, (1 - (y * 0.5 + 0.5)) * vh];
+}
+function fitDist() { const th = Math.tan(FOV / 2), a = vw / vh; return Math.max(35 / (th * a), 14 / th); }
+function setView(v) {
+  if (v === "iso") { cam.az = 0.14; cam.el = 0.74; } else if (v === "top") { cam.az = 0; cam.el = 1.555; } else { cam.az = 1.02; cam.el = 0.3; }
+  cam.target = v === "front" ? [16, 1.5, 0] : [0, 1.2, 0]; cam.dist = v === "front" ? Math.max(fitDist() * 0.62, 42) : fitDist();
+  for (const [id, k] of [["vIso", "iso"], ["vTop", "top"], ["vFront", "front"]]) $(id).setAttribute("aria-pressed", String(k === v));
+  dirty = true;
+}
+
+/* ---------- overlay (points, labels) ---------- */
+const dots = {}, labels = [];
+function buildOverlay() {
+  overlay.textContent = ""; labels.length = 0;
+  const mk = (cls, text, p3) => { const e = document.createElement("div"); e.className = "lab " + cls; e.textContent = text; overlay.appendChild(e); labels.push({ e, p3, cls }); return e; };
+  const zz = [["Front wall", ST3(-1.0, 14.2, 0)], ["Main section", ST3(18, -1.6, 0)], ["Transition", ST3(37.5, -1.6, 0)], ["Wing", ST3(49, -1.6, 0)], ["Rear wall", ST3(sEnd(12.5) + 1.0, 14.2, 0)],
+    ["Row 1", ST3(sEnd(3.25) + 4.2, 3.25, 0)], ["Row 2", ST3(sEnd(6.25) + 4.2, 6.25, 0)], ["Row 3", ST3(sEnd(9.25) + 4.2, 9.25, 0)]];
+  for (const [t, p] of zz) mk("zone", t, p);
+  for (const f of MODEL.fans) mk("fl " + (f.type === "circ" ? "rc" : "sq"), f.id, W3(f.x - f.dx * 0.2, f.y - f.dy * 0.2, f.z + 0.75));
+  for (const s of SENS) { const b = document.createElement("button"); b.type = "button"; b.className = "sdot"; b.tabIndex = -1; b.dataset.id = s.id; overlay.appendChild(b); dots[s.id] = b;
+    b.addEventListener("pointerenter", ev => showTip(ev, sensorTip(s))); b.addEventListener("pointerleave", hideTip);
+    b.addEventListener("pointerdown", ev => ev.stopPropagation()); b.addEventListener("click", () => select(s.id)); }
+}
+let peakLabels = [];
+function syncOverlayData() {
+  for (const e of peakLabels) e.e.remove(); peakLabels = [];
+  for (const s of SENS) { const d = dots[s.id]; d.classList.toggle("hot", state.T[s.id] >= state.thr - 1e-9); d.classList.toggle("sel", state.sel === s.id);
+    d.setAttribute("aria-label", `${s.id}, ${fmt(state.T[s.id])} degrees`); }
+  for (const cl of clusters()) { const s = cl.peak, e = document.createElement("div"); e.className = "lab peak"; e.textContent = `${s.id} ${fmt(state.T[s.id])}°`; overlay.appendChild(e);
+    peakLabels.push({ e, p3: W3(s.x, s.y, Math.max(4.9, surfZ(state.T[s.id]) + 1.6)), cls: "peak" }); }
+}
+function placeOverlay() {
+  const showL = $("lLabels").checked, showS = $("lSens").checked, showF = $("lFans").checked;
+  for (const l of labels.concat(peakLabels)) { const on = l.cls.startsWith("fl") ? showF : (l.cls === "peak" ? true : showL), q = on ? project(l.p3) : null;
+    if (!q || q[0] < -40 || q[0] > vw + 40 || q[1] < -20 || q[1] > vh + 20) { l.e.style.display = "none"; continue; }
+    l.e.style.display = ""; l.e.style.left = q[0].toFixed(1) + "px"; l.e.style.top = q[1].toFixed(1) + "px"; }
+  for (const s of SENS) { const d = dots[s.id], q = showS ? project(W3(s.x, s.y, surfZ(state.T[s.id]) + 0.05)) : null;
+    if (!q || q[0] < 0 || q[0] > vw || q[1] < 0 || q[1] > vh) { d.style.display = "none"; continue; }
+    d.style.display = ""; d.style.left = q[0].toFixed(1) + "px"; d.style.top = q[1].toFixed(1) + "px"; }
+}
+
+/* ---------- render ---------- */
+function render() {
+  if (!dirty) return;
+  const r = vp.getBoundingClientRect(), dpr = Math.min(2, window.devicePixelRatio || 1);
+  if (r.width < 2 || r.height < 2) return;
+  dirty = false;
+  vw = Math.max(1, r.width); vh = Math.max(1, r.height);
+  updateMVP();
+  if (gl) {
+    const cw = Math.round(vw * dpr), ch = Math.round(vh * dpr);
+    if (canvas.width !== cw || canvas.height !== ch) { canvas.width = cw; canvas.height = ch; }
+    gl.viewport(0, 0, cw, ch); gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    gl.enable(gl.DEPTH_TEST); gl.depthFunc(gl.LEQUAL); gl.disable(gl.CULL_FACE);
+    gl.enable(gl.BLEND); gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    gl.uniformMatrix4fv(loc.uM, false, MVP); gl.uniform3fv(loc.uL, nrm([0.35, 0.85, 0.4]));
+    gl.depthMask(true);
+    draw("opq", gl.TRIANGLES, 1);
+    if ($("lBeds").checked) draw("eq", gl.TRIANGLES, 1);
+    if ($("lHeat").checked) { draw("heat", gl.TRIANGLES, relief() ? 0.55 : 0); if ($("lIso").checked) draw("iso", gl.LINES, 0); draw("out", gl.LINES, 0); }
+    if ($("lFans").checked) draw("fan", gl.TRIANGLES, 0.6);
+    draw("beacon", gl.TRIANGLES, 0);
+    if ($("lShell").checked) {
+      draw("shellLines", gl.LINES, 0);
+      gl.depthMask(false);
+      const d2 = o => (o.c[0] - eye[0]) ** 2 + (o.c[1] - eye[1]) ** 2 + (o.c[2] - eye[2]) ** 2;
+      for (const o of transList.slice().sort((a, b) => d2(b) - d2(a))) draw("tr", gl.TRIANGLES, 0.5, o.first, o.count);
+      gl.depthMask(true);
+    }
+  }
+  placeOverlay();
+}
+function loop() { render(); requestAnimationFrame(loop); }
+
+/* ---------- interaction ---------- */
+const ptrs = new Map(); let pinch = 0;
+vp.addEventListener("pointerdown", e => { if (e.target.closest(".legend,.zoom")) return; vp.setPointerCapture(e.pointerId); ptrs.set(e.pointerId, [e.clientX, e.clientY, e.button, e.shiftKey]); vp.classList.add("drag"); hideTip(); });
+vp.addEventListener("pointermove", e => {
+  const p = ptrs.get(e.pointerId); if (!p) return;
+  const dx = e.clientX - p[0], dy = e.clientY - p[1]; p[0] = e.clientX; p[1] = e.clientY;
+  if (ptrs.size === 2) { const a = [...ptrs.values()], d = Math.hypot(a[0][0] - a[1][0], a[0][1] - a[1][1]); if (pinch) cam.dist = Math.min(260, Math.max(8, cam.dist * pinch / d)); pinch = d; dirty = true; return; }
+  if (p[2] === 2 || p[3]) { const k = cam.dist * 0.0016, rx = [Math.cos(cam.az), 0, -Math.sin(cam.az)], fx = [Math.sin(cam.az), 0, Math.cos(cam.az)];
+    cam.target[0] -= rx[0] * dx * k + fx[0] * dy * k * -1; cam.target[2] -= rx[2] * dx * k + fx[2] * dy * k * -1; cam.target[0] = Math.max(-40, Math.min(40, cam.target[0])); cam.target[2] = Math.max(-25, Math.min(25, cam.target[2])); }
+  else { cam.az -= dx * 0.006; cam.el = Math.min(1.555, Math.max(0.04, cam.el + dy * 0.006)); }
+  for (const id of ["vIso", "vTop", "vFront"]) $(id).setAttribute("aria-pressed", "false");
+  dirty = true;
+});
+const up = e => { ptrs.delete(e.pointerId); pinch = 0; if (!ptrs.size) vp.classList.remove("drag"); };
+vp.addEventListener("pointerup", up); vp.addEventListener("pointercancel", up);
+vp.addEventListener("contextmenu", e => e.preventDefault());
+vp.addEventListener("wheel", e => { e.preventDefault(); cam.dist = Math.min(260, Math.max(8, cam.dist * Math.exp(e.deltaY * 0.0012))); dirty = true; }, { passive: false });
+$("zIn").onclick = () => { cam.dist = Math.max(8, cam.dist * 0.8); dirty = true; };
+$("zOut").onclick = () => { cam.dist = Math.min(260, cam.dist * 1.25); dirty = true; };
+$("vIso").onclick = () => setView("iso"); $("vTop").onclick = () => setView("top"); $("vFront").onclick = () => setView("front");
+for (const id of ["lHeat", "lIso", "lSens", "lFans", "lBeds", "lShell", "lLabels"]) $(id).addEventListener("change", () => { dirty = true; });
+$("lRelief").addEventListener("change", () => { buildHeat(); syncOverlayData(); dirty = true; });
+function setMode(m) { state.mode = m; $("mAbs").setAttribute("aria-pressed", String(m === "abs")); $("mDev").setAttribute("aria-pressed", String(m === "dev")); refresh(); }
+$("mAbs").onclick = () => setMode("abs"); $("mDev").onclick = () => setMode("dev");
+$("thr").addEventListener("input", e => { state.thr = parseFloat(e.target.value); refresh(); });
+$("tgt").addEventListener("change", e => { const v = parseFloat(e.target.value); if (isFinite(v)) { state.target = v; refresh(); } else e.target.value = state.target; });
+
+/* ---------- tooltip ---------- */
+const tip = $("tip");
+function showTip(ev, html) { tip.innerHTML = html; tip.style.display = "block"; const r = tip.getBoundingClientRect(); let x = ev.clientX + 14, y = ev.clientY + 14;
+  if (x + r.width > innerWidth - 8) x = ev.clientX - r.width - 14; if (y + r.height > innerHeight - 8) y = ev.clientY - r.height - 14; tip.style.left = Math.max(8, x) + "px"; tip.style.top = Math.max(8, y) + "px"; }
+function hideTip() { tip.style.display = "none"; }
+function sensorTip(s) { const T = state.T[s.id], d = T - stats.mean, hot = T >= state.thr - 1e-9;
+  return `<div class="t">${s.id} <span class="num">${fmt(T)} °C</span></div><table><tr><td>Position</td><td>${fmt(s.s)} m from front, row ${s.row}</td></tr><tr><td>Area</td><td>${areaOf(s.col).name}</td></tr><tr><td>Against target</td><td>${sgn(T - state.target)} °C</td></tr><tr><td>Against house mean</td><td>${sgn(d)} °C</td></tr><tr><td>Status</td><td>${hot ? "▲ At or above hotspot limit" : "Below hotspot limit"}</td></tr></table>`; }
+function select(id) { state.sel = state.sel === id ? null : id; syncOverlayData(); buildGrid(); buildProfile(); dirty = true; }
+
+/* ---------- panels ---------- */
+function buildLegend() {
+  const abs = state.mode === "abs", stops = abs ? SEQ : (isDark() ? DIVD : DIVL), lo = abs ? stats.d0 : -stats.dev, hi = abs ? stats.d1 : stats.dev, n = 4;
+  const ticks = []; for (let i = 0; i <= n; i++) { const v = lo + (hi - lo) * i / n; ticks.push(`<span>${!abs && v > 0 ? "+" : ""}${abs ? fmt(v) : (v === 0 ? "mean" : fmt(v))}</span>`); }
+  $("legend").innerHTML = `<div>${abs ? "Air temperature at 1 m (°C)" : "Difference from house mean of " + fmt(stats.mean) + " °C"}</div><div class="bar" style="background:linear-gradient(90deg,${stops.join(",")})"></div><div class="ticks">${ticks.join("")}</div><div class="hint" style="margin-top:4px">Target ${fmt(state.target)} °C${stats.min > state.target ? ". Readings are " + fmt(stats.min - state.target) + " to " + fmt(stats.max - state.target) + " °C above it" : ""}</div>`;
+}
+function pill(max, mean) { return max >= state.thr - 1e-9 ? `<span class="pill crit">▲ Hotspot</span>` : (mean > state.target ? `<span class="pill warn">◆ Over target</span>` : `<span class="pill good">● On target</span>`); }
+const sgn = v => (v >= 0 ? "+" : "−") + fmt(Math.abs(v));
+function buildPanels() {
+  const cls = clusters(), nHot = SENS.filter(s => state.T[s.id] >= state.thr - 1e-9).length;
+  const nOver = SENS.filter(s => state.T[s.id] > state.target).length, tg = fmt(state.target);
+  $("kHot").textContent = nOver; $("kN").textContent = SENS.length;
+  $("kHotD").textContent = `Points above the ${tg} °C target`;
+  $("kMax").textContent = fmt(stats.max); $("kMaxD").textContent = `${stats.maxS.id}, ${areaOf(stats.maxS.col).name.toLowerCase()}, row ${stats.maxS.row}. ${sgn(stats.max - state.target)} °C against target`;
+  $("kMin").textContent = fmt(stats.min); $("kMinD").textContent = `${stats.minS.id}, ${areaOf(stats.minS.col).name.toLowerCase()}, row ${stats.minS.row}. ${sgn(stats.min - state.target)} °C against target`;
+  $("kMean").textContent = fmt(stats.mean); $("kMeanD").textContent = `${sgn(stats.mean - state.target)} °C against the ${tg} °C target`;
+  $("tgtNote").textContent = nOver === SENS.length ? `Every point is above target, by ${fmt(stats.min - state.target)} to ${fmt(stats.max - state.target)} °C.` : (nOver ? `${nOver} of ${SENS.length} points are above target.` : `No point is above target.`);
+  $("thrNote").textContent = `${nHot} of ${SENS.length} points flagged, in ${cls.length} zone${cls.length === 1 ? "" : "s"}. ${sgn(state.thr - state.target)} °C against target.`;
+  $("kSpread").textContent = fmt(stats.max - stats.min);
+  $("thrOut").textContent = fmt(state.thr) + " °C";
+  $("zones").innerHTML = cls.length ? cls.map((c, i) => `<li><div class="ttl">Zone ${i + 1}: ${c.where}, ${c.mem.length} point${c.mem.length === 1 ? "" : "s"}</div>
+    <div>Peak <span class="num">${fmt(state.T[c.peak.id])} °C</span> at ${c.peak.id}. ${c.s0 === c.s1 ? fmt(c.s0) : fmt(c.s0) + " to " + fmt(c.s1)} m from the front wall.</div>
+    <div>Nearest fans: ${c.near.map(n => `${n.f.id} (${n.f.type === "circ" ? "circulating" : "exhaust"}, ${n.d.toFixed(0)} m)`).join(", ")}.</div>
+    <div class="ids">${c.mem.map(m => m.id).join(" ")}</div></li>`).join("") : `<li style="border-color:var(--good)">No point is at or above the hotspot limit.</li>`;
+  const rows = AREAS.map(a => { const m = SENS.filter(s => s.col >= a.cols[0] && s.col <= a.cols[1]).map(s => state.T[s.id]); const mean = m.reduce((x, y) => x + y, 0) / m.length, max = Math.max(...m);
+    return `<tr><td>${a.name}<div class="hint">${a.span}</div></td><td class="r">${fmt(mean)}</td><td class="r">${sgn(mean - state.target)}</td><td>${pill(max, mean)}</td></tr>`; });
+  $("areas").innerHTML = `<tr><th>Area</th><th class="r">Mean °C</th><th class="r">vs target</th><th>Status</th></tr>` + rows.join("");
+  // insights computed from the current readings
+  const avg = f => { const m = SENS.filter(f).map(s => state.T[s.id]); return m.reduce((x, y) => x + y, 0) / m.length; };
+  const main = avg(s => s.col <= 11), wing = avg(s => s.col >= 13), rm = [1, 2, 3].map(r => ({ r, m: avg(s => s.col <= 11 && s.row === r) })).sort((a, b) => b.m - a.m);
+  const ins = [nOver === SENS.length ? `Every point is above the <b class="num">${tg} °C</b> target. The house mean is <b class="num">${fmt(stats.mean - state.target)} °C</b> over it, which is larger than the <b class="num">${fmt(stats.max - stats.min)} °C</b> spread between points.` : `${nOver} of ${SENS.length} points are above the <b class="num">${tg} °C</b> target.`,
+    `The wing averages <b class="num">${wing.toFixed(2)} °C</b> and the main section <b class="num">${main.toFixed(2)} °C</b>, a difference of <b class="num">${Math.abs(wing - main).toFixed(2)} °C</b>.`,
+    `In the main section, row ${rm[0].r} is warmest (mean <span class="num">${fmt(rm[0].m)} °C</span>) and row ${rm[2].r} coolest (mean <span class="num">${fmt(rm[2].m)} °C</span>).`];
+  let best = null; for (let k = 0; k < NCOL; k++) { const v = [0, 1, 2].map(r => stats.g[k][r]), d = Math.max(...v) - Math.min(...v); if (!best || d > best.d) best = { k, d }; }
+  ins.push(`The largest difference across the width is <b class="num">${fmt(best.d)} °C</b>, at ${fmt(colS(best.k))} m from the front wall.`);
+  ins.push(`These are patterns in one walk-through survey. Fan states, shading and time of day were not recorded, so causes are not yet established.`);
+  $("insights").innerHTML = ins.map(t => `<li>${t}</li>`).join("");
+  $("srcName").textContent = state.source; $("srcMeta").textContent = state.meta; $("srcDot").style.background = state.live ? "var(--good)" : "var(--ink-3)";
+}
+function buildFans() {
+  $("fans").innerHTML = MODEL.fans.map(f => `<div class="fan ${f.type === "circ" ? "circ" : ""}"><div class="n">${f.id}</div><div><div>${f.type === "circ" ? "Circulating, " : "Exhaust, "}${f.where.toLowerCase()}</div><div class="w">${f.type === "circ" ? (f.dir > 0 ? "Blows toward the rear wall" : "Blows toward the front wall") : "Blows out of the house"}</div></div><span class="pill off">No signal</span></div>`).join("");
+}
+function buildGrid() {
+  let h = `<tr><th class="rh">m from front</th>`; for (let k = NCOL - 1; k >= 0; k--) h += `<th>${fmt(colS(k))}</th>`; h += `</tr>`;
+  for (let r = 3; r >= 1; r--) { h += `<tr><th class="rh">Row ${r}</th>`;
+    for (let k = NCOL - 1; k >= 0; k--) { const id = "T" + (3 * k + r), T = state.T[id], hot = T >= state.thr - 1e-9;
+      h += `<td><button type="button" class="cell${hot ? " hot" : ""}${state.sel === id ? " sel" : ""}" data-id="${id}" aria-label="${id}, ${fmt(T)} degrees${hot ? ", at or above hotspot limit" : ""}">${hot ? "▲" : ""}${fmt(T)}<small>${id}</small><i style="background:${css(colourOf(T))}"></i></button></td>`; }
+    h += `</tr>`; }
+  $("grid").innerHTML = h;
+}
+$("grid").addEventListener("click", e => { const b = e.target.closest(".cell"); if (b) select(b.dataset.id); });
+
+/* ---------- profile chart ---------- */
+function buildProfile() {
+  const svg = $("profile"), Wd = Math.max(320, svg.clientWidth || 800), Hd = 262, m = { l: 40, r: 64, t: 26, b: 40 }, iw = Wd - m.l - m.r, ih = Hd - m.t - m.b;
+  const SMAX = 59.1, y0 = Math.min(35, Math.floor(stats.min)), y1 = Math.max(40, Math.ceil(stats.max));
+  const X = s => m.l + (1 - s / SMAX) * iw, Y = v => m.t + (1 - (v - y0) / (y1 - y0)) * ih;
+  const cs = getComputedStyle(document.documentElement), col = [1, 2, 3].map(i => cs.getPropertyValue("--s" + i).trim());
+  let h = ""; const nar = Wd < 560;
+  h += `<rect x="${X(G.S_W1)}" y="${m.t}" width="${X(36) - X(G.S_W1)}" height="${ih}" fill="var(--ink-3)" opacity=".13"/>${nar ? "" : `<text x="${(X(36) + X(G.S_W1)) / 2}" y="${m.t + 12}" text-anchor="middle">Transition</text>`}`;
+  h += `<rect x="${X(G.HUMP_S + G.HUMP_W / 2)}" y="${m.t}" width="${X(G.HUMP_S - G.HUMP_W / 2) - X(G.HUMP_S + G.HUMP_W / 2)}" height="${ih}" fill="var(--warn)" opacity=".16"/>${nar ? "" : `<text x="${X(G.HUMP_S)}" y="${m.t + 12}" text-anchor="middle">Floor hump</text>`}`;
+  h += `<text x="${X(48)}" y="${m.t + 12}" text-anchor="middle">Wing</text><text x="${X(8)}" y="${m.t + 12}" text-anchor="middle">Main section</text>`;
+  for (let v = y0; v <= y1; v++) h += `<line x1="${m.l}" x2="${m.l + iw}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--line)"/><text class="num" x="${m.l - 7}" y="${Y(v) + 4}" text-anchor="end">${v}</text>`;
+  for (let s = 0; s <= 55; s += nar ? 10 : 5) h += `<line x1="${X(s)}" x2="${X(s)}" y1="${m.t + ih}" y2="${m.t + ih + 4}" stroke="var(--ink-3)"/><text class="num" x="${X(s)}" y="${m.t + ih + 17}" text-anchor="middle">${s}</text>`;
+  h += `<text x="${m.l + iw}" y="${Hd - 4}" text-anchor="end">${nar ? "m from front wall →" : "Distance from front wall (m) · front wall, fans 1 and 2 →"}</text><text x="${m.l}" y="${Hd - 4}">${nar ? "← rear wall" : "← rear wall, fans 9 and 10"}</text>`;
+  h += `<text x="${m.l - 30}" y="12">°C</text>`;
+  if (state.thr >= y0 && state.thr <= y1) h += `<line x1="${m.l}" x2="${m.l + iw}" y1="${Y(state.thr)}" y2="${Y(state.thr)}" stroke="var(--crit)" stroke-width="1.5" stroke-dasharray="5 4"/><text x="${m.l + iw + 6}" y="${Y(state.thr) - 5}" style="fill:var(--ink)">Hotspot</text><text class="num" x="${m.l + iw + 6}" y="${Y(state.thr) + 9}" style="fill:var(--ink)">${fmt(state.thr)}</text>`;
+  if (state.target >= y0 && state.target <= y1) h += `<line x1="${m.l}" x2="${m.l + iw}" y1="${Y(state.target)}" y2="${Y(state.target)}" stroke="var(--good)" stroke-width="1.5"/><text x="${m.l + 6}" y="${Y(state.target) - 5}" style="fill:var(--ink)">Target ${fmt(state.target)} °C</text>`;
+  else if (state.target < y0) h += `<text x="${m.l + 6}" y="${m.t + ih - 6}" style="fill:var(--ink)">↓ Target ${fmt(state.target)} °C is ${fmt(y0 - state.target)} °C below this scale</text>`;
+  const ends = [];
+  for (let r = 1; r <= 3; r++) { const pts = []; for (let k = 0; k < NCOL; k++) pts.push([X(colS(k)), Y(stats.g[k][r - 1])]);
+    h += `<polyline fill="none" stroke="${col[r - 1]}" stroke-width="2" stroke-linejoin="round" points="${pts.map(p => p[0].toFixed(1) + "," + p[1].toFixed(1)).join(" ")}"/>`;
+    for (let k = 0; k < NCOL; k++) { const id = "T" + (3 * k + r), sel = state.sel === id; h += `<circle cx="${pts[k][0].toFixed(1)}" cy="${pts[k][1].toFixed(1)}" r="${sel ? 6 : 3.5}" fill="${col[r - 1]}" stroke="${sel ? "var(--ink)" : "var(--surface)"}" stroke-width="${sel ? 2 : 1.5}"/>`; }
+    ends.push({ r, y: pts[0][1] }); }
+  ends.sort((a, b) => a.y - b.y); for (let i = 1; i < ends.length; i++) if (ends[i].y - ends[i - 1].y < 13) ends[i].y = ends[i - 1].y + 13;
+  const shift = Math.max(0, ends[ends.length - 1].y - (m.t + ih)); for (const e of ends) { e.y -= shift;
+    h += `<line x1="${m.l + iw + 4}" x2="${m.l + iw + 12}" y1="${e.y}" y2="${e.y}" stroke="${col[e.r - 1]}" stroke-width="2"/><text x="${m.l + iw + 15}" y="${e.y + 4}" style="fill:var(--ink)">Row ${e.r}</text>`; }
+  h += `<line id="xh" y1="${m.t}" y2="${m.t + ih}" stroke="var(--ink-2)" stroke-width="1" visibility="hidden"/><rect id="hit" x="${m.l}" y="${m.t}" width="${iw}" height="${ih}" fill="transparent"/>`;
+  svg.setAttribute("viewBox", `0 0 ${Wd} ${Hd}`); svg.setAttribute("height", Hd); svg.innerHTML = h;
+  const hit = svg.querySelector("#hit"), xh = svg.querySelector("#xh");
+  hit.addEventListener("pointermove", ev => { const r = svg.getBoundingClientRect(), px = (ev.clientX - r.left) * Wd / r.width, s = (1 - (px - m.l) / iw) * SMAX, k = Math.min(NCOL - 1, Math.max(0, Math.round((s - G.S0) / G.DS)));
+    xh.setAttribute("x1", X(colS(k))); xh.setAttribute("x2", X(colS(k))); xh.setAttribute("visibility", "visible");
+    const rows = [3, 2, 1].map(rw => { const id = "T" + (3 * k + rw), T = state.T[id]; return `<tr><td><span class="sw" style="background:${col[rw - 1]}"></span>Row ${rw} (${id})</td><td>${T >= state.thr - 1e-9 ? "▲ " : ""}${fmt(T)} °C</td></tr>`; }).join("");
+    showTip(ev, `<div class="t">${fmt(colS(k))} m from front wall</div><div class="hint">${areaOf(k).name}</div><table>${rows}</table>`); });
+  hit.addEventListener("pointerleave", () => { xh.setAttribute("visibility", "hidden"); hideTip(); });
+  $("profLegend").innerHTML = [1, 2, 3].map(r => `<span><i style="background:${col[r - 1]}"></i>Row ${r}${r === 1 ? " (bottom of layout)" : r === 3 ? " (top of layout)" : " (centre)"}</span>`).join("");
+}
+
+/* ---------- site, sun and weather ---------- */
+const SITE = { lat: 1.449, lon: 103.807, tz: "Asia/Singapore" };
+const WX_URL = "https://api.open-meteo.com/v1/forecast?latitude=" + SITE.lat + "&longitude=" + SITE.lon +
+  "&current=temperature_2m,relative_humidity_2m,wind_speed_10m,wind_direction_10m,cloud_cover,shortwave_radiation,precipitation" +
+  "&hourly=temperature_2m,shortwave_radiation&timezone=Asia%2FSingapore&forecast_days=2&wind_speed_unit=ms";
+const wx = { cur: null, hourly: [], failed: false };
+const COMPASS = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"];
+const compass = d => COMPASS[Math.round((((d % 360) + 360) % 360) / 22.5) % 16];
+const hhmm = d => new Intl.DateTimeFormat("en-GB", { timeZone: SITE.tz, hour: "2-digit", minute: "2-digit", hour12: false }).format(d);
+function sunPos(date) {
+  const r = Math.PI / 180, d = date.getTime() / 86400000 + 2440587.5 - 2451545.0;
+  const g = (357.529 + 0.98560028 * d) * r, q = 280.459 + 0.98564736 * d, L = (q + 1.915 * Math.sin(g) + 0.020 * Math.sin(2 * g)) * r, e = (23.439 - 0.00000036 * d) * r;
+  const ra = Math.atan2(Math.cos(e) * Math.sin(L), Math.cos(L)), dec = Math.asin(Math.sin(e) * Math.sin(L));
+  const gmst = (18.697374558 + 24.06570982441908 * d) * 15, H = (gmst + SITE.lon) * r - ra, la = SITE.lat * r;
+  const el = Math.asin(Math.sin(la) * Math.sin(dec) + Math.cos(la) * Math.cos(dec) * Math.cos(H)) / r;
+  const az = (Math.atan2(-Math.sin(H), Math.tan(dec) * Math.cos(la) - Math.sin(la) * Math.cos(H)) / r + 360) % 360;
+  return { el, az };
+}
+function renderSun() {
+  const now = new Date(), p = sunPos(now);
+  $("sgTime").textContent = new Intl.DateTimeFormat("en-GB", { timeZone: SITE.tz, weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", hour12: false }).format(now);
+  $("sunNow").textContent = p.el > 0 ? `${p.el.toFixed(0)}° above horizon, bearing ${p.az.toFixed(0)}° (${compass(p.az)})` : "Below the horizon";
+  // sunrise and sunset for the current Singapore day (UTC+8), scanned minute by minute
+  const day0 = Math.floor((now.getTime() + 8 * 3600000) / 86400000) * 86400000 - 8 * 3600000; let rise = null, set = null, prev = sunPos(new Date(day0)).el;
+  for (let m = 1; m <= 1440; m++) { const el = sunPos(new Date(day0 + m * 60000)).el; if (prev < -0.833 && el >= -0.833) rise = new Date(day0 + m * 60000); if (prev >= -0.833 && el < -0.833) set = new Date(day0 + m * 60000); prev = el; }
+  $("sunRS").textContent = rise && set ? `${hhmm(rise)}, ${hhmm(set)}` : "–";
+}
+function renderWeather() {
+  const c = wx.cur, tg = state.target, box = $("wxNow");
+  if (!c) { box.innerHTML = wx.failed ? `<div>Live weather could not be loaded.</div><div class="hint">Pages viewed inside Claude cannot reach outside services. The weather loads when you open the downloaded file in a browser or host the page yourself, with an internet connection.</div>` : `<div class="hint">Loading weather…</div>`; }
+  else {
+    const v = (x, d, u) => (x === undefined || x === null || !isFinite(x)) ? "–" : Number(x).toFixed(d) + u;
+    box.innerHTML = `<div class="wxT">${v(c.temp, 1, "")}<small> °C</small></div><div>${isFinite(c.temp) ? (c.temp > tg ? `${fmt(c.temp - tg)} °C above the ${fmt(tg)} °C target. Fans alone cannot bring the house down to target now.` : `${fmt(tg - c.temp)} °C below the ${fmt(tg)} °C target.`) : ""}</div>
+      <dl class="kv"><dt>Humidity</dt><dd>${v(c.rh, 0, " %")}</dd><dt>Wind</dt><dd>${v(c.wind, 1, " m/s")}${isFinite(c.dir) ? " from " + compass(c.dir) : ""}</dd><dt>Sunlight</dt><dd>${v(c.solar, 0, " W/m²")}</dd><dt>Cloud cover</dt><dd>${v(c.cloud, 0, " %")}</dd><dt>Rain</dt><dd>${v(c.rain, 1, " mm")}</dd></dl>
+      <div class="hint">${c.source || "Weather feed"}${c.time ? ", " + String(c.time).replace("T", " ") : ""}. ${c.onsite ? "" : `Modelled for this location, not measured on the roof. <a href="https://open-meteo.com/">Weather data by Open-Meteo.com</a>`}</div>`;
+  }
+  // comparison of house mean with outdoor air
+  const man = parseFloat($("outSurvey").value), cmp = $("outCmp");
+  if (state.live && c && isFinite(c.temp)) cmp.textContent = `House mean is ${sgn(stats.mean - c.temp)} °C against outdoor air now.`;
+  else if (isFinite(man)) cmp.textContent = `House mean was ${sgn(stats.mean - man)} °C against outdoor air, and outdoor air was ${sgn(man - tg)} °C against target.`;
+  else cmp.textContent = `Enter it to see how far above outdoor air the house was. The survey has no time stamp, so it is not compared with the weather now.`;
+  // 24 hour outlook
+  const svg = $("wxChart"), H = wx.hourly, win = $("wxWindow");
+  if (!H.length) { svg.innerHTML = ""; svg.setAttribute("height", 0); win.textContent = wx.failed ? "No forecast available here." : ""; return; }
+  const Wd = Math.max(260, svg.clientWidth || 420), Hd = 150, m = { l: 30, r: 12, t: 10, b: 22 }, iw = Wd - m.l - m.r, ih = Hd - m.t - m.b;
+  const ts = H.map(h => h.temp), lo = Math.floor(Math.min(tg, ...ts) - 0.5), hi = Math.ceil(Math.max(tg, ...ts) + 0.5);
+  const X = i => m.l + iw * i / (H.length - 1), Y = t => m.t + ih * (1 - (t - lo) / (hi - lo));
+  let h = ""; const step = (hi - lo) > 6 ? 2 : 1;
+  for (let t = lo; t <= hi; t += step) h += `<line x1="${m.l}" x2="${m.l + iw}" y1="${Y(t)}" y2="${Y(t)}" stroke="var(--line)"/><text x="${m.l - 5}" y="${Y(t) + 4}" text-anchor="end">${t}</text>`;
+  H.forEach((p, i) => { if (i % 6 === 0) h += `<text x="${X(i)}" y="${Hd - 5}" text-anchor="${i === 0 ? "start" : (i === H.length - 1 ? "end" : "middle")}">${i === 0 ? "now" : p.t.slice(11, 16)}</text>`; });
+  const pts = H.map((p, i) => X(i).toFixed(1) + "," + Y(p.temp).toFixed(1)).join(" ");
+  h += `<polygon points="${m.l},${m.t + ih} ${pts} ${m.l + iw},${m.t + ih}" fill="var(--s2)" opacity=".12"/><polyline points="${pts}" fill="none" stroke="var(--s2)" stroke-width="2" stroke-linejoin="round"/>`;
+  h += `<line x1="${m.l}" x2="${m.l + iw}" y1="${Y(tg)}" y2="${Y(tg)}" stroke="var(--good)" stroke-width="1.5" stroke-dasharray="5 4"/><text x="${m.l + iw}" y="${Y(tg) - 4}" text-anchor="end" style="fill:var(--ink)">target ${fmt(tg)}</text>`;
+  h += `<circle cx="${X(0)}" cy="${Y(H[0].temp)}" r="4.5" fill="var(--s2)" stroke="var(--surface)" stroke-width="2"/>`;
+  H.forEach((p, i) => { h += `<rect class="wh" data-i="${i}" x="${X(i) - iw / (H.length - 1) / 2}" y="${m.t}" width="${iw / (H.length - 1)}" height="${ih}" fill="transparent"/>`; });
+  svg.setAttribute("viewBox", `0 0 ${Wd} ${Hd}`); svg.setAttribute("height", Hd); svg.innerHTML = h;
+  svg.querySelectorAll(".wh").forEach(r => { r.addEventListener("pointermove", ev => { const p = H[+r.dataset.i]; showTip(ev, `<div class="t">${p.t.slice(11, 16)}, ${p.t.slice(8, 10)}/${p.t.slice(5, 7)}</div><table><tr><td>Outdoor air</td><td>${fmt(p.temp)} °C</td></tr><tr><td>Against target</td><td>${sgn(p.temp - tg)} °C</td></tr>${isFinite(p.solar) ? `<tr><td>Sunlight</td><td>${p.solar.toFixed(0)} W/m²</td></tr>` : ""}</table>`); }); r.addEventListener("pointerleave", hideTip); });
+  const runs = []; let a = null; H.forEach((p, i) => { if (p.temp <= tg) { if (a === null) a = i; } else if (a !== null) { runs.push([a, i - 1]); a = null; } }); if (a !== null) runs.push([a, H.length - 1]);
+  win.textContent = runs.length ? `Outdoor air is forecast at or below the ${fmt(tg)} °C target: ${runs.map(r => r[0] === r[1] ? "about " + H[r[0]].t.slice(11, 16) : H[r[0]].t.slice(11, 16) + " to " + H[r[1]].t.slice(11, 16)).join(", and ")}. Outside those hours, ventilation alone cannot reach target.` : `Outdoor air is forecast to stay above the ${fmt(tg)} °C target for the whole 24 hours, so ventilation alone cannot reach it.`;
+}
+async function loadWeather() {
+  try {
+    const ctl = new AbortController(), to = setTimeout(() => ctl.abort(), 8000), res = await fetch(WX_URL, { signal: ctl.signal }); clearTimeout(to);
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const j = await res.json(), c = j.current || {}, hr = j.hourly || {};
+    wx.cur = { temp: c.temperature_2m, rh: c.relative_humidity_2m, wind: c.wind_speed_10m, dir: c.wind_direction_10m, cloud: c.cloud_cover, solar: c.shortwave_radiation, rain: c.precipitation, time: c.time, source: "Open-Meteo" };
+    const t0 = String(c.time || "").slice(0, 13); let all = (hr.time || []).map((t, i) => ({ t, temp: hr.temperature_2m[i], solar: (hr.shortwave_radiation || [])[i] })).filter(p => isFinite(p.temp));
+    const i0 = Math.max(0, all.findIndex(p => p.t.slice(0, 13) >= t0)); wx.hourly = all.slice(i0, i0 + 25); wx.failed = false;
+  } catch (err) { if (!wx.cur) wx.failed = true; }
+  renderWeather();
+}
+$("outSurvey").addEventListener("input", renderWeather);
+
+/* ---------- refresh, data API ---------- */
+function refresh() { recompute(); buildLegend(); buildPanels(); buildGrid(); buildProfile(); buildHeat(); syncOverlayData(); renderWeather(); dirty = true; }
+function applyReadings(obj, meta) {
+  let n = 0; for (const k in obj) { const id = String(k).toUpperCase().trim(), v = Number(obj[k]); if (id in SURVEY && isFinite(v)) { state.T[id] = v; n++; } }
+  if (meta) { if (meta.source) state.source = meta.source; if (meta.meta) state.meta = meta.meta; state.live = !!meta.live; }
+  const lo = Math.floor(Math.min(...Object.values(state.T))), hi = Math.ceil(Math.max(...Object.values(state.T))); $("thr").min = Math.min(29, lo, Math.floor(state.target)); $("thr").max = Math.max(40, hi);
+  refresh(); return n;
+}
+/* Hook for a live feed. From Node-RED or any script on the same page:
+     Greenhouse.update({ T1: 36.4, T2: 36.2 }, { source: "Live sensors", meta: "updated 10:42:05", live: true });
+   Sensor ids and positions are listed in Greenhouse.sensors. */
+/* Outdoor readings from your own weather station can replace the forecast feed:
+     Greenhouse.setWeather({ temp: 31.2, rh: 68, wind: 1.4, dir: 40, solar: 610, rain: 0, time: "2026-11-14T13:40", source: "Rooftop weather station" }); */
+window.Greenhouse = { update: applyReadings, setWeather: o => { wx.cur = Object.assign({ onsite: true }, o); wx.failed = false; renderWeather(); }, setTarget: v => { state.target = Number(v); $("tgt").value = state.target; refresh(); }, sensors: SENS, fans: MODEL.fans, reset: () => { state.T = Object.assign({}, SURVEY); state.source = "Survey snapshot"; state.meta = "57 points at 1 m height, time not recorded"; state.live = false; refresh(); } };
+
+const dlg = $("dlg");
+$("btnPaste").onclick = () => { $("pasteMsg").textContent = ""; $("paste").value = SENS.map(s => `${s.id}\t${fmt(state.T[s.id])}`).join("\n"); if (dlg.showModal) dlg.showModal(); else dlg.setAttribute("open", ""); };
+$("dlgCancel").onclick = () => dlg.close();
+$("dlgReset").onclick = () => { window.Greenhouse.reset(); dlg.close(); };
+$("dlgApply").onclick = () => {
+  const obj = {}; let bad = 0;
+  for (const line of $("paste").value.split(/\n/)) { if (!line.trim()) continue; const mm = line.match(/^\s*(T\d{1,2})\s*[,;:\t ]\s*(-?\d+(?:\.\d+)?)\s*$/i); if (mm && mm[1].toUpperCase() in SURVEY) obj[mm[1].toUpperCase()] = parseFloat(mm[2]); else bad++; }
+  if (bad || !Object.keys(obj).length) { $("pasteMsg").textContent = bad ? `${bad} line${bad === 1 ? "" : "s"} could not be read. Use a point id T1 to T57 and a number on each line.` : "Enter at least one reading."; return; }
+  applyReadings(obj, { source: "Pasted readings", meta: `${Object.keys(obj).length} points entered by hand`, live: false }); dlg.close();
+};
+
+/* ---------- tabs (each has its own link: #monitoring and #map-3d) ---------- */
+function showTab(name) {
+  const map = name === "map-3d";
+  $("panelMap").hidden = !map; $("panelMon").hidden = map;
+  $("tabMap").setAttribute("aria-selected", String(map)); $("tabMon").setAttribute("aria-selected", String(!map));
+  $("tabMap").tabIndex = map ? 0 : -1; $("tabMon").tabIndex = map ? -1 : 0;
+  hideTip();
+  if (map) { const r = vp.getBoundingClientRect(); vw = Math.max(1, r.width); vh = Math.max(1, r.height); if ($("vIso").getAttribute("aria-pressed") === "true") cam.dist = fitDist(); dirty = true; }
+  else { buildProfile(); renderWeather(); }
+}
+const tabFromHash = () => (location.hash === "#map-3d" ? "map-3d" : "monitoring");
+function goTab(name) { showTab(name); try { if (location.hash !== "#" + name) location.hash = name; } catch (e) {} }
+$("tabMon").onclick = () => goTab("monitoring"); $("tabMap").onclick = () => goTab("map-3d");
+for (const id of ["tabMon", "tabMap"]) $(id).addEventListener("keydown", e => { if (e.key === "ArrowRight" || e.key === "ArrowLeft") { const o = id === "tabMon" ? "tabMap" : "tabMon"; $(o).focus(); $(o).click(); } });
+window.addEventListener("hashchange", () => showTab(tabFromHash()));
+
+/* ---------- start ---------- */
+const okGL = initGL();
+recompute(); buildOverlay(); buildFans();
+if (okGL) buildStatic();
+{ const r = vp.getBoundingClientRect(); vw = Math.max(1, r.width); vh = Math.max(1, r.height); }
+setView("iso"); refresh(); showTab(tabFromHash());
+new ResizeObserver(() => { const r = vp.getBoundingClientRect(); vw = Math.max(1, r.width); vh = Math.max(1, r.height); if ($("vIso").getAttribute("aria-pressed") === "true") cam.dist = fitDist(); buildProfile(); dirty = true; }).observe(vp);
+const retheme = () => { if (okGL) buildStatic(); refresh(); };
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", retheme);
+new MutationObserver(retheme).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+renderSun(); setInterval(renderSun, 60000);
+loadWeather(); setInterval(loadWeather, 15 * 60000);
+new ResizeObserver(() => renderWeather()).observe($("wxChart").parentNode);
+requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>
