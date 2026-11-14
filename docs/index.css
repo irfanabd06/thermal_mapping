@@ -49,3 +49,14 @@ sl-alert.todo {
   border-radius: 4px;
   display: block;
 }
+
+/* Full-width note under a report table, e.g. Table 2 "Current Use" */
+.table-note {
+  background: #f0efec;
+  border: 1px solid #e5e7eb;
+  border-top: none;
+  padding: 10px 14px;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  text-align: left;
+}

@@ -13,7 +13,7 @@ const tables = {
       ["Roof peak height", "~4.35 m"],
       ["Roof type", "Gable-capped monitor"],
       ["Side walls", "Insect netting on both long sides"],
-      ["Crops", "Lettuce, Kai Lan, Bak Choi, Basil and etc"],
+      ["Crops", "Lettuce, Kai Lan, Bak Choi, Basil, etc"],
     ],
   },
 
@@ -27,9 +27,9 @@ const tables = {
       ["Misting", { img: "assets/eq-misting.jpg" }, "Operates throughout the day"],
       ["Shading", { img: "assets/eq-shades.jpg" }, "Retractable shade nets"],
       ["Monitoring", { img: "assets/eq-weather-station.jpg" }, "Single point: weather station and monitoring dashboard"],
-      ["Reported peak temperature", "", "45 °C"],
-      ["Current use", "", "Retired from commercial production. GH1 is now leased by NUS for research and student experimentation"],
     ],
+    note:
+      "<strong><u>Current Use</u></strong><br>Retired from commercial production. GH1 is now leased by NUS for research and student experimentation<br>Reported peak temperature: 45 °C",
   },
 
   // Table 3: Problem → solution map (Section 3.3)
@@ -221,6 +221,7 @@ const tables = {
 
 // Called by report-loader.js once the sections are on the page.
 // A cell can be plain text, or { img: "assets/..." } to show a photo in the cell.
+// A table can also have a "note": HTML shown as a full-width box under the table.
 function renderCell(cell, row) {
   if (cell && typeof cell === "object" && cell.img) {
     const alt = String(row[0]).replace(/"/g, "&quot;");
@@ -233,8 +234,18 @@ function renderReportTables() {
   for (const [id, config] of Object.entries(tables)) {
     const el = document.getElementById(id);
     if (el && !el.hasChildNodes()) {
+      const { note, ...gridConfig } = config;
       const data = config.data.map((row) => row.map((cell) => renderCell(cell, row)));
-      new gridjs.Grid({ ...config, data, sort: false }).render(el);
+      const gridTarget = document.createElement("div");
+      el.appendChild(gridTarget);
+      new gridjs.Grid({ ...gridConfig, data, sort: false }).render(gridTarget);
+      // Optional full-width note under the table (HTML), e.g. Table 2's "Current Use".
+      if (note) {
+        const noteEl = document.createElement("div");
+        noteEl.className = "table-note";
+        noteEl.innerHTML = note;
+        el.appendChild(noteEl);
+      }
     }
   }
 }
