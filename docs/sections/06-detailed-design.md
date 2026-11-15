@@ -68,18 +68,20 @@ Semester 1 testing checked whether the sensing chain produces trustworthy data. 
 **<u>Sensor enclosure</u>**
 
 - **Purpose:** reduce the solar bias found in the SHT45 test (R2).
-- **Method:** the SHT45 inside the ventilated, louvred shield (Figure 15) was compared with the reference in GH1 over three paired readings.
+- **Method:** the SHT45 inside the ventilated, louvred shield (Figure 15) was compared with the reference in GH1 over three paired readings (Figure 17).
 - **Result:** the shielded sensor read 0.8–2.1 °C above the reference, a mean bias of +1.6 °C. This is about 2.7 °C (63%) lower than the open sensor's +4.3 °C, but still above the 0.5 °C target, so R2 is not yet met.
 - **Analysis:** the unshielded bias (+4.3 °C) is as large as the spatial spread itself, so without shielding, sensor heating would be indistinguishable from real hotspots. The enclosure improved the measurement by about 2.7 °C, cutting the bias to +1.6 °C. This rests on only three readings, so it is indicative, and the remaining bias is still above the R2 target. Improving the shield is therefore the first Semester 2 priority. The next tests will log the shielded and open sensors side by side over a full day, and check the enclosure's resistance to wear in high humidity and misting (R3).
+
+![Figure 17. Shielded SHT45 against the Kestrel 5000 in GH1: (a) paired readings, (b) mean bias compared with the open sensor](assets/fig-enclosure-results.png)
 
 **<u>MLX90640 canopy temperature</u>**
 
 - **Purpose:** check that the low-cost thermal camera gives usable canopy temperatures.
-- **Method:** MLX90640 frames of the same plant were compared with a handheld thermal camera at distances of 50–500 mm (Figure 17).
+- **Method:** MLX90640 frames of the same plant were compared with a handheld thermal camera at distances of 50–500 mm (Figure 18).
 - **Result:** centre temperatures agreed within 1.3 °C, but maximum temperatures were 1.8–3.8 °C lower (Table 11), because each MLX90640 pixel averages over a larger area.
 - **Analysis:** the MLX90640 tracks the centre temperature of the reference camera but underestimates peak surface temperatures. It will therefore be used for zone-average canopy temperature rather than detecting small hot spots.
 
-![Figure 17. MLX90640 frames (left of each pair) compared with a handheld thermal camera at 50–500 mm](assets/fig-mlx90640-check.jpg)
+![Figure 18. MLX90640 frames (left of each pair) compared with a handheld thermal camera at 50–500 mm](assets/fig-mlx90640-check.jpg)
 
 [[table: table-mlx | Table 11: MLX90640 compared with a handheld thermal camera]]
 

@@ -960,6 +960,46 @@ def sensor_enclosure():
         plt.close(fig)
 
 
+def enclosure_results():
+    """Figure 17: shielded SHT45 against the Kestrel 5000 in GH1, and bias compared with the open sensor."""
+    import numpy as np
+    kestrel = np.array([35.1, 35.5, 37.3]); shielded = np.array([36.93, 37.6, 38.13])
+    bias = shielded - kestrel
+    with plt.rc_context({"font.family": "Inter", "font.size": 12}):
+        fig, (a1, a2) = plt.subplots(1, 2, figsize=(12.5, 4.6), gridspec_kw={"width_ratios": [1.15, 1], "wspace": 0.3})
+        x = np.arange(3)
+        for i in x:
+            a1.plot([i, i], [kestrel[i], shielded[i]], color="#b9c2bd", lw=3, zorder=1)
+            a1.text(i + 0.1, (kestrel[i] + shielded[i]) / 2, f"+{bias[i]:.1f} °C", ha="left", va="center",
+                    fontsize=11.5, fontweight="bold", color=DG)
+        a1.scatter(x, kestrel, s=110, color="#9aa3a8", zorder=3, label="Kestrel 5000 (reference)")
+        a1.scatter(x, shielded, s=110, color=DG, zorder=3, label="Shielded SHT45")
+        a1.set_xticks(x, [f"Reading {i + 1}" for i in x]); a1.set_ylim(34.5, 39); a1.set_xlim(-0.5, 2.7)
+        a1.set_ylabel("Air temperature (°C)"); a1.legend(frameon=False, loc="upper left", fontsize=11)
+        a1.set_title("(a) Paired readings in GH1", fontsize=13, fontweight="bold", loc="left")
+        labels = ["Open SHT45\n(Table 10)", "Shielded SHT45"]
+        vals = [4.28, bias.mean()]
+        bars = a2.bar([0, 1], vals, 0.5, color=["#c9a227", DG])
+        a2.errorbar([1], [bias.mean()], yerr=[[bias.mean() - bias.min()], [bias.max() - bias.mean()]], fmt="none",
+                    ecolor="black", capsize=6, lw=1.4)
+        for b, v in zip(bars, vals):
+            a2.text(b.get_x() + b.get_width() / 2 + 0.3, v, f"+{v:.1f} °C", ha="left", va="center", fontsize=12,
+                    fontweight="bold")
+        a2.axhline(0.5, color="#c62828", ls="--", lw=1.4)
+        a2.text(0.5, 0.62, "R2 target\n0.5 °C", color="#c62828", ha="center", va="bottom", fontsize=10.5, linespacing=1.1)
+        a2.annotate("", xy=(1, bias.mean() + 0.15), xytext=(0, 4.1),
+                    arrowprops=dict(arrowstyle="->", color="black", lw=1.3, connectionstyle="arc3,rad=-0.25"))
+        a2.text(0.62, 3.7, "−2.7 °C (−63%)", fontsize=12, fontweight="bold")
+        a2.set_xticks([0, 1], labels); a2.set_xlim(-0.5, 1.7); a2.set_ylim(0, 5)
+        a2.set_ylabel("Mean bias vs reference (°C)")
+        a2.set_title("(b) Bias, open vs shielded", fontsize=13, fontweight="bold", loc="left")
+        for a in (a1, a2):
+            a.spines[["top", "right"]].set_visible(False); a.tick_params(length=0)
+            a.grid(axis="y", color="#e6e6e6"); a.set_axisbelow(True)
+        fig.savefig(OUT + "fig-enclosure-results.png", dpi=150, bbox_inches="tight", pad_inches=0.08, facecolor="white")
+        plt.close(fig)
+
+
 problem_framing()
 farmer_value()
 cooling_options()
@@ -968,6 +1008,7 @@ system_decomposition()
 architecture_v3()
 edge_gateway_v5()
 sensor_enclosure()
+enclosure_results()
 trapped_hot_air()
 roadmap()
 print("done")
