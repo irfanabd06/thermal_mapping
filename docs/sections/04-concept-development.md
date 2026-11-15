@@ -3,7 +3,7 @@ title: 4. Concept Development and Selection
 ---
 ### 4.1. Functional and System Decomposition
 
-Each objective was broken down into the functions a solution must perform (Figure 10). O1 requires conditions to be measured at crop height, captured at the same time, cleaned and mapped to locate hotspots. O2 requires airflow and heat distribution to be estimated for different fan configurations and compared with the baseline. O3 requires hotspots to be forecast, a cooling action decided, fans operated and the response checked.
+Each objective was broken down into the functions a solution must perform (Figure 10). O1 requires conditions to be measured at crop height, captured at the same time, cleaned and mapped to locate hotspots. O2 requires airflow and heat distribution to be estimated separately for different fan configurations and compared with the baseline. O3 requires hotspots to be forecast, a cooling action decided, fans operated and the response checked.
 
 ![Figure 10. Functional decomposition of the objectives, with the requirements that test each one](assets/fig-functional-decomposition.png)
 
