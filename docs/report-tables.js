@@ -117,7 +117,7 @@ const tables = {
     columns: ["Subsystem", "Goal", "Deliverables", "Verified by", "Status (end of Semester 1)"],
     data: [
       ["S1 Sense", "Durable, location-tagged crop-zone T/RH and canopy temperature", "Type A/B nodes, shielded enclosure, RS-485 network, permanent and temporary nodes, gateway logging", "R1–R6", "Prototype node; bench accuracy tested; RS-485 to MQTT verified"],
-      ["S2 Map & Model", "Thermal map with soft sensors; 30-min hotspot prediction; CFD checked in the test section; fan-configuration comparison", "Soft-sensor and prediction models, Gaussian-process map, CFD model, configuration ranking, dashboard", "R5–R9, R13", "57-point survey and heatmap; GH1 dimensions recorded"],
+      ["S2 Map & Model", "Thermal map with soft sensors; 30-min hotspot prediction; CFD checked in the test section; fan-configuration comparison", "Soft-sensor and prediction models, Gaussian process regression map, CFD model, configuration ranking, dashboard", "R5–R9, R13", "57-point survey and heatmap; GH1 dimensions recorded"],
       ["S3 Decide", "Decide fan actions from predicted crop-zone hotspots", "Hotspot index; prediction-triggered rules with fail-safe", "R9, R10, R12, R14", "Control approach defined"],
       ["S4 Actuate", "Run fan commands safely and measure their energy", "Four procured floor fans, speed/relay interface, energy metering", "R10–R12", "Fans to be procured"],
     ],
@@ -128,9 +128,9 @@ const tables = {
     columns: ["Function", "Decision", "Options considered", "Selected", "Reason"],
     data: [
       { group: "O1 Thermal characterisation" },
-      ["Capture readings at the same time", "Sensor-to-gateway link", "RS-485, Wi-Fi, BLE, Zigbee, LoRa", "RS-485; one wireless option benchmarked", "Robust over ~57 m and already verified end to end; wireless avoids cabling but needs reliability and power testing"],
-      ["Clean the data", "Edge computer", "Raspberry Pi 5; laptop; cloud", "Raspberry Pi 5", "Low cost and power; runs Docker, MQTT and Node-RED locally"],
-      ["Map the distribution", "Thermal map method", "Dense permanent grid; inverse-distance weighting; Gaussian process; soft sensors trained on temporary nodes", "Soft sensors, with a Gaussian process between nodes", "Fewer permanent nodes after training; the Gaussian process shows where uncertainty remains"],
+      ["Capture readings at the same time", "Sensor-to-gateway link", "RS-485, Wi-Fi, BLE, Zigbee, LoRa", "RS-485, wireless option benchmarked", "Robust over ~57 m and already verified end-to-end; wireless avoids cabling but needs reliability and power testing"],
+      ["Clean the data", "Edge computer", "Raspberry Pi 5, laptop, cloud", "Raspberry Pi 5", "Low cost and power: runs Docker, MQTT and Node-RED locally"],
+      ["Map the distribution", "Thermal map method", "Permanent grid inverse-distance weighting. Gaussian process regression: soft sensors trained on temporary nodes", "Soft sensors, with Gaussian process regression between nodes", "Fewer permanent nodes after training; Gaussian process regression shows where uncertainty remains"],
       { group: "O2 Cooling layout evaluation" },
       ["Estimate airflow and heat distribution", "Modelling approach", "Run CFD live; data only; offline CFD plus data-driven twin", "Offline CFD for design; data-driven twin for operation, tested together", "CFD is too slow for live use but can evaluate untested layouts; a data-driven twin is fast and checked directly by sensors"],
       ["Estimate airflow and heat distribution", "CFD tool", "SOLIDWORKS Flow Simulation; ANSYS Fluent; OpenFOAM", "SOLIDWORKS Flow Simulation", "Integrated with the CAD model and available; adequate for comparative studies"],

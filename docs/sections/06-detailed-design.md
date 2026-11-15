@@ -31,7 +31,7 @@ Nodes send JSON packets containing a node ID, sequence number and readings over 
 
 ### 6.5. S2: Thermal Map, CFD Model and Digital Twin
 
-During a training period, temporary nodes are placed between the permanent ones. Soft sensors are then trained to estimate each temporary node's readings from the permanent nodes, fan states and outdoor conditions, so the temporary nodes can be removed (R6). A Gaussian process fills the gaps between nodes and estimates uncertainty. Every 30 minutes, a prediction model combines these estimates with live NEA weather readings and the 2-hour nowcast to forecast crop-zone exceedance for the next 30 minutes (R9). Without internet, it runs on sensor data alone.
+During a training period, temporary nodes are placed between the permanent ones. Soft sensors are then trained to estimate each temporary node's readings from the permanent nodes, fan states and outdoor conditions, so the temporary nodes can be removed (R6). Gaussian process regression fills the gaps between nodes and estimates uncertainty. Every 30 minutes, a prediction model combines these estimates with live NEA weather readings and the 2-hour nowcast to forecast crop-zone exceedance for the next 30 minutes (R9). Without internet, it runs on sensor data alone.
 
 The CFD model of GH1 is built in SOLIDWORKS Flow Simulation. To keep it tractable, the measured roof surface temperature replaces a full solar-radiation model, crops are modelled as a porous zone, and existing fans use their rated airflow. The model is first checked against the floor-fan tests in the germination section, using Kestrel airspeed spot checks and the sensor grid (R7), then used for the full-GH1 study. A Grafana dashboard on the Pi shows the map, predictions and fan status.
 

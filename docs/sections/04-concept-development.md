@@ -7,13 +7,13 @@ Each objective was broken down into the functions a solution must perform (Figur
 
 ![Figure 10. Functional decomposition of the objectives, with the requirements that test each one](assets/fig-functional-decomposition.png)
 
-These functions act on the greenhouse system (Figure 11). Sun, outside wind and crop transpiration cannot be controlled; the structure, shading, misting and existing fans stay fixed; floor-fan airflow is the one lever. Temperature, humidity and leaf temperature can be measured directly, but airflow cannot easily be measured, so it must be estimated. Section 5 sets requirements for each function.
+These functions act on the greenhouse system (Figure 11). Sun, outside wind and crop transpiration cannot be controlled; the structure, shading, misting and existing fans stay fixed, with floor-fan airflow as the one lever. Temperature, humidity and leaf temperature can be measured directly, but airflow cannot easily be measured, so it must be estimated. Section 5 sets requirements for each function.
 
 ![Figure 11. System decomposition: what the solution can and cannot influence, and how heat moves in GH1](assets/fig-system-decomposition.png)
 
 ### 4.2. Concept Selection
 
-For each function in Figure 10, alternatives were compared against the constraints in Table 5 (Table 6). The communication choice will be confirmed by benchmarking RS-485 against one wireless option in Semester 2.
+For each function in Figure 10, alternatives were compared against the constraints in Table 5 (Table 6). The communication choice will be confirmed by benchmarking serial RS-485 against wireless options.
 
 [[table: table-concepts | Table 6: Concept selection]]
 
