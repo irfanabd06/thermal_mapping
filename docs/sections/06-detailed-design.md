@@ -17,32 +17,98 @@ Table 8 defines what each subsystem must deliver and how it will be verified. Ea
 
 [[table: table-subsystems | Table 8: Subsystem goals, deliverables and verification]]
 
-### 6.3. S1: Sensor Nodes
+### 6.3. S1: Sense and Map
 
-Two node types share one design (Figure 14), built around an ESP32-C6 microcontroller. Type A nodes measure air temperature and humidity with an SHT45 and form the main grid. Type B nodes add an MLX90640 thermal camera (32 × 24 pixels) aimed at the canopy to estimate leaf temperature, and are placed at fewer locations. Every 30 minutes, the firmware takes 60 SHT45 readings over one minute and reports the mean of the 20 closest to the median, which rejects spikes from misting and turbulence. It also averages 10 thermal frames, with emissivity set to 0.95.
+#### 6.3.1. Detailed Design
 
-![Figure 14. Sensor-node functional blocks and schematic](assets/fig-sensor-node-design.png)
+Table 9 sets out the S1 design. Both node types share one ESP32-C6 design (Appendix F), and data flows to the edge gateway on the Raspberry Pi 5 (Figure 14).
 
-Because sunlight heats exposed sensors (Section 7.1), the SHT45 sits in a ventilated, louvred shield, separated from the electronics and battery compartment (Figure 15). Making the enclosure smaller and choosing the power supply are Semester 2 tasks.
+[[table: table-s1-design | Table 9: S1 detailed design]]
+
+![Figure 14. Edge gateway and data pipeline](assets/fig-edge-gateway.png)
+
+#### 6.3.2. Initial Prototype
+
+One prototype node was built in Semester 1, with an SHT45, an MLX90640 and an RS-485 link to the Raspberry Pi 5 running Mosquitto and Node-RED. Because sunlight heats exposed sensors (Section 6.3.3), a ventilated, louvred shield was designed for the SHT45 (Figure 15). Making the enclosure smaller and choosing the power supply are Semester 2 tasks.
 
 ![Figure 15. Open sensor (left) and the ventilated, shielded enclosure concept (right)](assets/fig-sensor-enclosure.jpg)
 
-### 6.4. S1: Communication and Edge Gateway
+#### 6.3.3. Testing and Analysis
 
-Nodes send JSON packets containing a node ID, sequence number and readings over RS-485 (9600 baud, 8N1) to a USB–RS-485 adapter on the Raspberry Pi 5 (Figure 16). On the Pi, Docker runs a Mosquitto MQTT broker and Node-RED, which time-stamp, process and store the data, with InfluxDB planned for time-series storage. Multi-node addressing and fault handling are still to be implemented.
+Semester 1 testing checked whether the sensing chain produces trustworthy data. Each test states its purpose, method and result against the requirements in Table 7.
 
-![Figure 16. Edge gateway and data pipeline](assets/fig-edge-gateway.png)
+**SHT45 air temperature and humidity**
 
-### 6.5. S2: Thermal Map, CFD Model and Digital Twin
+- **Purpose:** check that the SHT45 agrees with a reference closely enough for baseline comparisons (R1).
+- **Method:** the SHT45 was logged side by side with a Kestrel 5000 weather meter, first on the bench for about 10 minutes, including a heating step, and then in GH1 for about 30 minutes (Figure 16).
+- **Result:** on the bench, the SHT45 agreed with the reference to 0.33 °C and 2.35 %RH (RMSE), meeting R1. In the greenhouse, it read 4.3 °C higher and 10 %RH lower than the reference (Table 10), a bias consistent with direct solar heating of the sensor.
 
-During a training period, temporary nodes are placed between the permanent ones. Soft sensors are then trained to estimate each temporary node's readings from the permanent nodes, fan states and outdoor conditions, so the temporary nodes can be removed (R6). Gaussian process regression fills the gaps between nodes and estimates uncertainty. From logged data, the twin also learns how each fan setting changes temperature and humidity in each zone. Every 30 minutes, a prediction model uses these estimates, supported by NEA live readings and the 2-hour nowcast, to forecast crop-zone exceedance for the next 30 minutes (R9). Without internet, it runs on sensor data alone. A Grafana dashboard on the Pi shows the map, predictions and fan status.
+![Figure 16. SHT45 compared with a Kestrel 5000 on the bench (top) and in GH1 (bottom)](assets/fig-sht45-validation.png)
 
-The CFD model of GH1 is built in SOLIDWORKS Flow Simulation from measured inputs (Table 9). To keep it tractable, the measured roof surface temperature replaces a full solar-radiation model, crops are modelled as a porous zone, and existing fans use their rated airflow. It estimates airflow, and heat distribution for layouts not yet installed. Because conditions change quickly, it is judged on trends and rankings rather than absolute temperatures. The layouts it suggests are then set up with the floor fans in the germination section, and the measured temperature improvement over the baseline validates the model (R7) before it is used for the full-GH1 study.
+[[table: table-sht45 | Table 10: SHT45 agreement with the Kestrel 5000 reference]]
 
-[[table: table-sim-scope | Table 9: Scope of the CFD configuration study]]
+> TODO: Confirm whether the greenhouse test used the open sensor, and the date and time of both tests.
 
-### 6.6. S3 and S4: Control and Actuation
+**Sensor enclosure**
 
-The controller uses simple, transparent rules. When a crop zone's predicted exceedance H rises above a threshold, the fans that most influence that zone, as learned by the twin, are switched on or sped up before the hotspot forms. When H is predicted to fall, they return to low speed or off. A minimum on/off time prevents rapid cycling, and if sensors or the controller fail, the fans revert to baseline operation (on).
+- **Purpose:** reduce the solar bias found in the SHT45 test (R2).
+- **Method:** the SHT45 was compared open and inside the ventilated, louvred shield (Figure 15) against the reference.
+- **Result:** readings were closer to the reference in the shielded enclosure. The remaining bias has not yet been quantified, so R2 is not yet verified.
 
-S4 uses four floor circulation fans procured for the project, ideally low-voltage DC fans with PWM speed control, so the farm's mains wiring is not changed. Fan energy is metered to evaluate the cost side of the trade-off.
+> TODO: Add the measured bias for the shielded sensor, if recorded.
+
+**MLX90640 canopy temperature**
+
+- **Purpose:** check that the low-cost thermal camera gives usable canopy temperatures.
+- **Method:** MLX90640 frames of the same plant were compared with a handheld thermal camera at distances of 50–500 mm (Figure 17).
+- **Result:** centre temperatures agreed within 1.3 °C, but maximum temperatures were 1.8–3.8 °C lower (Table 11), because each MLX90640 pixel averages over a larger area.
+
+![Figure 17. MLX90640 frames (left of each pair) compared with a handheld thermal camera at 50–500 mm](assets/fig-mlx90640-check.jpg)
+
+[[table: table-mlx | Table 11: MLX90640 compared with a handheld thermal camera]]
+
+**RS-485 and MQTT telemetry**
+
+- **Purpose:** verify the data path from node to gateway (R4).
+- **Method:** an ESP32-C6 node sent packets over RS-485 to the Raspberry Pi 5, which published them through Mosquitto.
+- **Result:** complete JSON packets, including all 768 thermal pixels, the node ID and sequence numbers, were received consecutively and published over MQTT. Packet-delivery rate and latency over a long run have not yet been measured.
+
+**Analysis: spatial variation.** The 4.0 °C spread in the survey is about 12 times the SHT45's bench error (0.33 °C RMSE), so a grid of these sensors can resolve the spatial differences that matter, provided the sensors are shielded. The pattern of warm main plant zones and cooler germination and seedling zones supports the claim that one monitoring point is not representative. However, if the survey points were measured one after another, the spread also includes change over time, so the result is treated as indicative until it is repeated with simultaneous loggers.
+
+**Analysis: measurement bias.** The unshielded bias in the greenhouse (+4.3 °C) is as large as the spatial spread itself. Without shielding, sensor heating would be indistinguishable from real hotspots. This makes R2 a critical requirement and the enclosure the first Semester 2 priority.
+
+**Analysis: canopy sensing.** The MLX90640 tracks the centre temperature of the reference camera but underestimates peak surface temperatures. It will therefore be used for zone-average canopy temperature rather than detecting small hot spots.
+
+**Analysis: implications for the approach.** Clouds and misting change conditions within minutes, as the sharp steps in Figure 16 show. This supports evaluating solutions against a baseline measured under comparable conditions, rather than against absolute temperature targets.
+
+### 6.4. S2: Cooling Layout Evaluation
+
+#### 6.4.1. Detailed Design
+
+The CFD model of GH1 is built in SOLIDWORKS Flow Simulation from measured inputs (Table 12). Because conditions change quickly, it is judged on trends and rankings rather than absolute temperatures.
+
+[[table: table-s2-design | Table 12: S2 detailed design]]
+
+#### 6.4.2. Initial Prototype
+
+In Semester 1, GH1's geometry and existing fans were measured (Appendices D and E) and the existing airflow was mapped (Section 2.4). The test-section model will be built first, in Semester 2.
+
+#### 6.4.3. Testing and Analysis
+
+Planned for Semester 2. The baseline model will first be checked against the measured temperature pattern. The top suggested layouts will then be built with the floor fans, and their measured improvement compared with the predicted ranking (R7, R8).
+
+### 6.5. S3: Live Cooling Control
+
+#### 6.5.1. Detailed Design
+
+S3 runs on the Raspberry Pi 5 with the chosen fan layout and uses simple, transparent rules (Table 13).
+
+[[table: table-s3-design | Table 13: S3 detailed design]]
+
+#### 6.5.2. Initial Prototype
+
+None yet. The floor fans will be procured, and their speed control and power interface chosen, at the start of Semester 2.
+
+#### 6.5.3. Testing and Analysis
+
+Planned for Semester 2: predicted against measured exceedance over test days (R9), logged predictions against fan commands with a fault-injection test (R12), and alternating-day trials of baseline against control for exceedance and fan energy (R10, R11).

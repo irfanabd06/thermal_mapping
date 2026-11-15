@@ -57,7 +57,7 @@ const tables = {
     ],
   },
 
-  // Table 12: Scope of work (Section 9.3)
+  // Table 14: Scope of work (Section 7.3)
   "table-scope": {
     columns: ["Area", "Long-term application", "CDE4301 deliverable (committed)", "Stretch goal"],
     data: [
@@ -141,25 +141,43 @@ const tables = {
     ],
   },
 
-  // Table 9: CFD study scope (Section 6.5)
-  "table-sim-scope": {
-    columns: ["Parameter", "Treatment"],
+  // Table 9: S1 detailed design (Section 6.3.1)
+  "table-s1-design": {
+    columns: ["Objective", "Detailed design", "Deliverable"],
     data: [
-      ["Greenhouse geometry, roof, walls and netting", "Fixed (GH1 as built; Appendix D)"],
-      ["Existing ventilation and ceiling fans", "Fixed, as baseline operation (Appendix E)"],
-      ["Measured inputs", "Roof surface temperature, fan flow rates, geometry"],
-      ["Model domains", "Test section (germination section) to check against measurements; full GH1 for the design study"],
-      ["Number of floor fans", "Variable: 1–4 in the test section; more in full-GH1 runs"],
-      ["Fan positions and direction", "Variable"],
-      ["Fan speed", "Variable, within the procured fans' range"],
-      ["External weather", "Representative midday, morning and overcast cases"],
-      ["Outputs", "Airflow, crop-zone temperature, exceedance H, fan power"],
-      ["Check data", "Measured crop-zone temperature when suggested layouts are built with the floor fans"],
-      ["Evaluation basis", "Trends and rankings against the baseline, not absolute temperatures (R7)"],
+      ["Measure air temperature and humidity", "Type A node: ESP32-C6 with an SHT45 in a ventilated, louvred shield, separated from the electronics. Every 30 min, 60 readings over 1 min; the mean of the 20 closest to the median is reported", "Type A nodes for the main grid (R1, R2)"],
+      ["Measure canopy temperature", "Type B node: adds an MLX90640 thermal camera (32 × 24 pixels) aimed at the canopy; 10 frames averaged, emissivity 0.95", "Type B nodes at fewer locations"],
+      ["Survive greenhouse conditions", "Enclosure with a separate electronics and battery compartment; power supply (wired DC or battery) chosen in Semester 2", "Durable enclosure (R3)"],
+      ["Sample all nodes together", "RS-485 (9600 baud, 8N1); JSON packets with node ID, sequence number and readings, to a USB–RS-485 adapter on the Raspberry Pi 5", "RS-485 network (R4)"],
+      ["Store and clean the data", "Docker on the Pi runs a Mosquitto MQTT broker and Node-RED to time-stamp the data and remove spikes and misting artefacts; InfluxDB planned for storage", "Edge gateway and data pipeline (Figure 14)"],
+      ["Map conditions with fewer sensors", "Temporary nodes during training; soft sensors estimate their readings from permanent nodes, fan states and outdoor conditions; Gaussian process regression fills the gaps between nodes with uncertainty", "Soft-sensor models and thermal map (R5, R6)"],
     ],
   },
 
-  // Table 10: SHT45 vs Kestrel 5000 (Section 7.1)
+  // Table 12: S2 detailed design (Section 6.4.1)
+  "table-s2-design": {
+    columns: ["Objective", "Detailed design", "Deliverable"],
+    data: [
+      ["Model GH1", "SOLIDWORKS Flow Simulation; geometry, roof, walls and netting as built (Appendix D); existing ventilation and ceiling fans at rated airflow as the baseline (Appendix E); measured roof surface temperature replaces a full solar-radiation model; crops modelled as a porous zone", "Test-section model (germination section) and full-GH1 model"],
+      ["Compare fan layouts", "1–4 floor fans in the test section, more in full-GH1 runs; positions, direction and speed varied; representative midday, morning and overcast cases. Outputs: airflow, crop-zone temperature, exceedance H, fan power", "≥ 10 configurations ranked against the baseline (R8)"],
+      ["Confirm the suggestions", "Top suggested layouts built with the four floor fans in the germination section; measured crop-zone temperature compared with the baseline under comparable weather; judged on trends and rankings, not absolute temperatures", "Validated layout ranking (R7)"],
+    ],
+  },
+
+  // Table 13: S3 detailed design (Section 6.5.1)
+  "table-s3-design": {
+    columns: ["Objective", "Detailed design", "Deliverable"],
+    data: [
+      ["Learn fan effects", "From logged S1 data, a model learns how each fan setting changes temperature and humidity in each zone", "Fan-effect model"],
+      ["Predict hotspots", "Every 30 min, a prediction model uses the thermal map, supported by NEA live readings and the 2-hour nowcast, to forecast crop-zone exceedance H for the next 30 min; runs on sensor data alone without internet", "Prediction model (R9, R14)"],
+      ["Decide fan actions", "When a zone's predicted H rises above a threshold, the fans that most affect it switch on or speed up; they return to low speed or off when H is predicted to fall; minimum on/off time ≥ 10 min", "Rule-based controller (R10, R12)"],
+      ["Fail safely", "If sensors or the controller fail, the fans revert to baseline operation (on)", "Fail-safe logic (R12)"],
+      ["Run and meter the fans", "Four floor circulation fans, ideally low-voltage DC with PWM speed control so the farm's mains wiring is unchanged; fan energy metered", "Fan interface and energy log (R11)"],
+      ["Show status", "Grafana dashboard on the Pi showing the map, predictions and fan status", "Dashboard (R13)"],
+    ],
+  },
+
+  // Table 10: SHT45 vs Kestrel 5000 (Section 6.3.3)
   "table-sht45": {
     columns: ["Test", "Quantity", "Mean error", "MAE", "RMSE"],
     data: [
@@ -170,7 +188,7 @@ const tables = {
     ],
   },
 
-  // Table 11: MLX90640 vs handheld thermal camera (Section 7.3)
+  // Table 11: MLX90640 vs handheld thermal camera (Section 6.3.3)
   "table-mlx": {
     columns: ["Distance", "MLX90640 centre", "Reference centre", "Difference", "MLX90640 max", "Reference max"],
     data: [
@@ -181,7 +199,7 @@ const tables = {
     ],
   },
 
-  // Table 13: Milestones (Section 9.4)
+  // Table 15: Milestones (Section 7.4)
   "table-milestones": {
     columns: ["Milestone", "Date", "Deliverable", "Acceptance criterion"],
     data: [

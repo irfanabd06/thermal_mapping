@@ -28,3 +28,9 @@ Geometry used for the GH1 CAD and CFD model, taken from on-site measurements (Fi
 Positions of the existing fans. s is the distance along GH1 from the front wall (fans 1 and 2) and t is the distance across it, as in the survey grid (Section 2.3).
 
 [[table: table-fans | Table A5: GH1 fan positions and directions]]
+
+### Appendix F. Sensor-Node Design
+
+Both node types share the design in Figure A2. Type B nodes add the MLX90640.
+
+![Figure A2. Sensor-node functional blocks and schematic](assets/fig-sensor-node-design.png)
