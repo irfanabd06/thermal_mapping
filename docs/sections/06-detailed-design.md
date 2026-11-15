@@ -52,7 +52,7 @@ Making the enclosure smaller and choosing the power supply are Semester 2 tasks.
 
 Semester 1 testing checked whether the sensing chain produces trustworthy data. Each test states its purpose, method and result against the requirements in Table 7.
 
-**SHT45 air temperature and humidity**
+**<u>SHT45 air temperature and humidity</u>**
 
 - **Purpose:** check that the SHT45 agrees with a reference closely enough for baseline comparisons (R1).
 - **Method:** the open (unshielded) SHT45 was logged side by side with a Kestrel 5000 weather meter, first on the bench for about 10 minutes, including a heating step, and then in GH1 for about 30 minutes (Figure 16).
@@ -64,13 +64,13 @@ Semester 1 testing checked whether the sensing chain produces trustworthy data. 
 
 > TODO: Add the date and time of both tests.
 
-**Sensor enclosure**
+**<u>Sensor enclosure</u>**
 
 - **Purpose:** reduce the solar bias found in the SHT45 test (R2).
 - **Method:** the SHT45 inside the ventilated, louvred shield (Figure 15) was compared with the reference in GH1 over three paired readings.
 - **Result:** the shielded sensor read 0.8–2.1 °C above the reference, a mean bias of +1.6 °C. This is about 2.7 °C (63%) lower than the open sensor's +4.3 °C, but still above the 0.5 °C target, so R2 is not yet met.
 
-**MLX90640 canopy temperature**
+**<u>MLX90640 canopy temperature</u>**
 
 - **Purpose:** check that the low-cost thermal camera gives usable canopy temperatures.
 - **Method:** MLX90640 frames of the same plant were compared with a handheld thermal camera at distances of 50–500 mm (Figure 17).
@@ -80,7 +80,7 @@ Semester 1 testing checked whether the sensing chain produces trustworthy data. 
 
 [[table: table-mlx | Table 11: MLX90640 compared with a handheld thermal camera]]
 
-**RS-485 and MQTT telemetry**
+**<u>RS-485 and MQTT telemetry</u>**
 
 - **Purpose:** verify the data path from node to gateway (R4).
 - **Method:** an ESP32-C6 node sent packets over RS-485 to the Raspberry Pi 5, which published them through Mosquitto.
