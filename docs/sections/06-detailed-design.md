@@ -3,9 +3,9 @@ title: 6. System Architecture and Detailed Design
 ---
 ### 6.1. System Architecture
 
-The system has four subsystems (Figure 13). S1 measures conditions across the crop zones. S2 turns the measurements into a live thermal map and predicts crop-zone hotspots 30 minutes ahead (the digital twin) and, separately, runs offline CFD to evaluate fan layouts. S3 decides fan actions from these predictions, and S4 carries them out with floor fans, whose effect is then measured again by S1. A local dashboard shows the map, hotspots and fan status. All live processing runs on a Raspberry Pi 5, so the system keeps working without internet access.
+The system has four subsystems (Figure 13). S1 samples temperature, humidity and canopy temperature across the crop zones every minute, using permanent nodes and, during training, temporary ones. On a Raspberry Pi 5, S2 cleans the data, estimates conditions between nodes with soft sensors and Gaussian process regression, and predicts crop-zone hotspots 30 minutes ahead, supported by NEA weather data when online. Separately, S2 runs offline CFD to evaluate fan layouts, checked against the same test-section data. S3 decides fan actions from the predictions, and S4 carries them out with four floor fans, whose effect is measured again by S1. All live processing runs on the Pi, so the system keeps working without internet access.
 
-![Figure 13. System architecture](assets/fig-system-architecture.png)
+![Figure 13. System architecture: live processing on the edge computer, with offline CFD informing fan layout and control](assets/fig-system-architecture.png)
 
 ### 6.2. Subsystem Goals
 
