@@ -74,7 +74,6 @@ const tables = {
       ["No persistent storage or complete Node-RED flows", "Data cannot be logged long-term", "Set up InfluxDB and the processing flows"],
       ["Survey method not fully documented", "Baseline is indicative only", "Repeat the survey with simultaneous loggers"],
       ["Enclosure bias (+1.6 °C) from three readings", "R2 not yet met", "Improve the shield; full-day side-by-side test"],
-      ["Floor fans not procured; speed control and power interface undecided", "S3 cannot be tested", "Procure fans; choose PWM or relay control"],
       ["Node power supply undecided", "Deployment design still open", "Choose wired DC or battery"],
     ],
   },
