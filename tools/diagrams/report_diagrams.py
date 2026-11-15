@@ -395,7 +395,7 @@ def architecture_v2():
         W, H = 17.0, 13.2
         fig, ax = canvas(W, H)
 
-        def fbox(x, y, w, h, title, body, dashed=False, fill="white", ts=12.5, bs=10.8):
+        def fbox(x, y, w, h, title, body, dashed=False, fill="white", ts=15.5, bs=13.5):
             ax.add_patch(Rectangle((x, y), w, h, fc=fill, ec=DG, lw=1.8, ls="--" if dashed else "-", zorder=3))
             ax.text(x + w / 2, y + h - 0.38, title, ha="center", va="center", fontsize=ts, fontweight="bold", zorder=4)
             ax.text(x + w / 2, y + (h - 0.55) / 2, body, ha="center", va="center", fontsize=bs, zorder=4,
@@ -404,23 +404,23 @@ def architecture_v2():
         def dline(pts, label=None, lpos=None, dashed=False):
             elbow(ax, pts, dashed=dashed)
             if label:
-                ax.text(lpos[0], lpos[1], label, fontsize=10, fontweight="bold", color="#11a85a", ha="center",
+                ax.text(lpos[0], lpos[1], label, fontsize=12.5, fontweight="bold", color="#11a85a", ha="center",
                         va="center", zorder=5, bbox=dict(fc="white", ec="none", pad=1.5))
 
-        fbox(5.5, 11.5, 6.0, 1.4, "Physical greenhouse (GH1)", "Sun, wind and crops · fixed equipment · floor fans")
-        fbox(5.5, 9.4, 6.0, 1.6, "S1 Sense", "Permanent and temporary nodes · temperature, humidity,\ncanopy temperature · 1-min synchronised sampling")
+        fbox(5.5, 11.5, 6.0, 1.4, "Physical greenhouse (GH1)", "Sun, wind, crops · fixed equipment · floor fans")
+        fbox(5.5, 9.4, 6.0, 1.6, "S1 Sense", "Permanent and temporary nodes\nT, RH, canopy temperature · 1-min sampling")
         fbox(12.6, 9.4, 4.0, 1.6, "Weather data", "NEA live readings and\n2-hour nowcast (when online)", dashed=True)
         # S2 live panel
         ax.add_patch(Rectangle((1.0, 5.55), 15.6, 3.3, fc=PANEL, ec=PANEL_EC, lw=1.8, zorder=1))
         ax.text(8.8, 8.5, "S2 Map & Model: on-site edge computer (Raspberry Pi 5)", ha="center", va="center",
-                fontsize=13.5, fontweight="bold", color=PANEL_TXT, zorder=4)
+                fontsize=17, fontweight="bold", color=PANEL_TXT, zorder=4)
         fbox(1.4, 6.0, 4.4, 1.75, "Clean data", "Remove spikes and\nmisting artefacts")
         fbox(6.6, 6.0, 4.4, 1.75, "Thermal map", "Soft sensors and Gaussian\nprocess regression")
         fbox(11.8, 6.0, 4.4, 1.75, "Hotspot prediction", "Crop-zone exceedance\n30 min ahead")
         dline([(5.8, 6.875), (6.6, 6.875)])
         dline([(11.0, 6.875), (11.8, 6.875)])
         # offline CFD, decide, actuate, dashboard
-        fbox(1.0, 1.2, 4.4, 2.7, "S2 Offline CFD", "Airflow, and heat for\nuntested layouts;\nfan-layout ranking")
+        fbox(1.0, 1.2, 4.0, 2.7, "S2 Offline CFD", "Airflow, and heat for\nuntested layouts;\nfan-layout ranking")
         fbox(6.4, 3.35, 4.8, 1.45, "S3 Decide", "Prediction-triggered rules, fail-safe")
         fbox(6.4, 1.2, 4.8, 1.45, "S4 Actuate", "Four floor fans, energy metering")
         fbox(12.2, 3.35, 4.4, 1.45, "Dashboard", "Map, hotspots, fan status")
@@ -431,18 +431,18 @@ def architecture_v2():
         dline([(12.6, 6.0), (12.6, 5.25), (8.8, 5.25), (8.8, 4.8)])
         dline([(15.2, 6.0), (15.2, 4.8)])
         dline([(8.8, 3.35), (8.8, 2.65)])
-        dline([(3.2, 6.0), (3.2, 3.9)], "test-section\ndata", (4.35, 4.75), dashed=True)
-        dline([(5.4, 1.9), (6.4, 1.9)], dashed=True)
-        ax.text(5.9, 2.25, "fan\nlayout", fontsize=9.5, fontweight="bold", color="#11a85a", ha="center", va="bottom")
-        dline([(5.4, 3.6), (6.4, 3.6)], dashed=True)
-        ax.text(5.9, 3.85, "fan\ninfluence", fontsize=9.5, fontweight="bold", color="#11a85a", ha="center", va="bottom")
+        dline([(3.0, 6.0), (3.0, 3.9)], "test-section\ndata", (4.35, 4.75), dashed=True)
+        dline([(5.0, 1.9), (6.4, 1.9)], dashed=True)
+        ax.text(5.7, 2.2, "fan\nlayout", fontsize=12, fontweight="bold", color="#11a85a", ha="center", va="bottom")
+        dline([(5.0, 3.6), (6.4, 3.6)], dashed=True)
+        ax.text(5.7, 3.8, "fan\ninfluence", fontsize=12, fontweight="bold", color="#11a85a", ha="center", va="bottom")
         # feedback loop
         ax.plot([8.8, 8.8, 0.35, 0.35, 5.2], [1.2, 0.55, 0.55, 12.2, 12.2], color="black", lw=2.2, zorder=2)
         ax.add_patch(FancyArrowPatch((5.2, 12.2), (5.5, 12.2), arrowstyle="->,head_length=0.5,head_width=0.3",
                                      mutation_scale=18, color="black", lw=2.2, zorder=2))
-        ax.text(0.6, 6.9, "Feedback", rotation=90, fontsize=12, fontweight="bold", ha="left", va="center")
+        ax.text(0.6, 6.9, "Feedback", rotation=90, fontsize=15, fontweight="bold", ha="left", va="center")
         ax.set_xlim(0, W); ax.set_ylim(0, H)
-        fig.savefig(OUT + "fig-system-architecture.png", dpi=150, bbox_inches="tight", facecolor="white")
+        fig.savefig(OUT + "fig-system-architecture.png", dpi=150, bbox_inches="tight", pad_inches=0.05, facecolor="white")
         plt.close(fig)
 
 problem_framing()
