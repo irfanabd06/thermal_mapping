@@ -771,13 +771,135 @@ def edge_gateway_v3():
         plt.close(fig)
 
 
+def edge_gateway_v4():
+    """Figure 14: IT/OT bus layout (cloud, edge, field) reusing pictures and logos from the author's original figure."""
+    import numpy as np
+    from matplotlib.patches import Circle
+    src = plt.imread(os.path.join(os.path.dirname(os.path.abspath(__file__)), "edge-gateway-src.png"))[:, :, :3].copy()
+    k = src.shape[1] / 2110.0
+    CROPS = {"flowfuse": (748, 66, 948, 112), "grafana_word": (1172, 64, 1362, 118), "pi": (470, 256, 822, 466),
+             "nodered": (931, 279, 1022, 361), "influx_icon": (943, 392, 1018, 464), "influx_word": (1030, 394, 1162, 432),
+             "matlab": (1350, 270, 1432, 352), "solidworks": (1360, 398, 1594, 464), "grafana": (1760, 260, 1830, 332),
+             "laptop": (1745, 348, 2052, 506), "mqtt": (746, 552, 878, 590), "rs485": (970, 548, 1024, 590),
+             "typeA": (462, 726, 597, 852), "typeB": (716, 726, 820, 860), "fan": (1158, 728, 1292, 854),
+             "gh": (1563, 733, 2017, 908)}
+    GREY, MUTED = "#555555", "#777777"
+    with plt.rc_context({"font.family": "Inter"}):
+        W, H = 17.0, 11.6
+        fig, ax = canvas(W, H)
+
+        def pic(name, cx, cy, w, clean=True):
+            x0, y0, x1, y1 = [int(v * k) for v in CROPS[name]]
+            im = src[y0:y1, x0:x1].copy()
+            if clean:  # tinted off-white background -> white
+                bg = (im.min(axis=2) > 0.9) & ((im.max(axis=2) - im.min(axis=2)) < 0.06)
+                im[bg] = 1.0
+            h = w * im.shape[0] / im.shape[1]
+            ax.imshow(im, extent=[cx - w / 2, cx + w / 2, cy - h / 2, cy + h / 2], aspect="auto", zorder=4)
+            return h
+
+        def t(x, y, s, size=12, bold=False, color="black", ha="center"):
+            ax.text(x, y, s, ha=ha, va="center", fontsize=size, fontweight="bold" if bold else "normal",
+                    color=color, zorder=6, linespacing=1.25)
+
+        def dbl(x0, x1, y):
+            ax.add_patch(FancyArrowPatch((x0, y), (x1, y), arrowstyle="<->", mutation_scale=13, color=GREY, lw=1.4,
+                                         linestyle=(0, (2.5, 2.5)), zorder=3))
+
+        def cloud(cx, cy, parts, base):
+            for fc, g, z in (("black", 0.022, 2), ("white", -0.022, 3)):
+                for px, py, r in parts:
+                    ax.add_patch(Circle((cx + px, cy + py), r + g, fc=fc, ec="none", zorder=z))
+                ax.add_patch(Rectangle((cx + base[0], cy + base[1] - g), base[2] - base[0], 0.6 + g, fc=fc, ec="none",
+                                       zorder=z))
+
+        # layer labels and bus lines
+        IT, OT = 9.0, 4.6
+        t(0.25, 10.3, "Cloud\nService", 12.5, color=MUTED, ha="left")
+        t(0.25, 6.9, "Edge\nComputing", 12.5, color=MUTED, ha="left")
+        t(0.25, 2.6, "Field\nLayer", 12.5, color=MUTED, ha="left")
+        t(0.25, IT, "IT", 22, bold=True, ha="left")
+        t(0.25, OT, "OT", 22, bold=True, color=DG, ha="left")
+        ax.add_patch(FancyArrowPatch((0.6, IT - 0.45), (0.6, 7.45), arrowstyle="<-", mutation_scale=12, color=MUTED,
+                                     lw=1.2, linestyle=(0, (2.5, 2.5))))
+        ax.add_patch(FancyArrowPatch((0.6, 6.35), (0.6, OT + 0.45), arrowstyle="->", mutation_scale=12, color=MUTED,
+                                     lw=1.2, linestyle=(0, (2.5, 2.5))))
+        ax.plot([1.5, 16.7], [IT, IT], color="black", lw=2.2, zorder=2)
+        ax.plot([1.5, 16.7], [OT, OT], color=DG, lw=2.4, zorder=2)
+
+        # cloud
+        cloud(6.0, 10.35, [(-1.35, -0.12, 0.48), (-0.55, 0.22, 0.62), (0.5, 0.26, 0.66), (1.35, -0.08, 0.52)],
+              (-1.35, -0.6, 1.35))
+        pic("flowfuse", 5.3, 10.42, 1.3, clean=False)
+        pic("grafana_word", 6.75, 10.42, 1.2, clean=False)
+        t(6.0, 9.98, "remote access (optional)", 10.5, color=GREY)
+        cloud(10.6, 10.35, [(-0.95, -0.12, 0.48), (-0.25, 0.24, 0.6), (0.6, 0.2, 0.58), (1.0, -0.1, 0.5)],
+              (-0.95, -0.6, 1.0))
+        t(10.6, 10.42, "NEA weather", 13.5, bold=True)
+        t(10.6, 10.02, "live readings · nowcast", 10.5, color=GREY)
+        ax.plot([6.0, 6.0, 10.6, 10.6], [9.75, 9.4, 9.4, 9.75], color="black", lw=1.6, zorder=1)
+        ax.plot([7.0, 7.0], [9.4, IT], color="black", lw=1.6, zorder=1)
+        ax.plot([7.0, 7.0], [IT, 8.05], color="black", lw=1.8, ls=(0, (1, 2)), zorder=1)
+        t(7.2, 8.55, "when online", 10.5, color=MUTED, ha="left")
+
+        # edge
+        pic("pi", 7.0, 6.95, 3.2)
+        t(7.0, 5.62, "Raspberry Pi 5 edge gateway", 13.5, bold=True)
+        t(7.0, 5.27, "runs offline (Docker)", 11, color=GREY)
+        ax.plot([7.0, 7.0], [5.05, OT], color=DG, lw=2.4, zorder=2)
+        for y in (7.9, 6.95, 6.0):
+            dbl(8.75, 9.55, y)
+        pic("mqtt", 10.3, 7.9, 1.25, clean=False); t(11.1, 7.9, "Mosquitto", 12, ha="left")
+        pic("nodered", 9.98, 6.95, 0.62, clean=False); t(10.45, 6.95, "Node-RED", 13, bold=True, ha="left")
+        pic("influx_icon", 9.98, 6.0, 0.58); pic("influx_word", 10.98, 6.02, 1.15)
+        ax.plot([12.0, 12.6], [6.95, 6.95], color="black", lw=2.0, zorder=2)
+        ax.plot([12.6, 12.6, 12.85], [6.3, 7.75, 7.75], color="black", lw=1.4, zorder=2)
+        ax.plot([12.6, 12.85], [6.3, 6.3], color="black", lw=1.4, zorder=2)
+        pic("matlab", 13.3, 7.75, 0.78)
+        t(13.85, 7.9, "Models", 13, bold=True, ha="left")
+        t(13.85, 7.56, "soft sensors · map · prediction", 10.5, color=GREY, ha="left")
+        pic("grafana", 13.25, 6.3, 0.62)
+        pic("laptop", 15.0, 6.3, 2.3)
+        t(15.0, 5.42, "Dashboard", 13, bold=True)
+        pic("solidworks", 3.05, 7.1, 2.3)
+        t(3.05, 6.5, "CFD workstation (offline)", 12, bold=True)
+        t(3.05, 6.17, "S2 · suggests the fan layout", 10.5, color=GREY)
+        ax.add_patch(FancyArrowPatch((5.35, 7.1), (4.35, 7.1), arrowstyle="->", mutation_scale=13, color=GREY, lw=1.4,
+                                     linestyle=(0, (2.5, 2.5)), zorder=3))
+        t(4.85, 7.33, "logged data", 10, color=GREY)
+
+        # field
+        pic("rs485", 3.2, OT + 0.33, 0.42); t(3.5, OT + 0.33, "RS-485", 12, bold=True, ha="left")
+        ax.plot([4.3, 4.3], [OT, 3.95], color=DG, lw=2.0, zorder=2)
+        ax.plot([3.0, 5.6], [3.95, 3.95], color=DG, lw=2.0, zorder=2)
+        for x in (3.0, 5.6):
+            ax.plot([x, x], [3.95, 3.55], color=DG, lw=2.0, zorder=2)
+        pic("typeA", 3.0, 2.8, 1.3); t(3.0, 1.82, "Type A", 12.5, bold=True); t(3.0, 1.5, "T, RH", 10.5, color=GREY)
+        pic("typeB", 5.6, 2.8, 1.05); t(5.6, 1.82, "Type B", 12.5, bold=True)
+        t(5.6, 1.5, "+ leaf temperature", 10.5, color=GREY)
+        t(6.75, 2.8, "…", 16, bold=True)
+        ax.plot([10.0, 10.0], [OT, 3.55], color=DG, lw=2.0, zorder=2)
+        t(10.2, 4.1, "PWM / relay", 10.5, color=GREY, ha="left")
+        pic("fan", 10.0, 2.8, 1.35); t(10.0, 1.82, "Floor fans ×4", 12.5, bold=True)
+        t(10.0, 1.5, "energy metered", 10.5, color=GREY)
+        pic("gh", 14.45, 2.75, 3.5)
+        for x in (7.9, 12.1):
+            ax.plot([x, x], [OT - 0.2, 0.3], color="#9fb8a8", lw=1.3, ls=(0, (1, 2.5)), zorder=1)
+        t(4.4, 0.65, "S1 Sense and Map", 13, bold=True)
+        t(10.0, 0.65, "S3 Live Cooling Control", 13, bold=True)
+        t(14.45, 0.65, "GH1 greenhouse", 13, bold=True)
+        ax.set_xlim(0, W); ax.set_ylim(0, H)
+        fig.savefig(OUT + "fig-edge-gateway.png", dpi=150, bbox_inches="tight", pad_inches=0.05, facecolor="white")
+        plt.close(fig)
+
+
 problem_framing()
 farmer_value()
 cooling_options()
 functional_decomposition()
 system_decomposition()
 architecture_v3()
-edge_gateway_v3()
+edge_gateway_v4()
 trapped_hot_air()
 roadmap()
 print("done")
