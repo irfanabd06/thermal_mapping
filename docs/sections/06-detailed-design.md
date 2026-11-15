@@ -16,7 +16,7 @@ The system has four subsystems (Figure 13). S2 hosts two applications that run i
 
 ### 6.2. Subsystem Goals
 
-Table 8 defines what each subsystem must deliver and how it will be verified.
+Table 8 defines what each subsystem must deliver and how it will be verified, with S2 split into its two applications.
 
 [[table: table-subsystems | Table 8: Subsystem goals, deliverables and verification]]
 

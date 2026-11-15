@@ -116,10 +116,11 @@ const tables = {
   "table-subsystems": {
     columns: ["Subsystem", "Goal", "Deliverables", "Verified by", "Status (end of Semester 1)"],
     data: [
-      ["S1 Sense", "Durable, location-tagged crop-zone T/RH and canopy temperature", "Type A/B nodes, shielded enclosure, RS-485 network, permanent and temporary nodes, gateway logging", "R1–R6", "Prototype node; bench accuracy tested; RS-485 to MQTT verified"],
-      ["S2 Map & Model", "Thermal map with soft sensors; 30-min hotspot prediction; CFD layout suggestions confirmed by measured temperature; fan-setting effects learned from data", "Soft-sensor and prediction models, Gaussian process regression map, CFD model, configuration ranking, dashboard", "R5–R9, R13", "57-point survey and heatmap; GH1 dimensions recorded"],
-      ["S3 Decide", "Decide fan actions from predicted crop-zone hotspots", "Hotspot index; prediction-triggered rules with fail-safe", "R9, R10, R12, R14", "Control approach defined"],
-      ["S4 Actuate", "Run fan commands safely and measure their energy", "Four procured floor fans, speed/relay interface, energy metering", "R10–R12", "Fans to be procured"],
+      ["S1 Sense", "Synchronised, location-tagged crop-zone T/RH and canopy temperature", "Type A/B nodes, shielded enclosure, RS-485 network, permanent and temporary nodes, gateway logging", "R1–R5", "Prototype node; bench accuracy tested; RS-485 to MQTT verified"],
+      ["S2 Map and Model: Application 1 (design stage)", "Suggest fan layouts that lower crop-zone exceedance, confirmed by measured temperature", "CFD model with measured inputs; ranked layout suggestions; test-section trials with four floor fans", "R7, R8", "57-point baseline survey; GH1 dimensions and fan positions recorded"],
+      ["S2 Map and Model: Application 2 (live twin)", "Map current conditions with fewer sensors; learn fan-setting effects; predict hotspots 30 min ahead", "Soft-sensor models, Gaussian process regression map, fan-effect and prediction models, dashboard", "R5, R6, R9, R13", "Survey heatmap; modelling approach selected"],
+      ["S3 Decide", "Choose the fans that most affect each predicted hotspot", "Hotspot index; prediction-triggered rules using learned fan effects; fail-safe", "R10, R12, R14", "Control approach defined"],
+      ["S4 Actuate", "Run the four floor fans safely and measure their energy", "Four procured floor fans, speed/relay interface, energy metering", "R11, R12", "Fans to be procured"],
     ],
   },
 
