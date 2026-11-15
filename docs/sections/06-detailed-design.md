@@ -9,9 +9,9 @@ The system has four subsystems (Figure 13). S1 measures conditions across the cr
 
 ### 6.2. Subsystem Goals
 
-Table 10 defines what each subsystem must deliver and how it will be verified.
+Table 9 defines what each subsystem must deliver and how it will be verified.
 
-[[table: table-subsystems | Table 10: Subsystem goals, deliverables and verification]]
+[[table: table-subsystems | Table 9: Subsystem goals, deliverables and verification]]
 
 ### 6.3. S1: Sensor Nodes
 

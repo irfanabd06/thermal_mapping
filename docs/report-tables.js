@@ -57,7 +57,7 @@ const tables = {
     ],
   },
 
-  // Table 7: Scope of work (Section 4.3)
+  // Table 12: Scope of work (Section 9.3)
   "table-scope": {
     columns: ["Area", "Long-term application", "CDE4301 deliverable (committed)", "Stretch goal"],
     data: [
@@ -112,7 +112,7 @@ const tables = {
     ],
   },
 
-  // Table 10: Subsystem goals (Section 6.2)
+  // Table 9: Subsystem goals (Section 6.2)
   "table-subsystems": {
     columns: ["Subsystem", "Goal", "Deliverables", "Verified by", "Status (end of Semester 1)"],
     data: [
@@ -123,7 +123,7 @@ const tables = {
     ],
   },
 
-  // Table 8: Concept selection (Section 5.2)
+  // Table 7: Concept selection (Section 5.2)
   "table-concepts": {
     columns: ["Decision", "Options considered", "Selected", "Reason"],
     data: [
@@ -138,7 +138,7 @@ const tables = {
     ],
   },
 
-  // Table 9: CFD study scope (Section 5.3)
+  // Table 8: CFD study scope (Section 5.3)
   "table-sim-scope": {
     columns: ["Parameter", "Treatment"],
     data: [
@@ -154,7 +154,7 @@ const tables = {
     ],
   },
 
-  // Table 11: SHT45 vs Kestrel 5000 (Section 7.1)
+  // Table 10: SHT45 vs Kestrel 5000 (Section 7.1)
   "table-sht45": {
     columns: ["Test", "Quantity", "Mean error", "MAE", "RMSE"],
     data: [
@@ -165,7 +165,7 @@ const tables = {
     ],
   },
 
-  // Table 12: MLX90640 vs handheld thermal camera (Section 7.3)
+  // Table 11: MLX90640 vs handheld thermal camera (Section 7.3)
   "table-mlx": {
     columns: ["Distance", "MLX90640 centre", "Reference centre", "Difference", "MLX90640 max", "Reference max"],
     data: [
@@ -176,7 +176,7 @@ const tables = {
     ],
   },
 
-  // Table 13: Milestones (Section 9.3)
+  // Table 13: Milestones (Section 9.4)
   "table-milestones": {
     columns: ["Milestone", "Date", "Deliverable", "Acceptance criterion"],
     data: [
