@@ -111,8 +111,12 @@ S3 runs on the Raspberry Pi 5 with the chosen fan layout and uses simple, transp
 
 #### 6.5.2. Initial Prototype
 
-None yet. The floor fans will be procured, and their speed control and power interface chosen, at the start of Semester 2.
+A prototype dashboard was built from the 57-point survey (Figure 19). It shows a 3D thermal map of GH1 with the fans and their airflow, flags points above a hotspot limit, groups them into zones and lists each zone's nearest fans. Fan states are not yet connected, and the floor fans will be procured at the start of Semester 2.
+
+![Figure 19. Prototype S3 dashboard from the survey: (a) 3D thermal map with fans, airflow and flagged hotspots, (b) hot zones and nearest fans](assets/fig-s3-dashboard.png)
 
 #### 6.5.3. Testing and Analysis
 
 Planned for Semester 2: predicted against measured exceedance over test days (R9), logged predictions against fan commands with a fault-injection test (R12), and alternating-day trials of baseline against control for exceedance and fan energy (R10, R11).
+
+**Analysis:** with a 39.0 °C limit, the prototype flagged 18 of 57 points in two zones: the wing and transition (14 points, peak 39.5 °C at T53, nearest fans 7 and 6) and the main section (4 points, peak 39.2 °C at T18, nearest fans 5 and 4). The hotspot-to-fan logic therefore works on real data, but the survey is one untimed snapshot, so live sensor data is needed before control can be tested (R12, R13).
