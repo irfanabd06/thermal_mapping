@@ -305,9 +305,93 @@ def roadmap():
     fig.savefig(OUT + "fig-roadmap.png", dpi=130, bbox_inches="tight", facecolor="white")
 
 
+
+# ---------------------------------------------------------------- 4.1 decompositions (Figure 7 style)
+def functional_decomposition():
+    """Figure 10: functions each objective requires, with the requirements that test them."""
+    cols = [
+        ("O1 Thermal\ncharacterisation", ["Measure temperature,\nhumidity and leaf\ntemperature at crop height",
+                                           "Capture readings\nat the same time", "Clean the data",
+                                           "Map the distribution", "Identify where and when\nhotspots occur"], "R1–R6"),
+        ("O2 Cooling layout\nevaluation", ["Represent the greenhouse\nand its fans", "Estimate airflow and\nheat distribution",
+                                           "Test fan configurations", "Compare with\nthe baseline"], "R7–R8"),
+        ("O3 Targeted\ncooling", ["Forecast hotspots", "Decide the\ncooling action", "Operate the fans",
+                                   "Check the response\nagainst the baseline"], "R9–R14"),
+    ]
+    with plt.rc_context({"font.family": "Inter"}):
+        W, H = 15.0, 11.2
+        fig, ax = canvas(W, H)
+        ax.add_patch(Rectangle((0.3, 9.85), W - 0.6, 1.05, fc=PANEL, ec=PANEL_EC, lw=1.8, zorder=1))
+        ax.text(W / 2, 10.375, "Make cooling more effective where heat builds up unevenly",
+                ha="center", va="center", fontsize=15, fontweight="bold", color=PANEL_TXT)
+        cw, gap = 4.4, 0.5
+        x0 = (W - (3 * cw + 2 * gap)) / 2
+        bh, step = 1.05, 1.42
+        for k, (head, funcs, reqs) in enumerate(cols):
+            x = x0 + k * (cw + gap)
+            ax.add_patch(Rectangle((x, 8.25), cw, 1.2, fc="white", ec=DG, lw=2.4, zorder=3))
+            ax.text(x + cw / 2, 8.85, head, ha="center", va="center", fontsize=13.5, fontweight="bold", zorder=4,
+                    linespacing=1.1)
+            elbow(ax, [(x + cw / 2, 9.85), (x + cw / 2, 9.45)])
+            y = 8.25 - 0.35
+            for f in funcs:
+                ytop = y; yb = y - bh
+                elbow(ax, [(x + cw / 2, ytop + 0.35), (x + cw / 2, ytop)])
+                ax.add_patch(Rectangle((x + 0.25, yb), cw - 0.5, bh, fc="white", ec=DG, lw=1.6, zorder=3))
+                ax.text(x + cw / 2, yb + bh / 2, f, ha="center", va="center", fontsize=11.5, zorder=4, linespacing=1.15)
+                y = yb - (step - bh)
+            ax.text(x + cw / 2, 0.45, "Tested by " + reqs, ha="center", va="center", fontsize=12,
+                    fontweight="bold", color="#11a85a")
+        fig.savefig(OUT + "fig-functional-decomposition.png", dpi=150, bbox_inches="tight", facecolor="white")
+        plt.close(fig)
+
+
+def system_decomposition():
+    """Figure 11: what the functions act on - uncontrolled inputs, fixed equipment, the one lever, and the microclimate."""
+    import matplotlib.image as mpimg
+    photo = mpimg.imread(os.path.join(os.path.dirname(os.path.abspath(__file__)), "gh1-heat-paths.png"))
+    with plt.rc_context({"font.family": "Inter"}):
+        W, H = 20.0, 8.0
+        fig, ax = canvas(W, H)
+
+        def group(x, y, w, title, items, fill="white"):
+            h = 0.62 + 0.52 * len(items)
+            ax.add_patch(Rectangle((x, y - h), w, h, fc=fill, ec=DG, lw=1.8, zorder=3))
+            ax.text(x + w / 2, y - 0.33, title, ha="center", va="center", fontsize=12.5, fontweight="bold", zorder=4)
+            for i, it in enumerate(items):
+                ax.text(x + w / 2, y - 0.85 - 0.52 * i, it, ha="center", va="center", fontsize=11.5, zorder=4)
+            return y - h / 2
+
+        c1 = group(0.3, 7.7, 4.2, "Uncontrolled inputs", ["Solar radiation", "Outside air and wind", "Crop transpiration"])
+        c2 = group(0.3, 5.05, 4.2, "Fixed equipment", ["Structure and netting", "Shade nets", "Misting",
+                                                      "Ventilation and ceiling fans"])
+        c3 = group(0.3, 1.65, 4.2, "Adjustable", ["Floor-fan airflow"], fill=PANEL)
+        # microclimate
+        mx, my, mw, mh = 5.6, 2.4, 3.6, 3.6
+        ax.add_patch(Rectangle((mx, my), mw, mh, fc="white", ec=DG, lw=2.4, zorder=3))
+        ax.text(mx + mw / 2, my + mh - 0.4, "Crop-zone\nmicroclimate", ha="center", va="top", fontsize=13.5,
+                fontweight="bold", zorder=4, linespacing=1.1)
+        ax.text(mx + mw / 2, my + 1.75, "Measured directly:\nair temperature, humidity,\nleaf temperature",
+                ha="center", va="center", fontsize=11, zorder=4, linespacing=1.2)
+        ax.text(mx + mw / 2, my + 0.55, "Estimated: airflow", ha="center", va="center", fontsize=11,
+                fontweight="bold", color="#b71c1c", zorder=4)
+        for cy in (c1, c2, c3):
+            elbow(ax, [(4.5, cy), (5.05, cy), (5.05, min(max(cy, my + 0.5), my + mh - 0.5)),
+                       (mx, min(max(cy, my + 0.5), my + mh - 0.5))])
+        # photo
+        ph, pw = photo.shape[0], photo.shape[1]
+        w_in = 10.0; h_in = w_in * ph / pw
+        ax.imshow(photo, extent=(9.8, 9.8 + w_in, (H - h_in) / 2, (H - h_in) / 2 + h_in), zorder=2)
+        ax.set_xlim(0, W); ax.set_ylim(0, H)
+        fig.savefig(OUT + "fig-system-decomposition.png", dpi=150, bbox_inches="tight", facecolor="white")
+        plt.close(fig)
+
+
 problem_framing()
 farmer_value()
 cooling_options()
+functional_decomposition()
+system_decomposition()
 architecture()
 trapped_hot_air()
 roadmap()

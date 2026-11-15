@@ -88,7 +88,7 @@ const tables = {
     ],
   },
 
-  // Table 6: Technical requirements and targets (Section 4.2)
+  // Table 8: Technical requirements and targets (Section 5.2)
   "table-requirements": {
     columns: ["ID", "Requirement", "Target", "Rationale", "Verification"],
     data: [
@@ -123,22 +123,25 @@ const tables = {
     ],
   },
 
-  // Table 7: Concept selection (Section 5.2)
+  // Table 6: Concept selection (Section 4.2)
   "table-concepts": {
-    columns: ["Decision", "Options considered", "Selected", "Reason"],
+    columns: ["Function", "Decision", "Options considered", "Selected", "Reason"],
     data: [
-      ["Sensor-to-gateway link", "RS-485, Wi-Fi, BLE, Zigbee, LoRa", "RS-485; one wireless option benchmarked", "Robust over ~57 m and already verified end to end; wireless avoids cabling but needs reliability and power testing"],
-      ["Actuation", "Modify ventilation or misting; control existing fans; procure own floor fans", "Procured floor circulation fans", "Existing systems cannot be modified; own fans are safe, movable and allow speed tests"],
-      ["Modelling approach", "Run CFD live; data only; offline CFD plus data-driven twin", "Offline CFD for design; data-driven twin for operation, tested together", "CFD is too slow for live use but can evaluate untested layouts; a data-driven twin is fast and checked directly by sensors"],
-      ["Thermal map method", "Dense permanent grid; inverse-distance weighting; Gaussian process; soft sensors trained on temporary nodes", "Soft sensors, with a Gaussian process between nodes", "Fewer permanent nodes after training; the Gaussian process shows where uncertainty remains"],
-      ["CFD tool", "SOLIDWORKS Flow Simulation; ANSYS Fluent; OpenFOAM", "SOLIDWORKS Flow Simulation", "Integrated with the CAD model and available; adequate for comparative studies"],
-      ["Edge computer", "Raspberry Pi 5; laptop; cloud", "Raspberry Pi 5", "Low cost and power; runs Docker, MQTT and Node-RED locally"],
-      ["Controller", "PID; reactive rules; rules triggered by 30-min predictions; model predictive control", "Rules triggered by 30-min predictions (MPC as stretch)", "Starts fans before hotspots form while staying transparent and testable in the timeline"],
-      ["Weather input", "On-site sensors only; NEA live readings and 2-hour nowcast; global forecast service", "NEA live readings and nowcast, with on-site fallback", "Local, free and updated every minute; the system still runs offline"],
+      { group: "O1 Thermal characterisation" },
+      ["Capture readings at the same time", "Sensor-to-gateway link", "RS-485, Wi-Fi, BLE, Zigbee, LoRa", "RS-485; one wireless option benchmarked", "Robust over ~57 m and already verified end to end; wireless avoids cabling but needs reliability and power testing"],
+      ["Clean the data", "Edge computer", "Raspberry Pi 5; laptop; cloud", "Raspberry Pi 5", "Low cost and power; runs Docker, MQTT and Node-RED locally"],
+      ["Map the distribution", "Thermal map method", "Dense permanent grid; inverse-distance weighting; Gaussian process; soft sensors trained on temporary nodes", "Soft sensors, with a Gaussian process between nodes", "Fewer permanent nodes after training; the Gaussian process shows where uncertainty remains"],
+      { group: "O2 Cooling layout evaluation" },
+      ["Estimate airflow and heat distribution", "Modelling approach", "Run CFD live; data only; offline CFD plus data-driven twin", "Offline CFD for design; data-driven twin for operation, tested together", "CFD is too slow for live use but can evaluate untested layouts; a data-driven twin is fast and checked directly by sensors"],
+      ["Estimate airflow and heat distribution", "CFD tool", "SOLIDWORKS Flow Simulation; ANSYS Fluent; OpenFOAM", "SOLIDWORKS Flow Simulation", "Integrated with the CAD model and available; adequate for comparative studies"],
+      { group: "O3 Targeted cooling" },
+      ["Forecast hotspots", "Weather input", "On-site sensors only; NEA live readings and 2-hour nowcast; global forecast service", "NEA live readings and nowcast, with on-site fallback", "Local, free and updated every minute; the system still runs offline"],
+      ["Decide the cooling action", "Controller", "PID; reactive rules; rules triggered by 30-min predictions; model predictive control", "Rules triggered by 30-min predictions (MPC as stretch)", "Starts fans before hotspots form while staying transparent and testable in the timeline"],
+      ["Operate the fans", "Actuation", "Modify ventilation or misting; control existing fans; procure own floor fans", "Procured floor circulation fans", "Existing systems cannot be modified; own fans are safe, movable and allow speed tests"],
     ],
   },
 
-  // Table 8: CFD study scope (Section 5.3)
+  // Table 7: CFD study scope (Section 4.3)
   "table-sim-scope": {
     columns: ["Parameter", "Treatment"],
     data: [

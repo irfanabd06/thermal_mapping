@@ -1,7 +1,7 @@
 ---
 title: 7. Prototypes and Testing
 ---
-Semester 1 testing focused on whether the sensing chain produces trustworthy data. Each test states its purpose, method and result against the requirements in Table 6.
+Semester 1 testing focused on whether the sensing chain produces trustworthy data. Each test states its purpose, method and result against the requirements in Table 8.
 
 ### 7.1. SHT45 Air Temperature and Humidity
 
