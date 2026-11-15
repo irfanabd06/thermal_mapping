@@ -20,9 +20,9 @@ The report is hosted using GitHub Pages and documents the project's background, 
 
 ## Thermal Map Dashboard
 
-**[Open the Greenhouse 1 Thermal Map](https://irfanabd06.github.io/thermal_mapping/dashboard/)**
+**[Open Greenhouse1_dashboard](https://irfanabd06.github.io/thermal_mapping/Greenhouse1_dashboard/)**
 
-An interactive 3D model of Greenhouse 1 with the preliminary 57-point survey shown as a heat map at 1 m height, hot zones against the 29 °C target, fan positions, and site weather. It is served from [`docs/dashboard/`](docs/dashboard/) by the same GitHub Pages site as the report.
+An interactive 3D model of Greenhouse 1 with the preliminary 57-point survey shown as a heat map at 1 m height, hot zones against the 29 °C target, fan positions, and site weather. It is served from [`docs/Greenhouse1_dashboard/`](docs/Greenhouse1_dashboard/) by the same GitHub Pages site as the report.
 
 - Source and build instructions: [`dashboard/`](dashboard/)
 - Greenhouse CAD model: [`cad/Greenhouse1.step`](cad/Greenhouse1.step)
@@ -85,7 +85,7 @@ thermal_mapping/
 │   ├── report-tables.js
 │   ├── assets/
 │   ├── components/
-│   └── dashboard/           # Published dashboard page (generated)
+│   └── Greenhouse1_dashboard/   # Published dashboard page (generated)
 ├── experiments/             # Sensor and communication experiments
 ├── firmware/
 │   └── sensor_node/         # ESP32-C6 sensor-node firmware

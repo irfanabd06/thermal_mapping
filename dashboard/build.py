@@ -4,7 +4,7 @@ Run from anywhere:  python dashboard/build.py
 
 It regenerates the geometry, checks the STEP file, assembles the page, then copies
 the two results to where the repository keeps them:
-    docs/dashboard/index.html   (served by GitHub Pages)
+    docs/Greenhouse1_dashboard/index.html   (served by GitHub Pages)
     cad/Greenhouse1.step
 """
 import shutil
@@ -26,8 +26,9 @@ run("build_model.py", "out")
 run("verify_step.py", "out/greenhouse1.step")
 run("build_page.py")
 
-(root / "docs" / "dashboard").mkdir(parents=True, exist_ok=True)
+site = root / "docs" / "Greenhouse1_dashboard"
+site.mkdir(parents=True, exist_ok=True)
 (root / "cad").mkdir(exist_ok=True)
-shutil.copyfile(out / "index.html", root / "docs" / "dashboard" / "index.html")
+shutil.copyfile(out / "index.html", site / "index.html")
 shutil.copyfile(out / "greenhouse1.step", root / "cad" / "Greenhouse1.step")
-print("Wrote docs/dashboard/index.html and cad/Greenhouse1.step")
+print("Wrote docs/Greenhouse1_dashboard/index.html and cad/Greenhouse1.step")
