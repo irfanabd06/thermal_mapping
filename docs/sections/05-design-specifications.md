@@ -13,6 +13,6 @@ where A<sub>i</sub> is 1 for a zone with crops and 0 otherwise, T<sub>i</sub> is
 
 ### 5.2. Technical Requirements
 
-Table 8 lists the technical requirements. Targets marked "proposed" will be finalised from bench data and baseline measurements.
+Table 7 lists the technical requirements. Targets marked "proposed" will be finalised from bench data and baseline measurements.
 
-[[table: table-requirements | Table 8: Technical requirements and targets]]
+[[table: table-requirements | Table 7: Technical requirements and targets]]

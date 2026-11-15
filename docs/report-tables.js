@@ -88,7 +88,7 @@ const tables = {
     ],
   },
 
-  // Table 8: Technical requirements and targets (Section 5.2)
+  // Table 7: Technical requirements and targets (Section 5.2)
   "table-requirements": {
     columns: ["ID", "Requirement", "Target", "Rationale", "Verification"],
     data: [
@@ -112,7 +112,7 @@ const tables = {
     ],
   },
 
-  // Table 9: Subsystem goals (Section 6.2)
+  // Table 8: Subsystem goals (Section 6.2)
   "table-subsystems": {
     columns: ["Subsystem", "Goal", "Deliverables", "Verified by", "Status (end of Semester 1)"],
     data: [
@@ -142,7 +142,7 @@ const tables = {
     ],
   },
 
-  // Table 7: CFD study scope (Section 4.3)
+  // Table 9: CFD study scope (Section 6.5)
   "table-sim-scope": {
     columns: ["Parameter", "Treatment"],
     data: [

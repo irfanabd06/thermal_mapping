@@ -19,10 +19,6 @@ For each function in Figure 10, alternatives were compared against the constrain
 
 ### 4.3. Cooling Layout Evaluation
 
-Airflow and heat distribution depend on how cooling equipment is arranged and operated. For example, warm air may accumulate under the roof through buoyancy (Figure 12). A roof vent could release it; an extraction fan could remove it, but only if replacement air can enter lower down; and a circulation fan could break up stagnant air but might push warm air down onto the crops. Which option works depends on the resulting airflow, which is hard to predict without simulation. As the structure is fixed in this project, only fan options are evaluated.
+Airflow and heat distribution depend on how cooling equipment is arranged and operated. For example, warm air may accumulate under the roof through buoyancy (Figure 12). A roof vent could release it; an extraction fan could remove it, but only if replacement air can enter lower down; and a circulation fan could break up stagnant air but might push warm air down onto the crops. Which option works depends on the resulting airflow, which is hard to predict without simulation. Testing many layouts physically would be slow and costly, so layouts are compared in simulation against the baseline and ranked by crop-zone exceedance and fan power. As the structure is fixed, only fans are varied, and the result is the best layout among those evaluated rather than a mathematical optimum.
 
 ![Figure 12. Example: options for warm air trapped under the roof](assets/fig-trapped-hot-air.png)
-
-Testing many layouts physically would be slow and costly. CFD therefore estimates airflow, and heat distribution for layouts not yet installed, using measured inputs such as roof temperature and fan flow (Table 7). Fan number, position, direction and speed are compared against the baseline and ranked by crop-zone exceedance and fan power, giving the best layout among those evaluated rather than a mathematical optimum. Because conditions change quickly, the model is judged on trends and rankings, not absolute temperatures (R7). It is first checked against floor-fan tests in the germination section, which also supply measured heat distribution and training data for the data-driven twin, so both are tested together.
-
-[[table: table-sim-scope | Table 7: Scope of the CFD configuration study]]

@@ -9,9 +9,9 @@ The system has four subsystems (Figure 13). S1 measures conditions across the cr
 
 ### 6.2. Subsystem Goals
 
-Table 9 defines what each subsystem must deliver and how it will be verified.
+Table 8 defines what each subsystem must deliver and how it will be verified.
 
-[[table: table-subsystems | Table 9: Subsystem goals, deliverables and verification]]
+[[table: table-subsystems | Table 8: Subsystem goals, deliverables and verification]]
 
 ### 6.3. S1: Sensor Nodes
 
@@ -31,9 +31,11 @@ Nodes send JSON packets containing a node ID, sequence number and readings over 
 
 ### 6.5. S2: Thermal Map, CFD Model and Digital Twin
 
-During a training period, temporary nodes are placed between the permanent ones. Soft sensors are then trained to estimate each temporary node's readings from the permanent nodes, fan states and outdoor conditions, so the temporary nodes can be removed (R6). Gaussian process regression fills the gaps between nodes and estimates uncertainty. Every 30 minutes, a prediction model combines these estimates with live NEA weather readings and the 2-hour nowcast to forecast crop-zone exceedance for the next 30 minutes (R9). Without internet, it runs on sensor data alone.
+During a training period, temporary nodes are placed between the permanent ones. Soft sensors are then trained to estimate each temporary node's readings from the permanent nodes, fan states and outdoor conditions, so the temporary nodes can be removed (R6). Gaussian process regression fills the gaps between nodes and estimates uncertainty. Every 30 minutes, a prediction model uses these estimates, supported by NEA live readings and the 2-hour nowcast, to forecast crop-zone exceedance for the next 30 minutes (R9). Without internet, it runs on sensor data alone. A Grafana dashboard on the Pi shows the map, predictions and fan status.
 
-The CFD model of GH1 is built in SOLIDWORKS Flow Simulation. To keep it tractable, the measured roof surface temperature replaces a full solar-radiation model, crops are modelled as a porous zone, and existing fans use their rated airflow. The model is first checked against the floor-fan tests in the germination section, using Kestrel airspeed spot checks and the sensor grid (R7), then used for the full-GH1 study. A Grafana dashboard on the Pi shows the map, predictions and fan status.
+The CFD model of GH1 is built in SOLIDWORKS Flow Simulation from measured inputs (Table 9). To keep it tractable, the measured roof surface temperature replaces a full solar-radiation model, crops are modelled as a porous zone, and existing fans use their rated airflow. It estimates airflow, and heat distribution for layouts not yet installed. Because conditions change quickly, it is judged on trends and rankings rather than absolute temperatures. It is first checked against the floor-fan tests in the germination section, using Kestrel airspeed spot checks and the sensor grid (R7), which also supply training data for the twin, and then used for the full-GH1 study.
+
+[[table: table-sim-scope | Table 9: Scope of the CFD configuration study]]
 
 ### 6.6. S3 and S4: Control and Actuation
 
