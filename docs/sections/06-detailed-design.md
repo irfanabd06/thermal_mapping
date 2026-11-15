@@ -119,7 +119,7 @@ A prototype dashboard was built from the 57-point survey (Figure 21). It shows a
 
 ![Figure 21. Prototype S3 dashboard from the survey: (a) 3D thermal map with fans, airflow and flagged hotspots, (b) hot zones and nearest fans](assets/fig-s3-dashboard.png)
 
-*Interactive dashboard: [Greenhouse 1 Thermal Map](https://claude.ai/artifact/Ps39q4mrfK5RXdwz3hZBVF)*
+*Interactive dashboard:* *[https://irfanabd06.github.io/thermal_mapping/Greenhouse1_dashboard/](https://irfanabd06.github.io/thermal_mapping/Greenhouse1_dashboard/)*
 
 #### 6.5.3. Testing and Analysis
 
