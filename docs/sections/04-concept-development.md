@@ -19,6 +19,6 @@ For each function in Figure 10, alternatives were compared against the constrain
 
 ### 4.3. Cooling Layout Evaluation
 
-Airflow and heat distribution depend on how cooling equipment is arranged and operated. For example, warm air may accumulate under the roof through buoyancy (Figure 12). A roof vent could release it; an extraction fan could remove it, but only if replacement air can enter lower down; and a circulation fan could break up stagnant air but might push warm air down onto the crops. Which option works depends on the resulting airflow, which is hard to predict without simulation. Testing many layouts physically would be slow and costly, so layouts are compared in simulation against the baseline and ranked by crop-zone exceedance and fan power. As the structure is fixed, only fans are varied, and the result is the best layout among those evaluated rather than a mathematical optimum.
+Airflow and heat distribution depend on how cooling equipment is arranged. Warm air trapped under the roof, for example, could be released by a vent, removed by an extraction fan if air can enter lower down, or mixed by a circulation fan at the risk of pushing it onto the crops (Figure 12). Which works depends on airflow that is hard to predict, and testing many layouts physically is slow and costly. Fan layouts are therefore compared in simulation against the baseline, with the structure fixed, and ranked by crop-zone exceedance and fan power.
 
 ![Figure 12. Example: options for warm air trapped under the roof](assets/fig-trapped-hot-air.png)
