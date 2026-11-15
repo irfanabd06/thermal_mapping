@@ -109,7 +109,7 @@ S3 closes the cooling loop through the digital twin (Figure 20). Sensor readings
 
 #### 6.5.1. Detailed Design
 
-S3 runs on the Raspberry Pi 5 with the chosen fan layout and uses simple, transparent rules (Table 13).
+S3 runs its fan rules on the Raspberry Pi 5 and its models in the cloud, with the chosen fan layout and simple, transparent rules (Table 13).
 
 [[table: table-s3-design | Table 13: S3 detailed design]]
 
@@ -125,4 +125,4 @@ A prototype dashboard was built from the 57-point survey (Figure 21). It shows a
 
 Planned for Semester 2: predicted against measured exceedance over test days (R9), logged predictions against fan commands with a fault-injection test (R12), and alternating-day trials of baseline against control for exceedance and fan energy (R10, R11).
 
-**Analysis:** with a 39.0 °C limit, the prototype flagged 18 of 57 points in two zones: the wing and transition (14 points, peak 39.5 °C at T53, nearest fans 7 and 6) and the main section (4 points, peak 39.2 °C at T18, nearest fans 5 and 4). The hotspot-to-fan logic therefore works on real data, but the survey is one untimed snapshot, so live sensor data is needed before control can be tested (R12, R13).
+**Analysis:** with a 39.0 °C limit, the prototype flagged 18 of 57 points in two zones: the wing and transition (14 points, peak 39.5 °C at T53, nearest fans 7 and 6) and the main section (4 points, peak 39.2 °C at T18, nearest fans 5 and 4). The survey covers all of GH1, while control will be tested in the germination section. The hotspot-to-fan logic therefore works on real data, but the survey is one untimed snapshot, so live sensor data is needed before control can be tested (R12, R13).

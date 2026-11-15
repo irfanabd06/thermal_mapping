@@ -99,7 +99,7 @@ def problem_framing():
                  "Single monitoring point misses\ncrop-zone hotspots; fans\nrun 24/7 regardless of conditions")
         # proposed solution panel
         ax.add_patch(Rectangle((9.0, 0.25), 7.7, 6.9, fc=PANEL, ec=PANEL_EC, lw=1.8, zorder=1))
-        ax.text(12.85, 6.72, "Proposed Solution: Thermal Digital Twin of GH1", ha="center",
+        ax.text(12.85, 6.72, "Proposed Solution: Design and Operate Cooling", ha="center",
                 va="center", fontsize=14, fontweight="bold", color=PANEL_TXT, zorder=4)
         flat_box(ax, 9.35, 2.6, 2.6, 2.2, "Shared GH1 Model",
                  "Geometry, boundary\nconditions and\nsensor data", tsize=12.5)
@@ -505,7 +505,7 @@ def architecture_v3():
         lab(5.25, 4.05, "suggested\nlayouts", fc=PANEL)
 
         # S3 = Application 2
-        panel(7.6, 0.8, 9.1, 7.5, "S3 Live Cooling Control", "Application 2: once operating (Raspberry Pi 5)")
+        panel(7.6, 0.8, 9.1, 7.5, "S3 Live Cooling Control", "Application 2: once operating (edge + cloud)")
         fbox(12.4, 4.6, 4.0, 2.4, "Hotspot prediction", "Exceedance 30 min\nahead; learned fan\neffects on T, RH")
         fbox(7.9, 4.6, 3.9, 2.4, "Dashboard", "Map, hotspots,\nfan status")
         fbox(12.4, 1.1, 4.0, 2.4, "Decide", "Right fans for each\nhotspot, fail-safe")
