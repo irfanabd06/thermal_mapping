@@ -3,7 +3,7 @@ title: 6. System Architecture and Detailed Design
 ---
 ### 6.1. System Architecture
 
-The system has three subsystems, one for each objective (Figure 13). S1 serves both applications, and the four floor fans are shared: S2 uses them to test layouts and S3 to control cooling. All live processing runs on a Raspberry Pi 5, so the system keeps working without internet access.
+The system has three subsystems, one for each objective (Figure 13). S1 serves both applications, and the four floor fans are shared: S2 uses them to test layouts and S3 to control cooling. The Raspberry Pi 5 edge gateway collects, stores and controls without internet, while model processing and the dashboard run in the cloud when online (Figure 14).
 
 - **S1 Sense and Map:** samples temperature, humidity and canopy temperature across the crop zones every 30 minutes, using permanent nodes and, during training, temporary ones. It cleans the data and estimates conditions between nodes with soft sensors and Gaussian process regression.
 - **S2 Cooling Layout Evaluation (Application 1, before the greenhouse is built or retrofitted):** the CFD flow model, using measured inputs from S1, is used to choose the best fan layout before fans are installed. Its suggested layouts are checked by building them with the floor fans and measuring the temperature improvement.
@@ -62,8 +62,6 @@ Semester 1 testing checked whether the sensing chain produces trustworthy data. 
 ![Figure 16. SHT45 compared with a Kestrel 5000 on the bench (top) and in GH1 (bottom)](assets/fig-sht45-validation.png)
 
 [[table: table-sht45 | Table 10: SHT45 agreement with the Kestrel 5000 reference]]
-
-> TODO: Add the date and time of both tests.
 
 **<u>Sensor enclosure</u>**
 

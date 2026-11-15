@@ -103,7 +103,7 @@ const tables = {
       ["Operational", "Minimal disruption to cultivation. Existing equipment untouched", "Only the project's own floor fans are controlled; physical tests confined to a section of GH1"],
       ["Model uncertainty", "Changing, partly unknown boundary conditions (sun, wind through netting); steady-state CFD cannot follow minute-scale changes", "Evaluations judged on trends and rankings (R7), not absolute temperatures; run for representative weather cases"],
       ["Sensor bias in sun", "Low-cost sensors read high in direct sunlight", "Radiation shield required and its bias verified (R2)"],
-      ["Connectivity", "Farms in rural areas may have limited or no internet access", "All live processing on a local edge computer; prediction runs on sensor data alone when offline (R14)"],
+      ["Connectivity", "Farms in rural areas may have limited or no internet access", "Sensing, storage and fan control run offline on a local edge computer; cloud processing is used when online (R14)"],
       ["Time and season", "Field testing runs January to March 2027, which may not include the hottest conditions", "Weather conditions recorded with every trial; results compared like-for-like with the baseline"],
     ],
   },
@@ -128,7 +128,7 @@ const tables = {
       ["R11", "Energy use", "Fan energy ≤ baseline for equal or better exceedance", "Cooling must not cost more to run than today", "Fan energy metering"],
       ["R12", "Correct and fail-safe actuation", "Fans that most affect a predicted hotspot switch on in ≥ 90% of events (proposed); fans revert to baseline on any fault; minimum on/off time ≥ 10 min", "Shows the twin drives the right fans; protects crops and equipment", "Logged predictions vs fan commands; fault-injection test"],
       ["R13", "Dashboard update", "Map, hotspots and fan states refreshed ≤ 1 min after each 30-min sample", "Operators need current information", "Timed test on site"],
-      ["R14", "Offline operation", "Runs without internet, using sensor data alone; restarts ≤ 5 min after power loss", "Rural farms may have limited connectivity", "Network-unplug and power-cycle tests"],
+      ["R14", "Offline operation", "Edge gateway keeps sampling, logging and controlling fans without internet; restarts ≤ 5 min after power loss", "Rural farms may have limited connectivity", "Network-unplug and power-cycle tests"],
     ],
   },
 
@@ -189,11 +189,11 @@ const tables = {
     columns: ["Objective", "Detailed design", "Deliverable"],
     data: [
       ["Learn fan effects", "From logged S1 data, a model learns how each fan setting changes temperature and humidity in each zone", "Fan-effect model"],
-      ["Predict hotspots", "Every 30 min, a prediction model uses the thermal map, supported by NEA live readings and the 2-hour nowcast, to forecast crop-zone exceedance H for the next 30 min; runs on sensor data alone without internet", "Prediction model (R9, R14)"],
+      ["Predict hotspots", "Every 30 min, a prediction model uses the thermal map, supported by NEA live readings and the 2-hour nowcast, to forecast crop-zone exceedance H for the next 30 min; runs in the cloud, and when offline the edge falls back to rules on current readings", "Prediction model (R9, R14)"],
       ["Decide fan actions", "When a zone's predicted H rises above a threshold, the fans that most affect it switch on or speed up; they return to low speed or off when H is predicted to fall; minimum on/off time ≥ 10 min", "Rule-based controller (R10, R12)"],
       ["Fail safely", "If sensors or the controller fail, the fans revert to baseline operation (on)", "Fail-safe logic (R12)"],
       ["Run and meter the fans", "Four floor circulation fans, ideally low-voltage DC with PWM speed control so the farm's mains wiring is unchanged; fan energy metered", "Fan interface and energy log (R11)"],
-      ["Show status", "Grafana dashboard on the Pi showing the map, predictions and fan status", "Dashboard (R13)"],
+      ["Show status", "Grafana dashboard in the cloud showing the map, predictions and fan status", "Dashboard (R13)"],
     ],
   },
 

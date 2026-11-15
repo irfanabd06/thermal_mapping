@@ -7,8 +7,6 @@ Table 14 lists the problems met in Semester 1 and how they were handled.
 
 [[table: table-problems | Table 14: Problems encountered]]
 
-> TODO: Add what caused the I²C problems and how they were fixed (one sentence).
-
 ### 7.2. Current Shortcomings
 
 Table 15 lists what is still missing and how Semester 2 will address it.
