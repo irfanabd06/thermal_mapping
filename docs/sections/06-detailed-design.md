@@ -105,6 +105,10 @@ Planned for Semester 2. The baseline flow simulation on the CAD model will first
 
 ### 6.5. S3: Live Cooling Control
 
+S3 closes the cooling loop through the digital twin (Figure 20). Sensor readings feed a data-driven model of GH1, informed by the CAD model and CFD, which estimates conditions between nodes as virtual sensors and predicts exceedance 30 minutes ahead. The controller compares this prediction with T<sub>ref</sub> and switches the floor fans, and the sensors measure the result.
+
+![Figure 20. Closed cooling loop: the physical system and its digital twin](assets/fig-control-loop.png)
+
 #### 6.5.1. Detailed Design
 
 S3 runs on the Raspberry Pi 5 with the chosen fan layout and uses simple, transparent rules (Table 13).
@@ -113,9 +117,9 @@ S3 runs on the Raspberry Pi 5 with the chosen fan layout and uses simple, transp
 
 #### 6.5.2. Initial Prototype
 
-A prototype dashboard was built from the 57-point survey (Figure 20). It shows a 3D thermal map of GH1 with the fans and their airflow, flags points above a hotspot limit, groups them into zones and lists each zone's nearest fans. Fan states are not yet connected, and the floor fans will be procured at the start of Semester 2.
+A prototype dashboard was built from the 57-point survey (Figure 21). It shows a 3D thermal map of GH1 with the fans and their airflow, flags points above a hotspot limit, groups them into zones and lists each zone's nearest fans. Fan states are not yet connected, and the floor fans will be procured at the start of Semester 2.
 
-![Figure 20. Prototype S3 dashboard from the survey: (a) 3D thermal map with fans, airflow and flagged hotspots, (b) hot zones and nearest fans](assets/fig-s3-dashboard.png)
+![Figure 21. Prototype S3 dashboard from the survey: (a) 3D thermal map with fans, airflow and flagged hotspots, (b) hot zones and nearest fans](assets/fig-s3-dashboard.png)
 
 *Dashboard link: [https://claude.ai/artifact/Ps39q4mrfK5RXdwz3hZBVF](https://claude.ai/artifact/Ps39q4mrfK5RXdwz3hZBVF)*
 

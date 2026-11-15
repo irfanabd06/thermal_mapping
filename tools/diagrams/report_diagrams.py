@@ -1000,6 +1000,82 @@ def enclosure_results():
         plt.close(fig)
 
 
+def control_loop():
+    """Figure 20: closed control loop of S3 through the digital twin (after a generic digital-twin control diagram)."""
+    from matplotlib.patches import Circle
+    with plt.rc_context({"font.family": "Inter"}):
+        W, H = 17.0, 6.3
+        fig, ax = canvas(W, H)
+
+        def fbox(x, y, w, h, title, body=None, tag=None):
+            ax.add_patch(Rectangle((x, y), w, h, fc="white", ec=DG, lw=1.8, zorder=3))
+            if body:
+                ax.text(x + w / 2, y + h - 0.33, title, ha="center", va="center", fontsize=14, fontweight="bold", zorder=4)
+                ax.text(x + w / 2, y + (h - 0.5) / 2, body, ha="center", va="center", fontsize=11.5, zorder=4,
+                        linespacing=1.2)
+            else:
+                ax.text(x + w / 2, y + h / 2, title, ha="center", va="center", fontsize=14, fontweight="bold", zorder=4,
+                        linespacing=1.15)
+            if tag:
+                for i, t in enumerate(tag):
+                    tx = x + w - 0.08 - 0.52 * (len(tag) - i)
+                    ax.add_patch(Rectangle((tx, y + h - 0.02), 0.46, 0.32, fc=DG, ec=DG, zorder=5))
+                    ax.text(tx + 0.23, y + h + 0.14, t, ha="center", va="center", fontsize=9.5, fontweight="bold",
+                            color="white", zorder=6)
+
+        def panel(x0, x1, title):
+            ax.add_patch(Rectangle((x0, 0.35), x1 - x0, 5.6, fc=PANEL, ec=PANEL_EC, lw=1.6, alpha=0.35, zorder=0))
+            ax.add_patch(Rectangle((x0, 0.35), x1 - x0, 5.6, fc="none", ec="black", lw=1.6, ls=(0, (1, 2)), zorder=1))
+            ax.text(x0 + 0.2, 5.68, title, ha="left", va="center", fontsize=15, fontweight="bold", color=PANEL_TXT)
+
+        def lab(x, y, t, ha="center"):
+            ax.text(x, y, t, fontsize=11, fontweight="bold", color="#11a85a", ha=ha, va="center", zorder=6,
+                    linespacing=1.1, bbox=dict(fc="#c0f0d8", ec="none", pad=1.0))
+
+        e = lambda pts, d=False: elbow(ax, pts, dashed=d)
+        panel(0.3, 7.65, "Physical system (GH1)")
+        panel(8.05, 16.75, "Digital twin")
+        # physical loop
+        ax.text(0.55, 4.1, "T$_{ref}$", fontsize=15, fontweight="bold", va="center")
+        e([(1.05, 4.1), (1.6, 4.1)])
+        ax.add_patch(Circle((1.9, 4.1), 0.3, fc="white", ec="black", lw=1.8, zorder=4))
+        ax.plot([1.69, 2.11], [3.89, 4.31], color="black", lw=1.5, zorder=5)
+        ax.plot([1.69, 2.11], [4.31, 3.89], color="black", lw=1.5, zorder=5)
+        fbox(2.6, 3.6, 2.15, 1.0, "Controller", "rules, fail-safe", tag=("S3",))
+        fbox(5.25, 3.6, 2.1, 1.0, "Floor fans ×4", "PWM / relay", tag=("S3",))
+        fbox(5.25, 0.85, 2.1, 1.0, "Greenhouse", "GH1")
+        fbox(2.6, 0.85, 2.15, 1.0, "Sensor nodes", "T, RH, leaf T", tag=("S1",))
+        e([(2.2, 4.1), (2.6, 4.1)])
+        e([(4.75, 4.1), (5.25, 4.1)])
+        e([(6.3, 3.6), (6.3, 1.85)])
+        e([(5.25, 1.35), (4.75, 1.35)])
+        # measured data to the twin
+        ax.plot([2.6, 1.3, 1.3, 12.5], [1.35, 1.35, 0.6, 0.6], color="black", lw=2.2, zorder=2)
+        e([(12.5, 0.6), (12.5, 2.0)])
+        lab(9.0, 0.6, "measured data (every 30 min)")
+        # twin
+        fbox(8.35, 0.95, 2.45, 1.0, "CAD model", "of GH1 (Figure 19)")
+        fbox(8.35, 2.55, 2.45, 1.15, "CFD analysis", "offline", tag=("S2",))
+        e([(9.575, 1.95), (9.575, 2.55)])
+        fbox(11.35, 2.0, 2.3, 1.9, "Data-driven\nmodel", "soft sensors, GPR,\nlearned fan effects",
+             tag=("S1", "S3"))
+        e([(10.8, 3.1), (11.35, 3.1)])
+        lab(11.07, 2.65, "fan\nlayout")
+        fbox(11.35, 4.25, 2.3, 0.75, "NEA weather")
+        e([(11.85, 4.25), (11.85, 3.9)])
+        fbox(14.35, 2.0, 2.15, 1.9, "Hotspot\nprediction", "exceedance H\n30 min ahead", tag=("S3",))
+        e([(13.65, 2.95), (14.35, 2.95)])
+        lab(14.0, 1.6, "virtual sensor\noutputs (map)")
+        # prediction back to the comparator
+        ax.plot([15.425, 15.425, 1.9, 1.9], [3.9, 5.25, 5.25, 4.4], color="black", lw=2.2, zorder=2)
+        ax.add_patch(FancyArrowPatch((1.9, 4.6), (1.9, 4.4), arrowstyle="->,head_length=0.5,head_width=0.3",
+                                     mutation_scale=18, color="black", lw=2.2, zorder=2))
+        lab(10.0, 5.25, "predicted exceedance")
+        ax.set_xlim(0, W); ax.set_ylim(0, H)
+        fig.savefig(OUT + "fig-control-loop.png", dpi=150, bbox_inches="tight", pad_inches=0.05, facecolor="white")
+        plt.close(fig)
+
+
 problem_framing()
 farmer_value()
 cooling_options()
@@ -1009,6 +1085,7 @@ architecture_v3()
 edge_gateway_v5()
 sensor_enclosure()
 enclosure_results()
+control_loop()
 trapped_hot_air()
 roadmap()
 print("done")
