@@ -26,8 +26,8 @@ Table 14 sets out what this project will deliver, alongside the long-term applic
 
 ### 7.4. Plan and Milestones
 
-Work continues from November 2026 to April 2027, with sensing, simulation and control running in parallel (Figure 20). Each milestone has a deliverable and an acceptance criterion (Table 15).
+Work continues from November 2026 to April 2027, with sensing, simulation and control running in parallel (Figure 21). Each milestone has a deliverable and an acceptance criterion (Table 15).
 
-![Figure 20. Project roadmap, November 2026 to April 2027](assets/fig-roadmap.png)
+![Figure 21. Project roadmap, November 2026 to April 2027](assets/fig-roadmap.png)
 
 [[table: table-milestones | Table 15: Milestones and acceptance criteria]]

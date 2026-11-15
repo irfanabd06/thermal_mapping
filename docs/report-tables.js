@@ -158,7 +158,7 @@ const tables = {
   "table-s2-design": {
     columns: ["Objective", "Detailed design", "Deliverable"],
     data: [
-      ["Model GH1", "SOLIDWORKS Flow Simulation; geometry, roof, walls and netting as built (Appendix D); existing ventilation and ceiling fans at rated airflow as the baseline (Appendix E); measured roof surface temperature replaces a full solar-radiation model; crops modelled as a porous zone", "Test-section model (germination section) and full-GH1 model"],
+      ["Model GH1", "SOLIDWORKS Flow Simulation; geometry, roof, walls and netting as built (Appendix D); existing ventilation and ceiling fans at rated airflow as the baseline (Appendix E); measured roof surface temperature replaces a full solar-radiation model; crops modelled as a porous zone", "Full-GH1 CAD geometry built (Figure 20); test-section (germination section) and full-GH1 flow models"],
       ["Compare fan layouts", "1–4 floor fans in the test section, more in full-GH1 runs; positions, direction and speed varied; representative midday, morning and overcast cases. Outputs: airflow, crop-zone temperature, exceedance H, fan power", "≥ 10 configurations ranked against the baseline (R8)"],
       ["Confirm the suggestions", "Top suggested layouts built with the four floor fans in the germination section; measured crop-zone temperature compared with the baseline under comparable weather; judged on trends and rankings, not absolute temperatures", "Validated layout ranking (R7)"],
     ],
