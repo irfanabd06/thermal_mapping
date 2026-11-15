@@ -50,13 +50,14 @@ Making the enclosure smaller and choosing the power supply are Semester 2 tasks.
 
 #### 6.3.3. Testing and Analysis
 
-Semester 1 testing checked whether the sensing chain produces trustworthy data. Each test states its purpose, method and result against the requirements in Table 7.
+Semester 1 testing checked whether the sensing chain produces trustworthy data. Each test states its purpose, method, result and analysis against the requirements in Table 7.
 
 **<u>SHT45 air temperature and humidity</u>**
 
 - **Purpose:** check that the SHT45 agrees with a reference closely enough for baseline comparisons (R1).
 - **Method:** the open (unshielded) SHT45 was logged side by side with a Kestrel 5000 weather meter, first on the bench for about 10 minutes, including a heating step, and then in GH1 for about 30 minutes (Figure 16).
 - **Result:** on the bench, the SHT45 agreed with the reference to 0.33 °C and 2.35 %RH (RMSE), meeting R1. In the greenhouse, it read 4.3 °C higher and 10 %RH lower than the reference (Table 10), a bias consistent with direct solar heating of the sensor.
+- **Analysis:** the 4.0 °C spread in the survey is about 12 times the SHT45's bench error (0.33 °C RMSE), so a grid of these sensors can resolve the spatial differences that matter, provided the sensors are shielded. The pattern of warm main plant zones and cooler germination and seedling zones supports the claim that one monitoring point is not representative. However, if the survey points were measured one after another, the spread also includes change over time, so the result is treated as indicative until it is repeated with simultaneous loggers. Clouds and misting also change conditions within minutes, as the sharp steps in Figure 16 show. This supports evaluating solutions against a baseline measured under comparable conditions, rather than against absolute temperature targets.
 
 ![Figure 16. SHT45 compared with a Kestrel 5000 on the bench (top) and in GH1 (bottom)](assets/fig-sht45-validation.png)
 
@@ -69,30 +70,18 @@ Semester 1 testing checked whether the sensing chain produces trustworthy data. 
 - **Purpose:** reduce the solar bias found in the SHT45 test (R2).
 - **Method:** the SHT45 inside the ventilated, louvred shield (Figure 15) was compared with the reference in GH1 over three paired readings.
 - **Result:** the shielded sensor read 0.8–2.1 °C above the reference, a mean bias of +1.6 °C. This is about 2.7 °C (63%) lower than the open sensor's +4.3 °C, but still above the 0.5 °C target, so R2 is not yet met.
+- **Analysis:** the unshielded bias (+4.3 °C) is as large as the spatial spread itself, so without shielding, sensor heating would be indistinguishable from real hotspots. The enclosure improved the measurement by about 2.7 °C, cutting the bias to +1.6 °C. This rests on only three readings, so it is indicative, and the remaining bias is still above the R2 target. Improving the shield is therefore the first Semester 2 priority. The next tests will log the shielded and open sensors side by side over a full day, and check the enclosure's resistance to wear in high humidity and misting (R3).
 
 **<u>MLX90640 canopy temperature</u>**
 
 - **Purpose:** check that the low-cost thermal camera gives usable canopy temperatures.
 - **Method:** MLX90640 frames of the same plant were compared with a handheld thermal camera at distances of 50–500 mm (Figure 17).
 - **Result:** centre temperatures agreed within 1.3 °C, but maximum temperatures were 1.8–3.8 °C lower (Table 11), because each MLX90640 pixel averages over a larger area.
+- **Analysis:** the MLX90640 tracks the centre temperature of the reference camera but underestimates peak surface temperatures. It will therefore be used for zone-average canopy temperature rather than detecting small hot spots.
 
 ![Figure 17. MLX90640 frames (left of each pair) compared with a handheld thermal camera at 50–500 mm](assets/fig-mlx90640-check.jpg)
 
 [[table: table-mlx | Table 11: MLX90640 compared with a handheld thermal camera]]
-
-**<u>RS-485 and MQTT telemetry</u>**
-
-- **Purpose:** verify the data path from node to gateway (R4).
-- **Method:** an ESP32-C6 node sent packets over RS-485 to the Raspberry Pi 5, which published them through Mosquitto.
-- **Result:** complete JSON packets, including all 768 thermal pixels, the node ID and sequence numbers, were received consecutively and published over MQTT. Packet-delivery rate and latency over a long run have not yet been measured.
-
-**Analysis: spatial variation.** The 4.0 °C spread in the survey is about 12 times the SHT45's bench error (0.33 °C RMSE), so a grid of these sensors can resolve the spatial differences that matter, provided the sensors are shielded. The pattern of warm main plant zones and cooler germination and seedling zones supports the claim that one monitoring point is not representative. However, if the survey points were measured one after another, the spread also includes change over time, so the result is treated as indicative until it is repeated with simultaneous loggers.
-
-**Analysis: measurement bias.** The unshielded bias in the greenhouse (+4.3 °C) is as large as the spatial spread itself, so without shielding, sensor heating would be indistinguishable from real hotspots. The enclosure improved the measurement by about 2.7 °C, cutting the bias to +1.6 °C. This rests on only three readings, so it is indicative, and the remaining bias is still above the R2 target. Improving the shield is therefore the first Semester 2 priority. The next tests will log the shielded and open sensors side by side over a full day, and check the enclosure's resistance to wear in high humidity and misting (R3).
-
-**Analysis: canopy sensing.** The MLX90640 tracks the centre temperature of the reference camera but underestimates peak surface temperatures. It will therefore be used for zone-average canopy temperature rather than detecting small hot spots.
-
-**Analysis: implications for the approach.** Clouds and misting change conditions within minutes, as the sharp steps in Figure 16 show. This supports evaluating solutions against a baseline measured under comparable conditions, rather than against absolute temperature targets.
 
 ### 6.4. S2: Cooling Layout Evaluation
 
