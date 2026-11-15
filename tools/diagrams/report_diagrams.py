@@ -610,13 +610,174 @@ def edge_gateway_v2():
         plt.close(fig)
 
 
+def edge_gateway_v3():
+    """Figure 14: field, edge and cloud layers with pictures and drawn symbols, few words."""
+    from matplotlib.patches import Circle, Ellipse
+    src = plt.imread(os.path.join(os.path.dirname(os.path.abspath(__file__)), "edge-gateway-src.png"))
+    k = src.shape[1] / 1600.0
+    CROPS = {"pi": (345, 208, 612, 372), "typeA": (340, 562, 445, 668), "typeB": (532, 562, 615, 668),
+             "fan": (868, 562, 978, 668), "laptop": (1335, 272, 1560, 398), "gh": (1178, 558, 1528, 708)}
+    with plt.rc_context({"font.family": "Inter"}):
+        W, H = 16.4, 12.9
+        fig, ax = canvas(W, H)
+        LIGHT = "#c9f1db"
+
+        def pic(name, cx, cy, mw, mh):
+            x0, y0, x1, y1 = [int(v * k) for v in CROPS[name]]
+            im = src[y0:y1, x0:x1]
+            r = im.shape[1] / im.shape[0]
+            w, h = (mw, mw / r) if mw / r <= mh else (mh * r, mh)
+            ax.imshow(im, extent=[cx - w / 2, cx + w / 2, cy - h / 2, cy + h / 2], aspect="auto", zorder=4)
+
+        def ln(xs, ys, lw=2.4):
+            ax.plot(xs, ys, color=DG, lw=lw, zorder=5, solid_capstyle="round")
+
+        def i_db(cx, cy):
+            for dy in (-0.32, 0.0, 0.32):
+                ax.add_patch(Ellipse((cx, cy + dy), 1.0, 0.34, fc=LIGHT if dy == 0.32 else "white", ec=DG, lw=2.4,
+                                     zorder=5 + (dy + 0.4)))
+            ax.add_patch(Rectangle((cx - 0.5, cy - 0.32), 1.0, 0.64, fc="white", ec="none", zorder=5.05))
+            ax.add_patch(Ellipse((cx, cy), 1.0, 0.34, fc="white", ec=DG, lw=2.4, zorder=5.4))
+            ax.add_patch(Rectangle((cx - 0.5, cy), 1.0, 0.32, fc="white", ec="none", zorder=5.5))
+            ax.add_patch(Ellipse((cx, cy + 0.32), 1.0, 0.34, fc=LIGHT, ec=DG, lw=2.4, zorder=5.8))
+            for sx in (-0.5, 0.5):
+                ax.plot([cx + sx, cx + sx], [cy - 0.32, cy + 0.32], color=DG, lw=2.4, zorder=6)
+
+        def i_hub(cx, cy):
+            import math
+            for a in (90, 210, 330):
+                px, py = cx + 0.44 * math.cos(math.radians(a)), cy - 0.12 + 0.44 * math.sin(math.radians(a))
+                ln([cx, px], [cy - 0.12, py])
+                ax.add_patch(Circle((px, py), 0.14, fc="white", ec=DG, lw=2.4, zorder=6))
+            ax.add_patch(Circle((cx, cy - 0.12), 0.19, fc=LIGHT, ec=DG, lw=2.4, zorder=6))
+
+        def i_flow(cx, cy):
+            ln([cx - 0.35, cx, cx, cx + 0.3], [cy, cy, cy + 0.28, cy + 0.28])
+            ln([cx, cx, cx + 0.3], [cy, cy - 0.28, cy - 0.28])
+            for px, py, fc in ((-0.6, 0, LIGHT), (0.55, 0.28, "white"), (0.55, -0.28, "white")):
+                ax.add_patch(Rectangle((cx + px - 0.27, cy + py - 0.15), 0.54, 0.3, fc=fc, ec=DG, lw=2.4, zorder=6))
+
+        def i_chart(cx, cy):
+            ln([cx - 0.55, cx - 0.55, cx + 0.6], [cy + 0.45, cy - 0.42, cy - 0.42])
+            xs = [cx - 0.4, cx - 0.1, cx + 0.15, cx + 0.5]
+            ys = [cy - 0.2, cy + 0.02, cy - 0.08, cy + 0.36]
+            ln(xs, ys)
+            for x, y in zip(xs, ys):
+                ax.add_patch(Circle((x, y), 0.07, fc=LIGHT, ec=DG, lw=2, zorder=6))
+
+        def i_plug(cx, cy):
+            ax.add_patch(Rectangle((cx - 0.75, cy - 0.2), 0.5, 0.4, fc=LIGHT, ec=DG, lw=2.4, zorder=6))
+            ax.add_patch(Rectangle((cx + 0.25, cy - 0.27), 0.5, 0.54, fc="white", ec=DG, lw=2.4, zorder=6))
+            ln([cx - 0.25, cx + 0.25], [cy, cy])
+            for dy in (-0.14, 0, 0.14):
+                ln([cx + 0.75, cx + 0.92], [cy + dy, cy + dy], lw=2)
+
+        def i_cloud(cx, cy, sun=False):
+            if sun:
+                import math
+                sx, sy = cx + 0.38, cy + 0.3
+                for a in range(0, 360, 45):
+                    ln([sx + 0.3 * math.cos(math.radians(a)), sx + 0.42 * math.cos(math.radians(a))],
+                       [sy + 0.3 * math.sin(math.radians(a)), sy + 0.42 * math.sin(math.radians(a))], lw=2)
+                ax.add_patch(Circle((sx, sy), 0.22, fc=LIGHT, ec=DG, lw=2.4, zorder=5))
+            parts = [(-0.3, -0.08, 0.24), (0.02, 0.1, 0.34), (0.36, -0.08, 0.24)]
+            for fc, grow, z in ((DG, 0.035, 6), ("white", -0.035, 7)):
+                for px, py, r in parts:
+                    ax.add_patch(Circle((cx + px, cy + py), r + grow, fc=fc, ec="none", zorder=z))
+                ax.add_patch(Rectangle((cx - 0.3, cy - 0.32 - grow), 0.66, 0.4 + grow, fc=fc, ec="none", zorder=z))
+
+        def i_monitor(cx, cy):
+            import numpy as np
+            ax.add_patch(Rectangle((cx - 0.7, cy - 0.3), 1.4, 0.85, fc="white", ec=DG, lw=2.4, zorder=5))
+            ln([cx, cx], [cy - 0.3, cy - 0.5]); ln([cx - 0.3, cx + 0.3], [cy - 0.5, cy - 0.5])
+            t = np.linspace(-0.5, 0.45, 40)
+            for dy in (-0.1, 0.12, 0.34):
+                ax.plot(cx + t, cy + dy + 0.06 * np.sin(9 * t), color="#11a85a", lw=2, zorder=6)
+                ax.plot([cx + 0.37, cx + 0.47, cx + 0.37], [cy + dy + 0.02, cy + dy - 0.05, cy + dy - 0.12],
+                        color="#11a85a", lw=2, zorder=6)
+
+        def card(x, y, w, h, title, sub=None, icon=None, img=None, dashed=False, tags=()):
+            ax.add_patch(Rectangle((x, y), w, h, fc="white", ec=DG, lw=1.8, ls="--" if dashed else "-", zorder=3))
+            ty = y + (0.62 if sub else 0.42)
+            ax.text(x + w / 2, ty, title, ha="center", va="center", fontsize=14.5, fontweight="bold", zorder=4)
+            if sub:
+                ax.text(x + w / 2, y + 0.25, sub, ha="center", va="center", fontsize=11.5, zorder=4)
+            top = ty + 0.3
+            cy = (top + y + h) / 2
+            if icon:
+                icon(x + w / 2, cy)
+            if img:
+                pic(img, x + w / 2, cy, w - 0.5, y + h - top - 0.2)
+            for i, t in enumerate(tags):
+                tx = x + w - 0.08 - 0.52 * (len(tags) - i)
+                ax.add_patch(Rectangle((tx, y + h - 0.02), 0.46, 0.34, fc=DG, ec=DG, zorder=5))
+                ax.text(tx + 0.23, y + h + 0.15, t, ha="center", va="center", fontsize=10, fontweight="bold",
+                        color="white", zorder=6)
+
+        def lab(x, y, t, fc="white"):
+            ax.text(x, y, t, fontsize=11.5, fontweight="bold", color="#0b7a40" if fc != "white" else "#11a85a",
+                    ha="center", va="center", zorder=6, bbox=dict(fc=fc, ec="none", pad=1.2), linespacing=1.1)
+
+        def layer(y, title, sub):
+            ax.text(0.2, y, title, ha="left", va="center", fontsize=17, fontweight="bold", color=PANEL_TXT)
+            ax.text(0.2, y - 0.4, sub, ha="left", va="center", fontsize=11.5, color=PANEL_TXT)
+
+        X1, X2, X3, X4, CW = 2.75, 6.15, 9.55, 12.95, 2.9
+        # cloud
+        layer(12.1, "Cloud", "when online")
+        card(X2, 10.5, CW, 2.1, "Remote access", "optional", icon=i_cloud, dashed=True)
+        card(X3, 10.5, CW, 2.1, "NEA weather", icon=lambda cx, cy: i_cloud(cx - 0.1, cy - 0.12, sun=True), dashed=True)
+        # edge
+        ax.add_patch(Rectangle((2.45, 4.2), 13.7, 5.75, fc=PANEL, ec=PANEL_EC, lw=1.8, zorder=1))
+        layer(9.5, "Edge", "Raspberry Pi 5")
+        pic("pi", 1.25, 7.9, 2.1, 1.6)
+        ax.text(0.2, 6.75, "runs offline", ha="left", va="center", fontsize=11.5, color=PANEL_TXT)
+        card(X2, 7.3, CW, 2.1, "Grafana", "Dashboard", img="laptop", tags=("S3",))
+        card(X3, 7.3, CW, 2.1, "InfluxDB", "Storage", icon=i_db, tags=("S1",))
+        card(X4, 7.3, CW, 2.1, "Models", "Map · prediction", icon=i_chart, tags=("S1", "S3"))
+        card(X1, 4.5, CW, 2.1, "USB–RS-485", icon=i_plug, tags=("S1",))
+        card(X2, 4.5, CW, 2.1, "Mosquitto", "MQTT", icon=i_hub, tags=("S1",))
+        card(X3, 4.5, CW, 2.1, "Node-RED", "Clean · control", icon=i_flow, tags=("S1", "S3"))
+        # field
+        ax.add_patch(Rectangle((2.45, 0.3), 10.25, 3.2, fc=LIGHT, ec=PANEL_EC, lw=1.8, zorder=1))
+        layer(3.1, "Field", "GH1")
+        pic("gh", 1.25, 1.5, 2.1, 1.5)
+        card(X1, 0.6, CW, 2.3, "Type A node", "T, RH", img="typeA", tags=("S1",))
+        card(X2, 0.6, CW, 2.3, "Type B node", "+ leaf temperature", img="typeB", tags=("S1",))
+        card(X3, 0.6, CW, 2.3, "Floor fans ×4", img="fan", tags=("S3",))
+        card(13.6, 0.6, 2.55, 2.3, "CFD", "offline", icon=i_monitor, dashed=True, tags=("S2",))
+
+        e = lambda pts, d=False: elbow(ax, pts, dashed=d)
+        e([(4.2, 2.9), (4.2, 4.5)])
+        ax.plot([7.6, 7.6, 4.2], [2.9, 3.85, 3.85], color="black", lw=2.2, zorder=2)
+        lab(5.9, 3.85, "RS-485")
+        e([(5.65, 5.55), (6.15, 5.55)])
+        e([(9.05, 5.55), (9.55, 5.55)])
+        e([(10.4, 6.6), (10.4, 7.3)])
+        e([(12.45, 8.35), (12.95, 8.35)])
+        e([(9.55, 8.35), (9.05, 8.35)])
+        e([(13.6, 7.3), (13.6, 5.55), (12.45, 5.55)])
+        lab(13.6, 6.6, "predictions", fc=PANEL)
+        e([(10.7, 4.5), (10.7, 2.9)])
+        lab(10.7, 3.85, "fan commands")
+        e([(15.3, 7.3), (15.3, 2.9)], True)
+        lab(15.3, 3.85, "logged data")
+        e([(13.6, 1.75), (12.45, 1.75)], True)
+        lab(13.15, 2.45, "chosen\nlayout")
+        e([(11.0, 10.5), (11.0, 9.4)], True)
+        e([(7.6, 9.4), (7.6, 10.5)], True)
+        ax.set_xlim(0, W); ax.set_ylim(0, H)
+        fig.savefig(OUT + "fig-edge-gateway.png", dpi=150, bbox_inches="tight", pad_inches=0.05, facecolor="white")
+        plt.close(fig)
+
+
 problem_framing()
 farmer_value()
 cooling_options()
 functional_decomposition()
 system_decomposition()
 architecture_v3()
-edge_gateway_v2()
+edge_gateway_v3()
 trapped_hot_air()
 roadmap()
 print("done")
