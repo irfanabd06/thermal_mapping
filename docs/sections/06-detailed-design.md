@@ -55,22 +55,20 @@ Semester 1 testing checked whether the sensing chain produces trustworthy data. 
 **SHT45 air temperature and humidity**
 
 - **Purpose:** check that the SHT45 agrees with a reference closely enough for baseline comparisons (R1).
-- **Method:** the SHT45 was logged side by side with a Kestrel 5000 weather meter, first on the bench for about 10 minutes, including a heating step, and then in GH1 for about 30 minutes (Figure 16).
+- **Method:** the open (unshielded) SHT45 was logged side by side with a Kestrel 5000 weather meter, first on the bench for about 10 minutes, including a heating step, and then in GH1 for about 30 minutes (Figure 16).
 - **Result:** on the bench, the SHT45 agreed with the reference to 0.33 °C and 2.35 %RH (RMSE), meeting R1. In the greenhouse, it read 4.3 °C higher and 10 %RH lower than the reference (Table 10), a bias consistent with direct solar heating of the sensor.
 
 ![Figure 16. SHT45 compared with a Kestrel 5000 on the bench (top) and in GH1 (bottom)](assets/fig-sht45-validation.png)
 
 [[table: table-sht45 | Table 10: SHT45 agreement with the Kestrel 5000 reference]]
 
-> TODO: Confirm whether the greenhouse test used the open sensor, and the date and time of both tests.
+> TODO: Add the date and time of both tests.
 
 **Sensor enclosure**
 
 - **Purpose:** reduce the solar bias found in the SHT45 test (R2).
-- **Method:** the SHT45 was compared open and inside the ventilated, louvred shield (Figure 15) against the reference.
-- **Result:** readings were closer to the reference in the shielded enclosure. The remaining bias has not yet been quantified, so R2 is not yet verified.
-
-> TODO: Add the measured bias for the shielded sensor, if recorded.
+- **Method:** the SHT45 inside the ventilated, louvred shield (Figure 15) was compared with the reference in GH1 over three paired readings.
+- **Result:** the shielded sensor read 0.8–2.1 °C above the reference, a mean bias of +1.6 °C. This is about 2.7 °C (63%) lower than the open sensor's +4.3 °C, but still above the 0.5 °C target, so R2 is not yet met.
 
 **MLX90640 canopy temperature**
 
@@ -90,7 +88,7 @@ Semester 1 testing checked whether the sensing chain produces trustworthy data. 
 
 **Analysis: spatial variation.** The 4.0 °C spread in the survey is about 12 times the SHT45's bench error (0.33 °C RMSE), so a grid of these sensors can resolve the spatial differences that matter, provided the sensors are shielded. The pattern of warm main plant zones and cooler germination and seedling zones supports the claim that one monitoring point is not representative. However, if the survey points were measured one after another, the spread also includes change over time, so the result is treated as indicative until it is repeated with simultaneous loggers.
 
-**Analysis: measurement bias.** The unshielded bias in the greenhouse (+4.3 °C) is as large as the spatial spread itself. Without shielding, sensor heating would be indistinguishable from real hotspots. This makes R2 a critical requirement and the enclosure the first Semester 2 priority.
+**Analysis: measurement bias.** The unshielded bias in the greenhouse (+4.3 °C) is as large as the spatial spread itself, so without shielding, sensor heating would be indistinguishable from real hotspots. The enclosure improved the measurement by about 2.7 °C, cutting the bias to +1.6 °C. This rests on only three readings, so it is indicative, and the remaining bias is still above the R2 target. Improving the shield is therefore the first Semester 2 priority. The next tests will log the shielded and open sensors side by side over a full day, and check the enclosure's resistance to wear in high humidity and misting (R3).
 
 **Analysis: canopy sensing.** The MLX90640 tracks the centre temperature of the reference camera but underestimates peak surface temperatures. It will therefore be used for zone-average canopy temperature rather than detecting small hot spots.
 

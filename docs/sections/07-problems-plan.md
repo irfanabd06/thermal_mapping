@@ -12,7 +12,7 @@ During MLX90640 development, I²C bus-busy timeouts and EEPROM initialisation fa
 - Only one prototype node has been built; multi-node addressing is not yet implemented.
 - Persistent storage and complete Node-RED processing flows are not yet in place.
 - The survey method was not fully documented, so the survey needs repeating.
-- The shielded enclosure's remaining bias has not been quantified.
+- The shielded enclosure's bias (+1.6 °C) rests on three readings and is still above the R2 target.
 - Floor fans have not been procured, and their speed control and power interface are undecided.
 - The node power supply (wired DC or battery) is undecided.
 
