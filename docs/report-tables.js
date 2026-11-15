@@ -57,7 +57,29 @@ const tables = {
     ],
   },
 
-  // Table 14: Scope of work (Section 7.3)
+  // Table 14: Problems encountered (Section 7.1)
+  "table-problems": {
+    columns: ["Problem", "Cause", "Resolution"],
+    data: [
+      ["MLX90640 returned no frames", "I²C bus-busy timeouts and EEPROM initialisation failures", "Resolved; complete frames are now sent reliably over RS-485"],
+      ["SHT45 read 4.3 °C high in GH1", "Solar heating of the open sensor", "Shielded enclosure designed; bias reduced to +1.6 °C (Section 6.3.3)"],
+    ],
+  },
+
+  // Table 15: Current shortcomings (Section 7.2)
+  "table-shortcomings": {
+    columns: ["Shortcoming", "Effect", "Semester 2 plan"],
+    data: [
+      ["Only one prototype node; no multi-node addressing", "No simultaneous readings yet (R4)", "Build the node set and add addressing"],
+      ["No persistent storage or complete Node-RED flows", "Data cannot be logged long-term", "Set up InfluxDB and the processing flows"],
+      ["Survey method not fully documented", "Baseline is indicative only", "Repeat the survey with simultaneous loggers"],
+      ["Enclosure bias (+1.6 °C) from three readings", "R2 not yet met", "Improve the shield; full-day side-by-side test"],
+      ["Floor fans not procured; speed control and power interface undecided", "S3 cannot be tested", "Procure fans; choose PWM or relay control"],
+      ["Node power supply undecided", "Deployment design still open", "Choose wired DC or battery"],
+    ],
+  },
+
+  // Table 16: Scope of work (Section 7.3)
   "table-scope": {
     columns: ["Area", "Long-term application", "CDE4301 deliverable (committed)", "Stretch goal"],
     data: [
@@ -66,7 +88,6 @@ const tables = {
       ["Design evaluation", "Optimise greenhouse designs before construction", "CFD of the germination section for ≥ 10 fan configurations; top suggestions tested there with 4 floor fans (number, position, direction, speed)", "Full-GH1 CFD; surrogate model and automated search"],
       ["Control", "Adaptive, predictive greenhouse management", "Floor fans in the germination section switched on from 30-min hotspot predictions, tested against baseline", "Model predictive control"],
       ["Dashboard", "Farm-wide management interface", "Local dashboard for the germination section: map, hotspots, fan status, energy", "Remote access; full-GH1 view"],
-      ["Commercial value", "Higher profit and better crops", "Fan energy vs hotspot trade-off measured", "Yield and quality trials (future work)"],
     ],
   },
 
@@ -199,7 +220,7 @@ const tables = {
     ],
   },
 
-  // Table 15: Milestones (Section 7.4)
+  // Table 17: Milestones (Section 7.4)
   "table-milestones": {
     columns: ["Milestone", "Date", "Deliverable", "Acceptance criterion"],
     data: [

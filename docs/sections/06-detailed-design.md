@@ -105,7 +105,7 @@ Planned for Semester 2. The baseline flow simulation on the CAD model will first
 
 ### 6.5. S3: Live Cooling Control
 
-S3 closes the cooling loop through the digital twin (Figure 20). Sensor readings feed a data-driven model of GH1, informed by the CAD model and CFD, which estimates conditions between nodes as virtual sensors and predicts exceedance 30 minutes ahead. The controller compares this prediction with T<sub>ref</sub> and switches the floor fans, and the sensors measure the result.
+S3 closes the cooling loop through the digital twin (Figure 20). Sensor readings (temperature and RH) feed a data-driven model of GH1, informed by the CAD model and CFD, which estimates conditions between nodes as virtual sensors and predicts exceedance 30 minutes ahead. The controller compares this prediction with T<sub>ref</sub> and switches the floor fans, and the sensors measure the result.
 
 ![Figure 20. Closed cooling loop: the physical system and its digital twin](assets/fig-control-loop.png)
 
