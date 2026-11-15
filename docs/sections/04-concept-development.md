@@ -17,8 +17,10 @@ For each function in Figure 10, alternatives were compared against the constrain
 
 [[table: table-concepts | Table 6: Concept selection]]
 
-### 4.3. Cooling Layout Evaluation
+### 4.3. Cooling Layout Evaluation: Why Simulation
 
-Airflow and heat distribution depend on how cooling equipment is arranged. Warm air trapped under the roof, for example, could be released by a vent, removed by an extraction fan if air can enter lower down, or mixed by a circulation fan at the risk of pushing it onto the crops (Figure 12). Which works depends on airflow that is hard to predict, and testing many layouts physically is slow and costly. Fan layouts are therefore compared in simulation against the baseline, with the structure fixed, and ranked by crop-zone exceedance and fan power.
+Airflow and heat distribution depend on how cooling equipment is arranged. Warm air trapped under the roof, for example, could be released by a vent, removed by an extraction fan if air can enter lower down, or mixed by a circulation fan at the risk of pushing it onto the crops (Figure 12). Which works depends on airflow that is hard to predict.
+
+Additionally, testing many layouts physically is slow and costly. Fan layouts are therefore compared in simulation against the baseline, with the structure fixed, and ranked by crop-zone exceedance and fan power.
 
 ![Figure 12. Example: options for warm air trapped under the roof](assets/fig-trapped-hot-air.png)
