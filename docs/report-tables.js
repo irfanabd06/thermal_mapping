@@ -61,11 +61,11 @@ const tables = {
   "table-scope": {
     columns: ["Area", "Long-term application", "CDE4301 deliverable (committed)", "Stretch goal"],
     data: [
-      ["Sensing", "Adaptable sensing for any greenhouse", "Permanent sensor grid plus temporary nodes in the test section (germination section), durability-tested", "Wireless option (Zigbee or Wi-Fi) benchmarked"],
-      ["Thermal map", "Real-time 3D microclimate", "2D crop-height map of temperature and humidity, with soft sensors in place of temporary nodes", "3D view (Three.js)"],
-      ["Design evaluation", "Optimise greenhouse designs before construction", "Full-GH1 CFD of ≥ 10 fan configurations; tests with 4 floor fans in the test section (number, position, direction, speed)", "Surrogate model and automated search"],
-      ["Control", "Adaptive, predictive greenhouse management", "Floor fans switched on from 30-min hotspot predictions, tested against baseline", "Model predictive control"],
-      ["Dashboard", "Farm-wide management interface", "Local dashboard: map, hotspots, fan status, energy", "Remote access"],
+      ["Sensing", "Adaptable sensing for any greenhouse", "Permanent and temporary nodes across the 20 m germination section, durability-tested", "Wireless option (Zigbee or Wi-Fi) benchmarked"],
+      ["Thermal map", "Real-time 3D microclimate", "2D crop-height map of the germination section, with soft sensors in place of temporary nodes", "3D view (Three.js)"],
+      ["Design evaluation", "Optimise greenhouse designs before construction", "CFD of the germination section for ≥ 10 fan configurations; top suggestions tested there with 4 floor fans (number, position, direction, speed)", "Full-GH1 CFD; surrogate model and automated search"],
+      ["Control", "Adaptive, predictive greenhouse management", "Floor fans in the germination section switched on from 30-min hotspot predictions, tested against baseline", "Model predictive control"],
+      ["Dashboard", "Farm-wide management interface", "Local dashboard for the germination section: map, hotspots, fan status, energy", "Remote access; full-GH1 view"],
       ["Commercial value", "Higher profit and better crops", "Fan energy vs hotspot trade-off measured", "Yield and quality trials (future work)"],
     ],
   },
@@ -158,8 +158,8 @@ const tables = {
   "table-s2-design": {
     columns: ["Objective", "Detailed design", "Deliverable"],
     data: [
-      ["Model GH1", "SOLIDWORKS Flow Simulation; geometry, roof, walls and netting as built (Appendix D); existing ventilation and ceiling fans at rated airflow as the baseline (Appendix E); measured roof surface temperature replaces a full solar-radiation model; crops modelled as a porous zone", "Full-GH1 CAD geometry built (Figure 19); test-section (germination section) and full-GH1 flow models"],
-      ["Compare fan layouts", "1–4 floor fans in the test section, more in full-GH1 runs; positions, direction and speed varied; representative midday, morning and overcast cases. Outputs: airflow, crop-zone temperature, exceedance H, fan power", "≥ 10 configurations ranked against the baseline (R8)"],
+      ["Model GH1", "SOLIDWORKS Flow Simulation; geometry, roof, walls and netting as built (Appendix D); existing ventilation and ceiling fans at rated airflow as the baseline (Appendix E); measured roof surface temperature replaces a full solar-radiation model; crops modelled as a porous zone", "Full-GH1 CAD geometry built (Figure 19); germination-section flow model (full-GH1 model as a stretch goal)"],
+      ["Compare fan layouts", "1–4 floor fans in the germination section; positions, direction and speed varied; representative midday, morning and overcast cases. Outputs: airflow, crop-zone temperature, exceedance H, fan power", "≥ 10 configurations ranked against the baseline (R8)"],
       ["Confirm the suggestions", "Top suggested layouts built with the four floor fans in the germination section; measured crop-zone temperature compared with the baseline under comparable weather; judged on trends and rankings, not absolute temperatures", "Validated layout ranking (R7)"],
     ],
   },

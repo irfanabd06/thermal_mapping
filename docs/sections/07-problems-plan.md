@@ -18,11 +18,11 @@ During MLX90640 development, I²C bus-busy timeouts and EEPROM initialisation fa
 
 ### 7.3. Scope of Work
 
-Table 14 sets out what this project will deliver, alongside the long-term application and stretch goals. Only fans are varied; the greenhouse structure stays fixed. Physical tests use four floor fans in the germination section.
+This project covers one part of GH1: the 20 m-long germination section, used as the test section. All sensing, mapping, simulation and fan tests take place there, while the full greenhouse is the long-term application (Table 14). Only fans are varied; the greenhouse structure stays fixed.
 
 [[table: table-scope | Table 14: Scope of work]]
 
-**Out of scope:** changes to GH1's structure, vents, misting or shading; guaranteeing crop-optimal temperatures at peak sun; air-conditioning; proving yield or profit improvement; and developing weather forecasts (NEA data is used as an input).
+**Out of scope:** the rest of GH1 beyond the germination section, apart from the baseline survey and geometry; changes to GH1's structure, vents, misting or shading; guaranteeing crop-optimal temperatures at peak sun; air-conditioning; proving yield or profit improvement; and developing weather forecasts (NEA data is used as an input).
 
 ### 7.4. Plan and Milestones
 
