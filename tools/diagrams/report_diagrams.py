@@ -771,7 +771,7 @@ def edge_gateway_v3():
         plt.close(fig)
 
 
-def edge_gateway_v4():
+def edge_gateway_v5():
     """Figure 14: IT/OT bus layout (cloud, edge, field) reusing pictures and logos from the author's original figure."""
     import numpy as np
     from matplotlib.patches import Circle
@@ -785,7 +785,7 @@ def edge_gateway_v4():
              "gh": (1563, 733, 2017, 908)}
     GREY, MUTED = "#555555", "#777777"
     with plt.rc_context({"font.family": "Inter"}):
-        W, H = 17.0, 11.6
+        W, H = 17.0, 12.4
         fig, ax = canvas(W, H)
 
         def pic(name, cx, cy, w, clean=True):
@@ -806,12 +806,14 @@ def edge_gateway_v4():
             ax.add_patch(FancyArrowPatch((x0, y), (x1, y), arrowstyle="<->", mutation_scale=13, color=GREY, lw=1.4,
                                          linestyle=(0, (2.5, 2.5)), zorder=3))
 
-        def cloud(cx, cy, parts, base):
+        def cloud(cx, y0, w, h=2.2):
+            re = 0.4 * h
+            parts = [(-(w / 2 - re), re, re), (w / 2 - re, re, re), (-0.13 * w, 0.52 * h, 0.43 * h),
+                     (0.16 * w, 0.48 * h, 0.39 * h)]
             for fc, g, z in (("black", 0.022, 2), ("white", -0.022, 3)):
                 for px, py, r in parts:
-                    ax.add_patch(Circle((cx + px, cy + py), r + g, fc=fc, ec="none", zorder=z))
-                ax.add_patch(Rectangle((cx + base[0], cy + base[1] - g), base[2] - base[0], 0.6 + g, fc=fc, ec="none",
-                                       zorder=z))
+                    ax.add_patch(Circle((cx + px, y0 + py), r + g, fc=fc, ec="none", zorder=z))
+                ax.add_patch(Rectangle((cx - w / 2 + re, y0 - g), w - 2 * re, re + g, fc=fc, ec="none", zorder=z))
 
         # layer labels and bus lines
         IT, OT = 9.0, 4.6
@@ -827,46 +829,37 @@ def edge_gateway_v4():
         ax.plot([1.5, 16.7], [IT, IT], color="black", lw=2.2, zorder=2)
         ax.plot([1.5, 16.7], [OT, OT], color=DG, lw=2.4, zorder=2)
 
-        # cloud
-        cloud(6.0, 10.35, [(-1.35, -0.12, 0.48), (-0.55, 0.22, 0.62), (0.5, 0.26, 0.66), (1.35, -0.08, 0.52)],
-              (-1.35, -0.6, 1.35))
-        pic("flowfuse", 5.3, 10.42, 1.3, clean=False)
-        pic("grafana_word", 6.75, 10.42, 1.2, clean=False)
-        t(6.0, 9.98, "remote access (optional)", 10.5, color=GREY)
-        cloud(10.6, 10.35, [(-0.95, -0.12, 0.48), (-0.25, 0.24, 0.6), (0.6, 0.2, 0.58), (1.0, -0.1, 0.5)],
-              (-0.95, -0.6, 1.0))
-        t(10.6, 10.42, "NEA weather", 13.5, bold=True)
-        t(10.6, 10.02, "live readings · nowcast", 10.5, color=GREY)
-        ax.plot([6.0, 6.0, 10.6, 10.6], [9.75, 9.4, 9.4, 9.75], color="black", lw=1.6, zorder=1)
-        ax.plot([7.0, 7.0], [9.4, IT], color="black", lw=1.6, zorder=1)
-        ax.plot([7.0, 7.0], [IT, 8.05], color="black", lw=1.8, ls=(0, (1, 2)), zorder=1)
-        t(7.2, 8.55, "when online", 10.5, color=MUTED, ha="left")
+        # cloud: modelling, dashboard, services
+        Y0, PX = 9.75, 7.8
+        cloud(4.7, Y0, 5.0)
+        pic("solidworks", 3.65, Y0 + 1.2, 1.9)
+        t(3.65, Y0 + 0.62, "CFD", 12.5, bold=True); t(3.65, Y0 + 0.3, "S2 · fan layout", 10.5, color=GREY)
+        pic("matlab", 5.85, Y0 + 1.22, 0.72)
+        t(5.85, Y0 + 0.62, "Models", 12.5, bold=True); t(5.85, Y0 + 0.3, "map · prediction", 10.5, color=GREY)
+        cloud(9.9, Y0, 4.4)
+        pic("grafana_word", 8.95, Y0 + 1.1, 1.3, clean=False)
+        t(8.95, Y0 + 0.5, "Dashboard", 12.5, bold=True)
+        pic("laptop", 10.75, Y0 + 0.85, 1.85)
+        cloud(14.4, Y0, 3.6)
+        t(14.4, Y0 + 1.25, "NEA weather", 13, bold=True)
+        t(14.4, Y0 + 0.92, "live readings · nowcast", 10.5, color=GREY)
+        pic("flowfuse", 14.0, Y0 + 0.42, 1.0, clean=False); t(14.6, Y0 + 0.42, "optional", 10, color=GREY, ha="left")
+        ax.plot([4.7, 4.7, 14.4, 14.4], [Y0, 9.38, 9.38, Y0], color="black", lw=1.6, zorder=1)
+        ax.plot([9.9, 9.9], [Y0, 9.38], color="black", lw=1.6, zorder=1)
+        ax.plot([PX, PX], [9.38, IT], color="black", lw=1.6, zorder=1)
+        ax.plot([PX, PX], [IT, 8.05], color="black", lw=1.8, ls=(0, (1, 2)), zorder=1)
+        t(PX + 0.2, 8.55, "internet", 10.5, color=MUTED, ha="left")
 
         # edge
-        pic("pi", 7.0, 6.95, 3.2)
-        t(7.0, 5.62, "Raspberry Pi 5 edge gateway", 13.5, bold=True)
-        t(7.0, 5.27, "runs offline (Docker)", 11, color=GREY)
-        ax.plot([7.0, 7.0], [5.05, OT], color=DG, lw=2.4, zorder=2)
+        pic("pi", PX, 6.95, 3.2)
+        t(PX, 5.62, "Raspberry Pi 5 edge gateway", 13.5, bold=True)
+        t(PX, 5.27, "collects, stores and controls (Docker)", 11, color=GREY)
+        ax.plot([PX, PX], [5.05, OT], color=DG, lw=2.4, zorder=2)
         for y in (7.9, 6.95, 6.0):
-            dbl(8.75, 9.55, y)
-        pic("mqtt", 10.3, 7.9, 1.25, clean=False); t(11.1, 7.9, "Mosquitto", 12, ha="left")
-        pic("nodered", 9.98, 6.95, 0.62, clean=False); t(10.45, 6.95, "Node-RED", 13, bold=True, ha="left")
-        pic("influx_icon", 9.98, 6.0, 0.58); pic("influx_word", 10.98, 6.02, 1.15)
-        ax.plot([12.0, 12.6], [6.95, 6.95], color="black", lw=2.0, zorder=2)
-        ax.plot([12.6, 12.6, 12.85], [6.3, 7.75, 7.75], color="black", lw=1.4, zorder=2)
-        ax.plot([12.6, 12.85], [6.3, 6.3], color="black", lw=1.4, zorder=2)
-        pic("matlab", 13.3, 7.75, 0.78)
-        t(13.85, 7.9, "Models", 13, bold=True, ha="left")
-        t(13.85, 7.56, "soft sensors · map · prediction", 10.5, color=GREY, ha="left")
-        pic("grafana", 13.25, 6.3, 0.62)
-        pic("laptop", 15.0, 6.3, 2.3)
-        t(15.0, 5.42, "Dashboard", 13, bold=True)
-        pic("solidworks", 3.05, 7.1, 2.3)
-        t(3.05, 6.5, "CFD workstation (offline)", 12, bold=True)
-        t(3.05, 6.17, "S2 · suggests the fan layout", 10.5, color=GREY)
-        ax.add_patch(FancyArrowPatch((5.35, 7.1), (4.35, 7.1), arrowstyle="->", mutation_scale=13, color=GREY, lw=1.4,
-                                     linestyle=(0, (2.5, 2.5)), zorder=3))
-        t(4.85, 7.33, "logged data", 10, color=GREY)
+            dbl(PX + 1.75, PX + 2.55, y)
+        pic("mqtt", PX + 3.3, 7.9, 1.25, clean=False); t(PX + 4.1, 7.9, "Mosquitto", 12, ha="left")
+        pic("nodered", PX + 2.98, 6.95, 0.62, clean=False); t(PX + 3.45, 6.95, "Node-RED", 13, bold=True, ha="left")
+        pic("influx_icon", PX + 2.98, 6.0, 0.58); pic("influx_word", PX + 3.98, 6.02, 1.15)
 
         # field
         pic("rs485", 3.2, OT + 0.33, 0.42); t(3.5, OT + 0.33, "RS-485", 12, bold=True, ha="left")
@@ -883,7 +876,7 @@ def edge_gateway_v4():
         pic("fan", 10.0, 2.8, 1.35); t(10.0, 1.82, "Floor fans ×4", 12.5, bold=True)
         t(10.0, 1.5, "energy metered", 10.5, color=GREY)
         pic("gh", 14.45, 2.75, 3.5)
-        for x in (7.9, 12.1):
+        for x in (8.0, 12.1):
             ax.plot([x, x], [OT - 0.2, 0.3], color="#9fb8a8", lw=1.3, ls=(0, (1, 2.5)), zorder=1)
         t(4.4, 0.65, "S1 Sense and Map", 13, bold=True)
         t(10.0, 0.65, "S3 Live Cooling Control", 13, bold=True)
@@ -899,7 +892,7 @@ cooling_options()
 functional_decomposition()
 system_decomposition()
 architecture_v3()
-edge_gateway_v4()
+edge_gateway_v5()
 trapped_hot_air()
 roadmap()
 print("done")

@@ -19,6 +19,14 @@ Table 8 defines what each subsystem must deliver and how it will be verified. Ea
 
 ### 6.3. S1: Sense and Map
 
+Besides temperature and humidity, S1 reports two indicators of crop stress. Vapour pressure deficit (VPD) is how much more moisture the air could hold, which drives transpiration. Leaf VPD (LVPD) uses the leaf temperature from the Type B nodes in place of air temperature, so it shows what the plant itself experiences (Appendix C).
+
+<p class="equation">e<sub>s</sub>(T) = 0.6108 · exp(17.27 T / (T + 237.3)) kPa</p>
+
+<p class="equation">VPD = e<sub>s</sub>(T<sub>air</sub>) · (1 − RH/100)</p>
+
+<p class="equation">LVPD = e<sub>s</sub>(T<sub>leaf</sub>) − e<sub>s</sub>(T<sub>air</sub>) · RH/100</p>
+
 #### 6.3.1. Detailed Design
 
 Table 9 sets out the S1 design. Both node types share one ESP32-C6 design (Appendix F), and data flows to the edge gateway on the Raspberry Pi 5 (Figure 14).
