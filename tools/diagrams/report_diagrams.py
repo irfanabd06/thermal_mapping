@@ -459,12 +459,84 @@ def architecture_v2():
         plt.close(fig)
 
 
+def architecture_v3():
+    """Figure 13: three subsystems aligned with O1-O3 (S1 Sense and Map, S2 = Application 1, S3 = Application 2)."""
+    with plt.rc_context({"font.family": "Inter"}):
+        W, H = 17.0, 15.2
+        fig, ax = canvas(W, H)
+
+        def fbox(x, y, w, h, title, body, dashed=False, ts=15.5, bs=13.5):
+            ax.add_patch(Rectangle((x, y), w, h, fc="white", ec=DG, lw=1.8, ls="--" if dashed else "-", zorder=3))
+            ax.text(x + w / 2, y + h - 0.4, title, ha="center", va="center", fontsize=ts, fontweight="bold", zorder=4)
+            ax.text(x + w / 2, y + (h - 0.6) / 2, body, ha="center", va="center", fontsize=bs, zorder=4,
+                    linespacing=1.25)
+
+        def panel(x, y, w, h, title, sub=None):
+            ax.add_patch(Rectangle((x, y), w, h, fc=PANEL, ec=PANEL_EC, lw=1.8, zorder=1))
+            ax.text(x + 0.2, y + h - 0.35, title, ha="left", va="center", fontsize=16.5, fontweight="bold",
+                    color=PANEL_TXT, zorder=4)
+            if sub:
+                ax.text(x + 0.2, y + h - 0.8, sub, ha="left", va="center", fontsize=12.5, fontweight="bold",
+                        color=PANEL_TXT, zorder=4)
+
+        def lab(x, y, t, fc="white"):
+            ax.text(x, y, t, fontsize=12, fontweight="bold", color="#0b7a40" if fc != "white" else "#11a85a",
+                    ha="center", va="center", zorder=5, bbox=dict(fc=fc, ec="none", pad=1.5), linespacing=1.1)
+
+        # environment
+        fbox(1.3, 13.5, 7.5, 1.4, "Physical greenhouse (GH1)", "Sun, wind, crops · fixed equipment · floor fans")
+        fbox(13.1, 9.8, 3.6, 2.2, "Weather data", "NEA live readings,\n2-hour nowcast\n(when online)", dashed=True)
+
+        # S1
+        panel(1.0, 9.3, 11.7, 3.75, "S1 Sense and Map")
+        fbox(1.3, 9.55, 3.6, 2.4, "Sensor nodes", "Permanent and\ntemporary · T, RH,\ncanopy · 1-min")
+        fbox(5.3, 9.55, 3.2, 2.4, "Clean data", "Remove spikes\nand misting\nartefacts")
+        fbox(8.9, 9.55, 3.5, 2.4, "Thermal map", "Soft sensors and\nGaussian process\nregression")
+        dline = lambda pts, dashed=False: elbow(ax, pts, dashed=dashed)
+        dline([(4.9, 10.75), (5.3, 10.75)])
+        dline([(8.5, 10.75), (8.9, 10.75)])
+        dline([(4.3, 13.5), (4.3, 11.95)])
+
+        # S2 = Application 1
+        panel(1.0, 0.8, 5.9, 7.5, "S2 Cooling Layout Evaluation", "Application 1: before the greenhouse is built")
+        fbox(1.3, 4.6, 5.3, 2.4, "CFD flow model", "Airflow and heat for candidate\nlayouts; suggests the best")
+        fbox(1.3, 1.1, 5.3, 2.4, "Layout tests", "Suggested layouts built with\nfloor fans; temperature\nvs baseline")
+        dline([(3.95, 4.6), (3.95, 3.5)], dashed=True)
+        lab(5.25, 4.05, "suggested\nlayouts", fc=PANEL)
+
+        # S3 = Application 2
+        panel(7.6, 0.8, 9.1, 7.5, "S3 Live Cooling Control", "Application 2: once operating (Raspberry Pi 5)")
+        fbox(12.4, 4.6, 4.0, 2.4, "Hotspot prediction", "Exceedance 30 min\nahead; learned fan\neffects on T, RH")
+        fbox(7.9, 4.6, 3.9, 2.4, "Dashboard", "Map, hotspots,\nfan status")
+        fbox(12.4, 1.1, 4.0, 2.4, "Decide", "Right fans for each\nhotspot, fail-safe")
+        fbox(7.9, 1.1, 3.9, 2.4, "Actuate", "Four floor fans,\nenergy metering")
+        dline([(14.4, 4.6), (14.4, 3.5)])
+        dline([(12.4, 2.3), (11.8, 2.3)])
+        dline([(12.4, 5.8), (11.8, 5.8)])
+
+        # flows between subsystems
+        dline([(11.9, 9.55), (11.9, 8.85), (13.3, 8.85), (13.3, 7.0)])
+        dline([(14.9, 9.8), (14.9, 7.0)], dashed=True)
+        dline([(9.6, 9.55), (9.6, 8.85), (7.25, 8.85), (7.25, 5.8), (6.6, 5.8)])
+        lab(8.45, 8.85, "measured data")
+        dline([(6.6, 2.3), (7.9, 2.3)], dashed=True)
+        lab(7.25, 1.65, "chosen\nlayout")
+        # feedback loop
+        ax.plot([9.85, 9.85, 0.35, 0.35, 1.0], [1.1, 0.35, 0.35, 14.2, 14.2], color="black", lw=2.2, zorder=2)
+        ax.add_patch(FancyArrowPatch((1.0, 14.2), (1.3, 14.2), arrowstyle="->,head_length=0.5,head_width=0.3",
+                                     mutation_scale=18, color="black", lw=2.2, zorder=2))
+        ax.text(0.6, 12.0, "Feedback", rotation=90, fontsize=15, fontweight="bold", ha="left", va="center")
+        ax.set_xlim(0, W); ax.set_ylim(0, H)
+        fig.savefig(OUT + "fig-system-architecture.png", dpi=150, bbox_inches="tight", pad_inches=0.05, facecolor="white")
+        plt.close(fig)
+
+
 problem_framing()
 farmer_value()
 cooling_options()
 functional_decomposition()
 system_decomposition()
-architecture_v2()
+architecture_v3()
 trapped_hot_air()
 roadmap()
 print("done")

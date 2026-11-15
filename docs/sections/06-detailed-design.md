@@ -3,20 +3,17 @@ title: 6. System Architecture and Detailed Design
 ---
 ### 6.1. System Architecture
 
-The system has four subsystems (Figure 13). S2 hosts two applications that run in sequence: one before the greenhouse is built, and one once it is operating. All live processing runs on a Raspberry Pi 5, so the system keeps working without internet access.
+The system has three subsystems, one for each objective (Figure 13). S1 serves both applications, and the four floor fans are shared: S2 uses them to test layouts and S3 to control cooling. All live processing runs on a Raspberry Pi 5, so the system keeps working without internet access.
 
-- **S1 Sense:** samples temperature, humidity and canopy temperature across the crop zones every minute, using permanent nodes and, during training, temporary ones.
-- **S2 Map and Model:**
-    - *Application 1, cooling layout evaluation (before the greenhouse is built or retrofitted):* the CFD flow model is used to choose the best fan layout before fans are installed. Its suggested layouts are checked by building them with the floor fans and measuring the temperature improvement.
-    - *Application 2, live twin (once the greenhouse is operating):* running on the chosen layout, it cleans the data, estimates conditions between nodes with soft sensors and Gaussian process regression, and predicts crop-zone hotspots 30 minutes ahead, supported by NEA weather data when online.
-- **S3 Decide:** chooses fan actions from the predicted hotspots.
-- **S4 Actuate:** runs the four floor fans, whose effect is measured again by S1.
+- **S1 Sense and Map:** samples temperature, humidity and canopy temperature across the crop zones every minute, using permanent nodes and, during training, temporary ones. It cleans the data and estimates conditions between nodes with soft sensors and Gaussian process regression.
+- **S2 Cooling Layout Evaluation (Application 1, before the greenhouse is built or retrofitted):** the CFD flow model, using measured inputs from S1, is used to choose the best fan layout before fans are installed. Its suggested layouts are checked by building them with the floor fans and measuring the temperature improvement.
+- **S3 Live Cooling Control (Application 2, once the greenhouse is operating):** running on the chosen layout, it predicts crop-zone hotspots 30 minutes ahead, supported by NEA weather data when online, then switches on the floor fans that most affect them and shows the results on a dashboard. S1 measures the effect.
 
-![Figure 13. System architecture: live processing on the edge computer, with offline CFD informing fan layout and control](assets/fig-system-architecture.png)
+![Figure 13. System architecture: three subsystems, with the two applications as S2 and S3](assets/fig-system-architecture.png)
 
 ### 6.2. Subsystem Goals
 
-Table 8 defines what each subsystem must deliver and how it will be verified, with S2 split into its two applications.
+Table 8 defines what each subsystem must deliver and how it will be verified. Each subsystem matches one requirement group in Table 7.
 
 [[table: table-subsystems | Table 8: Subsystem goals, deliverables and verification]]
 
