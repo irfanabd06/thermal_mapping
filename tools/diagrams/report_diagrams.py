@@ -489,7 +489,7 @@ def architecture_v3():
 
         # S1
         panel(1.0, 9.3, 11.7, 3.75, "S1 Sense and Map")
-        fbox(1.3, 9.55, 3.6, 2.4, "Sensor nodes", "Permanent and\ntemporary · T, RH,\ncanopy · 1-min")
+        fbox(1.3, 9.55, 3.6, 2.4, "Sensor nodes", "Permanent and\ntemporary · T, RH,\ncanopy · 30-min")
         fbox(5.3, 9.55, 3.2, 2.4, "Clean data", "Remove spikes\nand misting\nartefacts")
         fbox(8.9, 9.55, 3.5, 2.4, "Thermal map", "Soft sensors and\nGaussian process\nregression")
         dline = lambda pts, dashed=False: elbow(ax, pts, dashed=dashed)

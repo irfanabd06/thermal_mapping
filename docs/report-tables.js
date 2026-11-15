@@ -107,7 +107,7 @@ const tables = {
       ["R10", "Hotspot reduction", "Crop-zone exceedance (°C·min above 29 °C) ≥ 20% lower than baseline (proposed)", "Primary measure of thermal benefit", "Alternating-day trials under comparable weather"],
       ["R11", "Energy use", "Fan energy ≤ baseline for equal or better exceedance", "Cooling must not cost more to run than today", "Fan energy metering"],
       ["R12", "Correct and fail-safe actuation", "Fans that most affect a predicted hotspot switch on in ≥ 90% of events (proposed); fans revert to baseline on any fault; minimum on/off time ≥ 10 min", "Shows the twin drives the right fans; protects crops and equipment", "Logged predictions vs fan commands; fault-injection test"],
-      ["R13", "Dashboard update", "Map, hotspots and fan states refreshed ≤ 1 min", "Operators need current information", "Timed test on site"],
+      ["R13", "Dashboard update", "Map, hotspots and fan states refreshed ≤ 1 min after each 30-min sample", "Operators need current information", "Timed test on site"],
       ["R14", "Offline operation", "Runs without internet, using sensor data alone; restarts ≤ 5 min after power loss", "Rural farms may have limited connectivity", "Network-unplug and power-cycle tests"],
     ],
   },

@@ -5,7 +5,7 @@ title: 6. System Architecture and Detailed Design
 
 The system has three subsystems, one for each objective (Figure 13). S1 serves both applications, and the four floor fans are shared: S2 uses them to test layouts and S3 to control cooling. All live processing runs on a Raspberry Pi 5, so the system keeps working without internet access.
 
-- **S1 Sense and Map:** samples temperature, humidity and canopy temperature across the crop zones every minute, using permanent nodes and, during training, temporary ones. It cleans the data and estimates conditions between nodes with soft sensors and Gaussian process regression.
+- **S1 Sense and Map:** samples temperature, humidity and canopy temperature across the crop zones every 30 minutes, using permanent nodes and, during training, temporary ones. It cleans the data and estimates conditions between nodes with soft sensors and Gaussian process regression.
 - **S2 Cooling Layout Evaluation (Application 1, before the greenhouse is built or retrofitted):** the CFD flow model, using measured inputs from S1, is used to choose the best fan layout before fans are installed. Its suggested layouts are checked by building them with the floor fans and measuring the temperature improvement.
 - **S3 Live Cooling Control (Application 2, once the greenhouse is operating):** running on the chosen layout, it predicts crop-zone hotspots 30 minutes ahead, supported by NEA weather data when online, then switches on the floor fans that most affect them and shows the results on a dashboard. S1 measures the effect.
 
@@ -19,7 +19,7 @@ Table 8 defines what each subsystem must deliver and how it will be verified. Ea
 
 ### 6.3. S1: Sensor Nodes
 
-Two node types share one design (Figure 14), built around an ESP32-C6 microcontroller. Type A nodes measure air temperature and humidity with an SHT45 and form the main grid. Type B nodes add an MLX90640 thermal camera (32 × 24 pixels) aimed at the canopy to estimate leaf temperature, and are placed at fewer locations. The firmware takes the median of 10 SHT45 readings and averages 10 thermal frames, with emissivity set to 0.95, to reduce noise.
+Two node types share one design (Figure 14), built around an ESP32-C6 microcontroller. Type A nodes measure air temperature and humidity with an SHT45 and form the main grid. Type B nodes add an MLX90640 thermal camera (32 × 24 pixels) aimed at the canopy to estimate leaf temperature, and are placed at fewer locations. Every 30 minutes, the firmware takes 60 SHT45 readings over one minute and reports the mean of the 20 closest to the median, which rejects spikes from misting and turbulence. It also averages 10 thermal frames, with emissivity set to 0.95.
 
 ![Figure 14. Sensor-node functional blocks and schematic](assets/fig-sensor-node-design.png)
 
