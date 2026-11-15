@@ -3,12 +3,12 @@ title: 6. System Architecture and Detailed Design
 ---
 ### 6.1. System Architecture
 
-The system has four subsystems (Figure 13). S2 hosts two applications that run in sequence: the fan layout is designed first, and the live twin then operates it. All live processing runs on a Raspberry Pi 5, so the system keeps working without internet access.
+The system has four subsystems (Figure 13). S2 hosts two applications that run in sequence: one before the greenhouse is built, and one once it is operating. All live processing runs on a Raspberry Pi 5, so the system keeps working without internet access.
 
 - **S1 Sense:** samples temperature, humidity and canopy temperature across the crop zones every minute, using permanent nodes and, during training, temporary ones.
 - **S2 Map and Model:**
-    - *Application 1, cooling layout evaluation (design stage):* offline CFD suggests fan layouts, which are then built with the floor fans and checked by measured temperature.
-    - *Application 2, live twin:* running on the chosen layout, it cleans the data, estimates conditions between nodes with soft sensors and Gaussian process regression, and predicts crop-zone hotspots 30 minutes ahead, supported by NEA weather data when online.
+    - *Application 1, cooling layout evaluation (before the greenhouse is built or retrofitted):* the CFD flow model is used to choose the best fan layout before fans are installed. Its suggested layouts are checked by building them with the floor fans and measuring the temperature improvement.
+    - *Application 2, live twin (once the greenhouse is operating):* running on the chosen layout, it cleans the data, estimates conditions between nodes with soft sensors and Gaussian process regression, and predicts crop-zone hotspots 30 minutes ahead, supported by NEA weather data when online.
 - **S3 Decide:** chooses fan actions from the predicted hotspots.
 - **S4 Actuate:** runs the four floor fans, whose effect is measured again by S1.
 
