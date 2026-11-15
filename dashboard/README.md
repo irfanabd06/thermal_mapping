@@ -1,8 +1,8 @@
-# Greenhouse 1 thermal map dashboard
+# Greenhouse1_dashboard
 
 Source for the 3D thermal map dashboard and the greenhouse CAD model.
 
-- Published page: `docs/dashboard/index.html`, served by GitHub Pages at <https://irfanabd06.github.io/thermal_mapping/dashboard/>
+- Published page: `docs/Greenhouse1_dashboard/index.html`, served by GitHub Pages at <https://irfanabd06.github.io/thermal_mapping/Greenhouse1_dashboard/>
 - CAD model: `cad/Greenhouse1.step` (millimetres, Z up, 79 named bodies)
 
 Both are generated from the files in this folder. Edit the sources here, then rebuild.
@@ -16,7 +16,7 @@ Both are generated from the files in this folder. Edit the sources here, then re
 | `survey.txt` | The 57 temperature readings from the preliminary survey, one per line. |
 | `build_page.py` | Puts the model and the readings into `template.html`. |
 | `verify_step.py` | Reads the STEP file back and checks every body is closed and planar. |
-| `build.py` | Runs all of the above and copies the results into `docs/dashboard/` and `cad/`. |
+| `build.py` | Runs all of the above and copies the results into `docs/Greenhouse1_dashboard/` and `cad/`. |
 
 ## Rebuilding after an edit
 
@@ -26,7 +26,7 @@ Python 3 only, no extra packages:
 python dashboard/build.py
 ```
 
-Then open `docs/dashboard/index.html` in a browser, and commit the changed files.
+Then open `docs/Greenhouse1_dashboard/index.html` in a browser, and commit the changed files.
 
 ## Where to change common things
 
@@ -38,6 +38,8 @@ Then open `docs/dashboard/index.html` in a browser, and commit the changed files
 | Wall lengths, heights, hump, beds, fans | The constants and lists at the top of `build_model.py` |
 | Measurement grid spacing | `S0`, `DS`, `DT` in `build_model.py` |
 | Site coordinates for weather and sun | `SITE` in `template.html` |
+| Page title and browser tab name | The `<h1>` and `<title>` in `template.html` |
+| Web address of the page | The `site` folder name in `build.py`, then rename the folder in `docs/` |
 | Colours and fonts | The `:root` block at the top of `template.html` |
 
 ## How the page is organised (`template.html`)
