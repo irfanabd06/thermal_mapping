@@ -114,11 +114,11 @@ const tables = {
 
   // Table 8: Subsystem goals (Section 6.2)
   "table-subsystems": {
-    columns: ["Subsystem", "Goal", "Deliverables", "Verified by", "Status (end of Semester 1)"],
+    columns: ["Subsystem", "Goal", "Deliverables", "Verified by"],
     data: [
-      ["S1 Sense and Map", "Synchronised, location-tagged crop-zone T/RH and canopy temperature, mapped between nodes with fewer sensors", "Type A/B nodes, shielded enclosure, RS-485 network, permanent and temporary nodes, gateway logging; data cleaning, soft-sensor models, Gaussian process regression map", "R1–R6", "Prototype node; bench accuracy tested; RS-485 to MQTT verified; 57-point survey heatmap"],
-      ["S2 Cooling Layout Evaluation (Application 1)", "Suggest fan layouts that lower crop-zone exceedance, confirmed by measured temperature", "CFD model with measured inputs; ranked layout suggestions; test-section trials with four floor fans", "R7, R8", "GH1 dimensions and fan positions recorded"],
-      ["S3 Live Cooling Control (Application 2)", "Predict hotspots 30 min ahead and run the fans that most affect them, safely and without extra energy", "Prediction and fan-effect models; prediction-triggered rules with fail-safe; four floor fans with speed/relay interface and energy metering; dashboard", "R9–R14", "Control approach defined; fans to be procured"],
+      ["S1 Sense and Map", "Synchronised, location-tagged crop-zone T/RH and canopy temperature, mapped between nodes with fewer sensors", "Type A/B nodes, shielded enclosure, RS-485 network, permanent and temporary nodes, gateway logging; 30-min sampling with median-centred averaging; data cleaning, soft-sensor models, Gaussian process regression map", "R1–R6"],
+      ["S2 Cooling Layout Evaluation (Application 1)", "Suggest fan layouts that lower crop-zone exceedance, confirmed by measured temperature", "CFD model with measured inputs; ranked layout suggestions; test-section trials with four floor fans", "R7, R8"],
+      ["S3 Live Cooling Control (Application 2)", "Predict hotspots 30 min ahead and run the fans that most affect them, safely and without extra energy", "Prediction and fan-effect models; prediction-triggered rules with fail-safe; four floor fans with speed/relay interface and energy metering; dashboard", "R9–R14"],
     ],
   },
 
