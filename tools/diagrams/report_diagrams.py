@@ -104,9 +104,9 @@ def problem_framing():
         flat_box(ax, 9.35, 2.6, 2.6, 2.2, "Shared GH1 Model",
                  "Geometry, boundary\nconditions and\nsensor data", tsize=12.5)
         flat_box(ax, 12.55, 4.4, 3.85, 2.0, "Application 1: Design Evaluation",
-                 "CFD and floor-fan tests compare\nfan number, placement, direction\nand speed (structure fixed)", tsize=12, bsize=11)
+                 "CFD suggests fan layouts for new\nor retrofitted greenhouses; real-life\ntests confirm the improvement", tsize=12, bsize=11)
         flat_box(ax, 12.55, 0.6, 3.85, 2.2, "Application 2: Digital Twin",
-                 "Sensors and soft sensors model\ntemperature and humidity; predicts\nwhen floor fans are needed", tsize=12, bsize=11)
+                 "Sensors and soft sensors monitor\ntemperature and humidity, predict\nhotspots and run the right fans", tsize=12, bsize=11)
         # arrows
         elbow(ax, [(3.7, 3.7), (4.1, 3.7), (4.1, 5.5), (4.5, 5.5)])
         elbow(ax, [(4.1, 3.7), (4.1, 1.9), (4.5, 1.9)])
@@ -115,9 +115,9 @@ def problem_framing():
         elbow(ax, [(11.95, 3.95), (12.25, 3.95), (12.25, 5.4), (12.55, 5.4)])
         elbow(ax, [(12.25, 3.95), (12.25, 1.7), (12.55, 1.7)])
         ax.add_patch(FancyArrowPatch((14.475, 4.4), (14.475, 2.8),
-                                     arrowstyle="<->,head_length=0.5,head_width=0.3",
+                                     arrowstyle="->,head_length=0.5,head_width=0.3",
                                      mutation_scale=18, color="black", lw=2.2, linestyle="--", zorder=2))
-        ax.text(14.65, 3.6, "Tested\ntogether;\nrecommended\nfan layout", fontsize=10.5,
+        ax.text(14.65, 3.6, "Chosen\nfan layout", fontsize=10.5,
                 fontweight="bold", color="black", va="center", zorder=4)
         fig.savefig(OUT + "fig-problem-framing.png", dpi=150, bbox_inches="tight", facecolor="white")
         plt.close(fig)
@@ -315,9 +315,9 @@ def functional_decomposition():
                                            "Map the distribution", "Identify where and when\nhotspots occur"], "R1–R6"),
         ("O2 Cooling layout\nevaluation", ["Represent the greenhouse\nand its fans", "Estimate airflow",
                                            "Estimate heat\ndistribution",
-                                           "Test fan configurations", "Compare with\nthe baseline"], "R7–R8"),
+                                           "Suggest the best\nfan layouts", "Test suggested layouts\nagainst the baseline"], "R7–R8"),
         ("O3 Targeted\ncooling", ["Forecast hotspots", "Decide the\ncooling action", "Operate the fans",
-                                   "Check the response\nagainst the baseline"], "R9–R14"),
+                                   "Confirm the right\nfans respond"], "R9–R14"),
     ]
     with plt.rc_context({"font.family": "Inter"}):
         W, H = 15.0, 11.2
@@ -424,34 +424,31 @@ def architecture_v2():
                 va="center", fontsize=13, fontweight="bold", color=PANEL_TXT, zorder=4)
         fbox(1.4, 8.05, 4.4, 1.6, "Clean data", "Remove spikes and\nmisting artefacts")
         fbox(6.6, 8.05, 4.4, 1.6, "Thermal map", "Soft sensors and Gaussian\nprocess regression")
-        fbox(11.8, 8.05, 4.4, 1.6, "Hotspot prediction", "Crop-zone exceedance\n30 min ahead")
+        fbox(11.8, 8.05, 4.4, 1.6, "Hotspot prediction", "Exceedance 30 min ahead;\nlearned fan effects on T, RH")
         dline([(5.8, 8.85), (6.6, 8.85)])
         dline([(11.0, 8.85), (11.8, 8.85)])
         ax.add_patch(Rectangle((1.2, 4.8), 15.2, 2.85, fc=LIGHT, ec=PANEL_EC, lw=1.4, zorder=2))
-        ax.text(8.8, 5.12, "Application 1: cooling layout evaluation (offline)", ha="center", va="center",
+        ax.text(8.8, 5.12, "Application 1: cooling layout evaluation (offline, design stage)", ha="center", va="center",
                 fontsize=13, fontweight="bold", color=PANEL_TXT, zorder=4)
-        fbox(1.4, 5.45, 4.8, 1.95, "Flow simulation (CFD)", "Airflow, and heat for untested\nlayouts; fan-layout ranking")
-        fbox(7.4, 5.45, 4.4, 1.95, "Floor-fan tests", "Test section, 1–4 fans;\nmeasured heat distribution")
-        dline([(6.2, 6.4), (7.4, 6.4)], dashed=True, two_way=True)
-        ax.text(6.8, 6.8, "tested\ntogether", fontsize=11.5, fontweight="bold", color="#11a85a", ha="center", va="bottom", zorder=5)
+        fbox(1.4, 5.45, 4.8, 1.95, "Flow simulation (CFD)", "Airflow and heat for candidate\nlayouts; suggests the best")
+        fbox(7.4, 5.45, 4.4, 1.95, "Layout tests", "Suggested layouts built with\nfloor fans; temperature vs baseline")
+        dline([(6.2, 6.4), (7.4, 6.4)], dashed=True)
+        ax.text(6.8, 6.8, "suggested\nlayouts", fontsize=11.5, fontweight="bold", color="#11a85a", ha="center", va="bottom", zorder=5)
 
         # flows
         dline([(8.5, 13.5), (8.5, 13.0)])
         dline([(8.5, 11.4), (8.5, 11.15), (3.6, 11.15), (3.6, 9.65)])
         dline([(14.6, 11.4), (14.6, 9.65)], dashed=True)
-        dline([(3.6, 8.05), (3.6, 7.4)], dashed=True)
-        dline([(9.6, 8.05), (9.6, 7.4)], dashed=True)
+        dline([(9.6, 8.05), (9.6, 7.4)], "measured\ntemperature", (8.4, 7.72), dashed=True)
         # outputs below S2
-        fbox(6.4, 2.5, 4.8, 1.45, "S3 Decide", "Prediction-triggered rules, fail-safe")
+        fbox(6.4, 2.5, 4.8, 1.45, "S3 Decide", "Right fans for each hotspot, fail-safe")
         fbox(6.4, 0.5, 4.8, 1.45, "S4 Actuate", "Four floor fans, energy metering")
         fbox(12.2, 2.5, 4.4, 1.45, "Dashboard", "Map, hotspots, fan status")
         dline([(13.0, 8.05), (13.0, 4.3), (8.8, 4.3), (8.8, 3.95)])
         dline([(15.2, 8.05), (15.2, 3.95)])
         dline([(8.8, 2.5), (8.8, 1.95)])
-        dline([(3.0, 5.45), (3.0, 3.2), (6.4, 3.2)], dashed=True)
-        ax.text(4.7, 3.45, "fan influence", fontsize=12, fontweight="bold", color="#11a85a", ha="center", va="bottom")
         dline([(2.0, 5.45), (2.0, 1.2), (6.4, 1.2)], dashed=True)
-        ax.text(4.2, 1.45, "fan layout", fontsize=12, fontweight="bold", color="#11a85a", ha="center", va="bottom")
+        ax.text(4.2, 1.45, "chosen fan layout", fontsize=12, fontweight="bold", color="#11a85a", ha="center", va="bottom")
         # feedback loop
         ax.plot([8.8, 8.8, 0.35, 0.35, 5.2], [0.5, 0.15, 0.15, 14.2, 14.2], color="black", lw=2.2, zorder=2)
         ax.add_patch(FancyArrowPatch((5.2, 14.2), (5.5, 14.2), arrowstyle="->,head_length=0.5,head_width=0.3",
