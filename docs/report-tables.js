@@ -146,7 +146,7 @@ const tables = {
     columns: ["Objective", "Detailed design", "Deliverable"],
     data: [
       ["Measure air temperature and humidity", "Type A node: ESP32-C6 with an SHT45 in a ventilated, louvred shield, separated from the electronics. Every 30 min, 60 readings over 1 min; the mean of the 20 closest to the median is reported", "Type A nodes for the main grid (R1, R2)"],
-      ["Measure canopy temperature", "Type B node: adds an MLX90640 thermal camera (32 × 24 pixels) aimed at the canopy; 10 frames averaged, emissivity 0.95", "Type B nodes at fewer locations"],
+      ["Measure canopy leaf temperature", "Type B node: adds an MLX90640 thermal camera (32 × 24 pixels) aimed at the leaves: 10 frames averaged, emissivity 0.95", "Type B nodes at fewer locations"],
       ["Survive greenhouse conditions", "Enclosure with a separate electronics and battery compartment; power supply (wired DC or battery) chosen in Semester 2", "Durable enclosure (R3)"],
       ["Sample all nodes together", "RS-485 (9600 baud, 8N1); JSON packets with node ID, sequence number and readings, to a USB–RS-485 adapter on the Raspberry Pi 5", "RS-485 network (R4)"],
       ["Store and clean the data", "Docker on the Pi runs a Mosquitto MQTT broker and Node-RED to time-stamp the data and remove spikes and misting artefacts; InfluxDB planned for storage", "Edge gateway and data pipeline (Figure 14)"],

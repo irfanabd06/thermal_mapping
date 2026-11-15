@@ -531,12 +531,92 @@ def architecture_v3():
         plt.close(fig)
 
 
+def edge_gateway_v2():
+    """Figure 14: field, edge and cloud layers of the system, in the Figure 13 style."""
+    with plt.rc_context({"font.family": "Inter"}):
+        W, H = 17.0, 12.3
+        fig, ax = canvas(W, H)
+        LIGHT = "#c9f1db"
+
+        def fbox(x, y, w, h, title, body, dashed=False, tags=(), ts=14.5, bs=12.5):
+            ax.add_patch(Rectangle((x, y), w, h, fc="white", ec=DG, lw=1.8, ls="--" if dashed else "-", zorder=3))
+            ax.text(x + w / 2, y + h - 0.38, title, ha="center", va="center", fontsize=ts, fontweight="bold", zorder=4)
+            ax.text(x + w / 2, y + (h - 0.55) / 2, body, ha="center", va="center", fontsize=bs, zorder=4,
+                    linespacing=1.25)
+            for i, t in enumerate(tags):
+                tx = x + w - 0.08 - 0.52 * (len(tags) - i)
+                ax.add_patch(Rectangle((tx, y + h - 0.02), 0.46, 0.34, fc=DG, ec=DG, zorder=5))
+                ax.text(tx + 0.23, y + h + 0.15, t, ha="center", va="center", fontsize=10, fontweight="bold",
+                        color="white", zorder=6)
+
+        def lab(x, y, t, fc="white"):
+            ax.text(x, y, t, fontsize=11.5, fontweight="bold", color="#0b7a40" if fc != "white" else "#11a85a",
+                    ha="center", va="center", zorder=6, bbox=dict(fc=fc, ec="none", pad=1.2), linespacing=1.1)
+
+        def layer(y, title, sub):
+            ax.text(0.2, y + 0.25, title, ha="left", va="center", fontsize=17, fontweight="bold", color=PANEL_TXT)
+            ax.text(0.2, y - 0.12, sub, ha="left", va="top", fontsize=11.5, color=PANEL_TXT, linespacing=1.2)
+
+        c1, c2, c3, c4 = (2.7, 2.7), (5.9, 2.7), (9.1, 2.9), (12.6, 4.0)
+        # cloud
+        layer(11.2, "Cloud", "when online")
+        fbox(c1[0], 10.4, c1[1], 1.5, "FlowFuse", "Remote deployment\n(optional)", dashed=True)
+        fbox(c2[0], 10.4, c2[1], 1.5, "Remote dashboard", "Grafana Cloud\n(optional)", dashed=True)
+        fbox(c3[0], 10.4, c3[1], 1.5, "NEA weather", "Live readings,\n2-hour nowcast", dashed=True)
+        # edge
+        ax.add_patch(Rectangle((2.45, 4.4), 14.4, 5.55, fc=PANEL, ec=PANEL_EC, lw=1.8, zorder=1))
+        layer(7.4, "Edge", "Raspberry Pi 5\n(Docker)\nruns offline")
+        fbox(c2[0], 7.75, c2[1], 1.7, "Grafana", "Map, hotspots,\nfan status", tags=("S3",))
+        fbox(c3[0], 7.75, c3[1], 1.7, "InfluxDB", "Time-series\nstorage", tags=("S1",))
+        fbox(c4[0], 7.75, c4[1], 1.7, "MATLAB models", "Soft sensors, GPR map,\nfan effects, 30-min prediction",
+             tags=("S1", "S3"))
+        fbox(c1[0], 4.75, c1[1], 1.7, "USB–RS-485", "adapter", tags=("S1",))
+        fbox(c2[0], 4.75, c2[1], 1.7, "Mosquitto", "MQTT broker", tags=("S1",))
+        fbox(c3[0], 4.75, c3[1], 1.7, "Node-RED", "Time-stamp, clean;\ncontrol rules, fail-safe",
+             tags=("S1", "S3"))
+        # field
+        ax.add_patch(Rectangle((2.45, 0.3), 9.75, 3.45, fc=LIGHT, ec=PANEL_EC, lw=1.8, zorder=1))
+        layer(2.3, "Field", "GH1")
+        fbox(c1[0], 0.65, c1[1], 2.45, "Type A nodes", "ESP32-C6 + SHT45\nin shield · T, RH", tags=("S1",))
+        fbox(c2[0], 0.65, c2[1], 2.45, "Type B nodes", "Type A + MLX90640\nleaf temperature", tags=("S1",))
+        fbox(9.1, 0.65, 2.7, 2.45, "Floor fans ×4", "PWM or relay,\nenergy metering", tags=("S3",))
+        fbox(12.9, 0.65, 3.7, 2.45, "Design workstation", "SOLIDWORKS Flow\nSimulation (offline)", dashed=True,
+             tags=("S2",))
+
+        e = lambda pts, d=False: elbow(ax, pts, dashed=d)
+        # field to edge
+        e([(4.05, 3.1), (4.05, 4.75)])
+        ax.plot([7.25, 7.25, 4.05], [3.1, 4.07, 4.07], color="black", lw=2.2, zorder=2)
+        lab(5.65, 4.07, "RS-485 · JSON")
+        e([(5.4, 5.6), (5.9, 5.6)])
+        e([(8.6, 5.6), (9.1, 5.6)])
+        e([(10.55, 6.45), (10.55, 7.75)])
+        e([(12.0, 8.6), (12.6, 8.6)])
+        e([(9.1, 8.6), (8.6, 8.6)])
+        e([(13.8, 7.75), (13.8, 5.6), (12.0, 5.6)])
+        lab(14.75, 6.35, "predictions", fc=PANEL)
+        e([(10.45, 4.75), (10.45, 3.1)])
+        lab(10.45, 4.07, "fan commands")
+        e([(15.8, 7.75), (15.8, 3.1)], True)
+        lab(15.8, 4.07, "logged data")
+        e([(12.9, 1.85), (11.8, 1.85)], True)
+        lab(12.35, 2.55, "chosen\nlayout")
+        # cloud links
+        e([(10.55, 10.4), (10.55, 9.45)], True)
+        e([(7.25, 9.45), (7.25, 10.4)], True)
+        e([(4.05, 10.4), (4.05, 7.1), (9.6, 7.1), (9.6, 6.45)], True)
+        ax.set_xlim(0, W); ax.set_ylim(0, H)
+        fig.savefig(OUT + "fig-edge-gateway.png", dpi=150, bbox_inches="tight", pad_inches=0.05, facecolor="white")
+        plt.close(fig)
+
+
 problem_framing()
 farmer_value()
 cooling_options()
 functional_decomposition()
 system_decomposition()
 architecture_v3()
+edge_gateway_v2()
 trapped_hot_air()
 roadmap()
 print("done")

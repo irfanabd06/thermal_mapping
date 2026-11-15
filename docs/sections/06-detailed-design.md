@@ -25,7 +25,7 @@ Table 9 sets out the S1 design. Both node types share one ESP32-C6 design (Appen
 
 [[table: table-s1-design | Table 9: S1 detailed design]]
 
-![Figure 14. Edge gateway and data pipeline](assets/fig-edge-gateway.png)
+![Figure 14. Raspberry Pi Edge gateway and data pipeline](assets/fig-edge-gateway.png)
 
 #### 6.3.2. Initial Prototype
 
