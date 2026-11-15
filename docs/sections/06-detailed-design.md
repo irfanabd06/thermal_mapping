@@ -19,6 +19,8 @@ Table 8 defines what each subsystem must deliver and how it will be verified. Ea
 
 ### 6.3. S1: Sense and Map
 
+**Plant Stress Indicator: Leaf Vapour Pressure Deficit**
+
 Besides temperature and humidity, S1 reports two indicators of crop stress. Vapour pressure deficit (VPD) is how much more moisture the air could hold, which drives transpiration. Leaf VPD (LVPD) uses the leaf temperature from the Type B nodes in place of air temperature, so it shows what the plant itself experiences (Appendix C).
 
 <p class="equation">e<sub>s</sub>(T) = 0.6108 · exp(17.27 T / (T + 237.3)) kPa</p>
@@ -37,9 +39,14 @@ Table 9 sets out the S1 design. Both node types share one ESP32-C6 design (Appen
 
 #### 6.3.2. Initial Prototype
 
-One prototype node was built in Semester 1, with an SHT45, an MLX90640 and an RS-485 link to the Raspberry Pi 5 running Mosquitto and Node-RED. Because sunlight heats exposed sensors (Section 6.3.3), a ventilated, louvred shield was designed for the SHT45 (Figure 15). Making the enclosure smaller and choosing the power supply are Semester 2 tasks.
+One prototype node was built in Semester 1, with an SHT45, an MLX90640 and an RS-485 link to the Raspberry Pi 5. Because sunlight heats exposed sensors (Section 6.3.3), both node types use the same 3D-printed enclosure: a ventilated, louvred shield for the SHT45, mounted above a closed electronics compartment (Figure 15).
 
-![Figure 15. Open sensor (left) and the ventilated, shielded enclosure concept (right)](assets/fig-sensor-enclosure.jpg)
+- **Type A:** fully shielded. The initial prototype (Figure 15a) is this type.
+- **Type B:** the same enclosure, with an opening for the MLX90640 to view the leaves.
+
+Making the enclosure smaller and choosing the power supply are Semester 2 tasks.
+
+![Figure 15. Sensor-node enclosure: (a) initial prototype, (b) Type A design, (c) Type B design with an opening for the MLX90640](assets/fig-sensor-enclosure.png)
 
 #### 6.3.3. Testing and Analysis
 

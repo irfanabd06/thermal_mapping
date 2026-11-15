@@ -886,6 +886,80 @@ def edge_gateway_v5():
         plt.close(fig)
 
 
+def sensor_enclosure():
+    """Figure 15: prototype photo beside CAD-style isometric drawings of the Type A and Type B enclosures."""
+    import numpy as np
+    photo = plt.imread(os.path.join(os.path.dirname(os.path.abspath(__file__)), "enclosure-prototype.png"))
+    C30, S30 = np.cos(np.radians(30)), 0.5
+    iso = lambda x, y, z: ((x - y) * C30, (x + y) * S30 + z)
+    LINE = "#1a1a1a"
+
+    def poly(ax, pts, fc, z, lw=1.1, ls="-"):
+        ax.add_patch(Polygon([iso(*q) for q in pts], closed=True, fc=fc, ec=LINE, lw=lw, ls=ls, zorder=z,
+                             joinstyle="round"))
+
+    def box(ax, x0, y0, z0, dx, dy, dz, z):
+        x1, y1, z1 = x0 + dx, y0 + dy, z0 + dz
+        poly(ax, [(x0, y0, z0), (x0, y1, z0), (x0, y1, z1), (x0, y0, z1)], "#d9dde0", z)      # left face
+        poly(ax, [(x0, y0, z0), (x1, y0, z0), (x1, y0, z1), (x0, y0, z1)], "#eef0f2", z)      # right face
+        poly(ax, [(x0, y0, z1), (x1, y0, z1), (x1, y1, z1), (x0, y1, z1)], "white", z)         # top
+
+    def leader(ax, target, text_xy, text, ha="left"):
+        tx, ty = iso(*target)
+        ax.plot([tx, text_xy[0]], [ty, text_xy[1]], color=LINE, lw=0.8, zorder=60)
+        ax.plot([tx], [ty], marker="o", ms=3.2, color=LINE, zorder=61)
+        ax.text(text_xy[0] + (1.5 if ha == "left" else -1.5), text_xy[1], text, ha=ha, va="center", fontsize=11.5,
+                zorder=61)
+
+    def enclosure(ax, type_b):
+        BX, BY, BZ = 60, 50, 45
+        box(ax, BX, 20, 18, 11, 10, 4, 1)                       # right mounting tab (behind the body)
+        ax.add_patch(Polygon([iso(BX + 6 + 2.6 * np.cos(a), 25 + 2.6 * np.sin(a), 22)
+                              for a in np.linspace(0, 2 * np.pi, 40)], fc="#555", ec=LINE, lw=0.8, zorder=2))
+        box(ax, 0, 0, 0, BX, BY, BZ, 3)                         # electronics compartment
+        box(ax, -11, 20, 18, 11, 10, 4, 4)                      # left mounting tab
+        ax.add_patch(Polygon([iso(-6 + 2.6 * np.cos(a), 25 + 2.6 * np.sin(a), 22)
+                              for a in np.linspace(0, 2 * np.pi, 40)], fc="#555", ec=LINE, lw=0.8, zorder=5))
+        box(ax, -1.5, -1.5, BZ, BX + 3, BY + 3, 3, 6)           # lid
+        zs = [56, 65, 74, 83]
+        zo, prev = 7, BZ + 3
+        for i, zp in enumerate(zs + [92]):
+            for px, py in ((50, 40), (6, 40), (50, 6), (6, 6)):  # posts, back to front
+                box(ax, px, py, prev, 4, 4, zp - prev, zo); zo += 1
+            thick = 4.5 if i == 4 else 2.5
+            box(ax, 1, 1, zp, BX - 2, BY - 2, thick, zo); zo += 1
+            prev = zp + thick
+        # SHT45 board inside the shield, shown as hidden lines
+        poly(ax, [(22, 0.8, 66.5), (38, 0.8, 66.5), (38, 0.8, 72.5), (22, 0.8, 72.5)], "none", 50, lw=1.0,
+             ls=(0, (3, 2)))
+        ax.plot(*zip(iso(30, 0, 45), iso(30, 0, 101)), color="#888", lw=0.7, ls=(0, (8, 2, 1.5, 2)), zorder=49)
+        if type_b:
+            for r, fc in ((7.5, "white"), (5.6, "#3a3f44")):
+                ax.add_patch(Polygon([iso(30 + r * np.cos(a), 0, 22 + r * np.sin(a))
+                                      for a in np.linspace(0, 2 * np.pi, 60)], fc=fc, ec=LINE, lw=1.1, zorder=52))
+            for q0, q1 in (((18, 0, 22), (42, 0, 22)), ((30, 0, 10), (30, 0, 34))):
+                ax.plot(*zip(iso(*q0), iso(*q1)), color="#888", lw=0.7, ls=(0, (8, 2, 1.5, 2)), zorder=53)
+        ax.set_xlim(-102, 162); ax.set_ylim(-14, 152); ax.set_aspect("equal"); ax.axis("off")
+        ax.add_patch(Rectangle((-100, -12), 260, 162, fc="none", ec="#9aa3a8", lw=0.9, zorder=0))
+
+    with plt.rc_context({"font.family": "Inter"}):
+        fig, axs = plt.subplots(1, 3, figsize=(18.5, 5.4), gridspec_kw={"width_ratios": [0.57, 1, 1], "wspace": 0.03})
+        axs[0].imshow(photo[322:958, 86:656]); axs[0].axis("off")
+        enclosure(axs[1], False)
+        leader(axs[1], (58, 25, 96.5), (62, 138), "Louvred, ventilated shield")
+        leader(axs[1], (36, 0.8, 69.5), (62, 86), "SHT45\n(inside)")
+        leader(axs[1], (-9, 22, 20), (-46, 0), "Mounting tab", ha="right")
+        leader(axs[1], (45, 0, 12), (62, 20), "Electronics\ncompartment")
+        enclosure(axs[2], True)
+        leader(axs[2], (58, 25, 96.5), (62, 138), "Same shield and SHT45")
+        leader(axs[2], (35, 0, 20), (62, 20), "Opening for\nMLX90640")
+        for ax, lab in zip(axs, ("(a) Initial prototype", "(b) Type A: air temperature and humidity",
+                                 "(c) Type B: adds leaf temperature")):
+            ax.set_title(lab, y=-0.11, fontsize=13.5, fontweight="bold")
+        fig.savefig(OUT + "fig-sensor-enclosure.png", dpi=150, bbox_inches="tight", pad_inches=0.08, facecolor="white")
+        plt.close(fig)
+
+
 problem_framing()
 farmer_value()
 cooling_options()
@@ -893,6 +967,7 @@ functional_decomposition()
 system_decomposition()
 architecture_v3()
 edge_gateway_v5()
+sensor_enclosure()
 trapped_hot_air()
 roadmap()
 print("done")
