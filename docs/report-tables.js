@@ -136,9 +136,9 @@ const tables = {
       ["Estimate heat distribution", "Heat-distribution method", "CFD only, measured data only; both", "Live data-driven twin for tested layouts; CFD for layouts not yet installed", "Sensors give the real distribution where fans exist; CFD extends it to untested layouts; both are compared in the test section"],
       ["Estimate airflow", "CFD tool", "SOLIDWORKS Flow Simulation; ANSYS Fluent; OpenFOAM", "SOLIDWORKS Flow Simulation", "Integrated with the CAD model and available; adequate for comparative studies"],
       { group: "O3 Targeted cooling" },
-      ["Forecast hotspots", "Prediction inputs", "On-site sensors only, weather readings, forecast service", "On-site sensors, supported by NEA live readings and 2-hour nowcast", "Crop-zone sensors show actual conditions; weather data gives early warning of sun or rain; prediction still runs on sensors alone when offline"],
+      ["Forecast hotspots", "Prediction inputs", "On-site sensors only, weather readings, forecast service", "On-site sensors, supported by NEA live readings and 2-hour nowcast", "Crop-zone sensors show actual conditions, weather data gives early warning of sun or rain. Prediction still runs on sensors alone when offline"],
       ["Decide the cooling action", "Controller", "PID; reactive rules; rules triggered by 30-min predictions; model predictive control", "Rules triggered by 30-min predictions (MPC as stretch)", "Starts fans before hotspots form while staying transparent and testable in the timeline"],
-      ["Operate the fans", "Actuation", "Modify ventilation or misting; control existing fans; procure own floor fans", "Procure floor circulation fans", "Existing systems cannot be modified; own fans are safe, movable and allow speed tests"],
+      ["Operate the fans", "Actuation", "Modify ventilation or misting, control existing fans; procure own floor fans", "Procure floor circulation fans", "Existing systems cannot be modified, own fans are safe, movable and allow speed tests"],
     ],
   },
 
@@ -146,15 +146,17 @@ const tables = {
   "table-sim-scope": {
     columns: ["Parameter", "Treatment"],
     data: [
-      ["Greenhouse geometry, roof, walls and netting", "Fixed (GH1 as built)"],
-      ["Existing ventilation and ceiling fans", "Fixed, as baseline operation"],
+      ["Greenhouse geometry, roof, walls and netting", "Fixed (GH1 as built; Appendix D)"],
+      ["Existing ventilation and ceiling fans", "Fixed, as baseline operation (Appendix E)"],
+      ["Measured inputs", "Roof surface temperature, fan flow rates, geometry"],
       ["Model domains", "Test section (germination section) to check against measurements; full GH1 for the design study"],
       ["Number of floor fans", "Variable: 1–4 in the test section; more in full-GH1 runs"],
       ["Fan positions and direction", "Variable"],
       ["Fan speed", "Variable, within the procured fans' range"],
       ["External weather", "Representative midday, morning and overcast cases"],
-      ["Outputs", "Crop-zone temperature, exceedance H, airflow, fan power"],
-      ["Check data", "Kestrel airspeed spot checks and sensor-grid temperature change from the shared floor-fan tests"],
+      ["Outputs", "Airflow, crop-zone temperature, exceedance H, fan power"],
+      ["Check data", "Kestrel airspeed spot checks (airflow) and sensor-grid temperature change (heat distribution) from the shared floor-fan tests"],
+      ["Evaluation basis", "Trends and rankings against the baseline, not absolute temperatures (R7)"],
     ],
   },
 
