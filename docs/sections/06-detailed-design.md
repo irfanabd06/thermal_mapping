@@ -95,9 +95,9 @@ The CFD model of GH1 is built in SOLIDWORKS Flow Simulation from measured inputs
 
 #### 6.4.2. Initial Prototype
 
-In Semester 1, GH1's geometry and existing fans were measured (Appendices D and E) and the existing airflow was mapped (Section 2.4). From these, a CAD model of GH1 was built in SOLIDWORKS (Figure 20). It includes the main section, transition, wing and raised ridge, the netting and plastic wall bands, the exhaust fans and airlock, and inside, the beds, tanks and circulation fans. The flow simulation will run on this geometry, starting with the test section in Semester 2.
+In Semester 1, GH1's geometry and existing fans were measured (Appendices D and E) and the existing airflow was mapped (Section 2.4). From these, a CAD model of GH1 was built in SOLIDWORKS (Figure 19). It includes the main section, transition, wing and raised ridge, the netting and plastic wall bands, the exhaust fans and airlock, and inside, the beds, tanks and circulation fans. The flow simulation will run on this geometry, starting with the test section in Semester 2.
 
-![Figure 20. CAD model of GH1 in SOLIDWORKS: (a) exterior, (b) section view of the interior](assets/fig-gh1-cad.png)
+![Figure 19. CAD model of GH1 in SOLIDWORKS: (a) exterior, (b) section view of the interior](assets/fig-gh1-cad.png)
 
 #### 6.4.3. Testing and Analysis
 
@@ -113,9 +113,9 @@ S3 runs on the Raspberry Pi 5 with the chosen fan layout and uses simple, transp
 
 #### 6.5.2. Initial Prototype
 
-A prototype dashboard was built from the 57-point survey (Figure 19). It shows a 3D thermal map of GH1 with the fans and their airflow, flags points above a hotspot limit, groups them into zones and lists each zone's nearest fans. Fan states are not yet connected, and the floor fans will be procured at the start of Semester 2.
+A prototype dashboard was built from the 57-point survey (Figure 20). It shows a 3D thermal map of GH1 with the fans and their airflow, flags points above a hotspot limit, groups them into zones and lists each zone's nearest fans. Fan states are not yet connected, and the floor fans will be procured at the start of Semester 2.
 
-![Figure 19. Prototype S3 dashboard from the survey: (a) 3D thermal map with fans, airflow and flagged hotspots, (b) hot zones and nearest fans](assets/fig-s3-dashboard.png)
+![Figure 20. Prototype S3 dashboard from the survey: (a) 3D thermal map with fans, airflow and flagged hotspots, (b) hot zones and nearest fans](assets/fig-s3-dashboard.png)
 
 *Dashboard link: [https://claude.ai/artifact/Ps39q4mrfK5RXdwz3hZBVF](https://claude.ai/artifact/Ps39q4mrfK5RXdwz3hZBVF)*
 
